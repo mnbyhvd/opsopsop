@@ -19,17 +19,17 @@
 git clone <repository-url>
 cd master-sps
 
-# Запустите все сервисы
-docker-compose -f docker-compose.prod.yml up -d --build
+# Создайте .env файл
+cp env.example .env
 
-# Проверьте статус
-docker-compose -f docker-compose.prod.yml ps
+# Запустите все сервисы
+docker-compose up -d --build
 ```
 
 #### Настройка переменных окружения:
 ```bash
 # Создайте .env файл
-cp .env.example .env
+cp env.example .env
 
 # Отредактируйте настройки
 nano .env
@@ -45,17 +45,17 @@ nano .env
 
 #### Просмотр логов:
 ```bash
-docker-compose -f docker-compose.prod.yml logs -f
+docker-compose logs -f
 ```
 
 #### Перезапуск сервисов:
 ```bash
-docker-compose -f docker-compose.prod.yml restart
+docker-compose restart
 ```
 
 #### Остановка всех сервисов:
 ```bash
-docker-compose -f docker-compose.prod.yml down
+docker-compose down
 ```
 
 ### 📁 Структура проекта

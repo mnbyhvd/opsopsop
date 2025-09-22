@@ -5,8 +5,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # Production builds (keep build folders for Docker)
-# build/
-# dist/
+build/
+dist/
 
 # Environment variables
 .env
