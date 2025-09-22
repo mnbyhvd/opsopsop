@@ -1,0 +1,20 @@
+{
+  "name": "master-sps",
+  "version": "1.0.0",
+  "description": "АПС МАСТЕР - Система пожарной сигнализации",
+  "scripts": {
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\" \"npm run admin\"",
+    "backend": "cd backend && node server.js",
+    "frontend": "cd frontend && npm start",
+    "admin": "cd admin && npm start",
+    "install-all": "npm install && cd frontend && npm install && cd ../admin && npm install && cd ../backend && npm install",
+    "build": "cd frontend && npm run build && cd ../admin && npm run build",
+    "start": "npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["aps", "master", "fire", "alarm", "system"],
+  "author": "APS Master Team",
+  "license": "MIT"
+}

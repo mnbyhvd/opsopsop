@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* Стили для заголовков с Bebas Neue */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Bebas Neue', 'Arial Black', 'Arial', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  font-size: 64px;
+  line-height: 1.1 !important;
+  text-rendering: optimizeLegibility !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-feature-settings: "kern" 1, "liga" 1 !important;
+}
+
+/* Стили для параграфов с Inter */
+p {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Стили для заголовка "о системе" */
+.about-title {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  font-size: 16px !important;
+  line-height: 100% !important;
+  letter-spacing: 0% !important;
+  color: #D71920 !important;
+  text-transform: lowercase !important;
+}
+
+/* Стили для заголовка Scroll Section */
+.scroll-title {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  font-size: 16px !important;
+  line-height: 100% !important;
+  letter-spacing: 0% !important;
+  color: #D71920 !important;
+  text-transform: lowercase !important;
+}
+
+/* Стили для блока заголовка Scroll Section */
+.scroll-title-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Стили для точки Scroll Section */
+.scroll-title-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #D71920;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Стили для заголовков h3 в блоке "о системе" */
+.about-section h3 {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-weight: 400 !important;
+  font-style: regular !important;
+  font-size: 36px !important;
+  line-height: 100% !important;
+  letter-spacing: 0% !important;
+  color: #F2F0F0 !important;
+  text-transform: uppercase !important;
+}
+
+/* Стили для модальных окон в блоке продукции */
+.modal-link {
+  opacity: 1 !important;
+  transition: opacity 0.2s !important;
+}
+
+.modal-link:hover {
+  opacity: 0.8 !important;
+}
+
+/* Стили для заголовков в модальных окнах */
+.modal-title {
+  font-family: 'Inter' !important;
+  font-weight: 700 !important;
+  font-style: Bold !important;
+  font-size: 20px !important;
+  line-height: 100% !important;
+  letter-spacing: 0% !important;
+  color: #F2F0F0 !important;
+  margin-bottom: 16px ;
+}
+
+/* Стили для текста в модальных окнах */
+.modal-text {
+  font-family: 'Inter' !important;
+  font-weight: 400 !important;
+  font-style: Regular !important;
+  font-size: 16px !important;
+  line-height: 100% !important;
+  letter-spacing: 0% !important;
+  color: #F2F0F0 !important;
+  margin-bottom: 24px;
+}
+
+/* Стили для блока "о системе" */
+.about-title-block {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 4px 12px !important;
+  border: 1px solid #D71920 !important;
+  border-radius: 50px !important;
+  background: transparent !important;
+  gap: 6px !important;
+  width: fit-content !important;
+  height: auto !important;
+  min-height: fit-content !important;
+}
+
+.about-title-block .about-title {
+  display: flex !important;
+  align-items: center !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  vertical-align: middle !important;
+  transform: translateY(-2px) !important;
+}
+
+.about-title-dot {
+  width: 4px !important;
+  height: 4px !important;
+  background-color: #D71920 !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+
+:root {
+  --bg: #0D0D0D !important;
+  --text: #F5F5F5;
+  --accent: #D71920;
+  --brand: #ECC30B;
+  --glass-border: rgba(255,255,255,0.1);
+  --radius-xl: 16px;
+  --radius-lg: 12px;
+  --blur-glass: 12px;
+  
+
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  /* Принудительное применение Bebas Neue только к заголовкам */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bebas Neue', 'Arial Black', 'Arial', sans-serif !important;
+    font-feature-settings: "kern" 1, "liga" 1 !important;
+  }
+  
+  /* Принудительное применение Inter к параграфам и тексту */
+  p, span, div, button, a, input, textarea, label {
+    font-family: 'Inter', sans-serif !important;
+  }
+}
+
+@layer components {
+  .container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .glass {
+    background: color-mix(in srgb, white 5%, transparent);
+    backdrop-filter: blur(var(--blur-glass));
+    -webkit-backdrop-filter: blur(var(--blur-glass));
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-xl);
+  }
+  
+  .btn-primary {
+    @apply font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    background: theme('colors.blue.600');
+    color: white;
+  }
+  
+  .btn-secondary {
+    @apply font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    background: theme('colors.gray.200');
+    color: theme('colors.gray.900');
+  }
+}
+
+@keyframes floatLeft {
+  0%, 100% {
+    transform: translateY(-50%) rotate(25deg);
+  }
+  50% {
+    transform: translateY(-50%) rotate(28deg);
+  }
+}
+
+@keyframes floatRight {
+  0%, 100% {
+    transform: translateY(-50%) rotate(-25deg);
+  }
+  50% {
+    transform: translateY(-50%) rotate(-22deg);
+  }
+}

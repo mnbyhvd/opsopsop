@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: master_sps_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-master_sps_db}
+      MYSQL_USER: ${MYSQL_USER:-master_sps_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-MasterSPS2024!}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    networks:
+      - master_sps_network
+    restart: unless-stopped
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: master_sps_backend
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-master_sps_db}
+      DB_USER: ${MYSQL_USER:-master_sps_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-MasterSPS2024!}
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./uploads:/app/uploads
+    depends_on:
+      - mysql
+    networks:
+      - master_sps_network
+    restart: unless-stopped
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: master_sps_frontend
+    environment:
+      REACT_APP_API_URL: /api
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - master_sps_network
+    restart: unless-stopped
+
+  # Admin Panel
+  admin:
+    build:
+      context: ./admin
+      dockerfile: Dockerfile
+    container_name: master_sps_admin
+    environment:
+      REACT_APP_API_URL: /api
+      REACT_APP_BACKEND_URL: http://master_sps_backend:3001
+    ports:
+      - "3002:3000"
+    depends_on:
+      - backend
+    networks:
+      - master_sps_network
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
+
+networks:
+  master_sps_network:
+    driver: bridge
