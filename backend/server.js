@@ -14,7 +14,18 @@ app.use(helmet({
   crossOriginResourcePolicy: false
 }));
 app.use(cors({
-  origin: '*',
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3002', 
+    'http://95.163.229.90',
+    'http://95.163.229.90:3000',
+    'http://95.163.229.90:3002',
+    'http://95.163.229.90:3001',
+    'https://95.163.229.90',
+    'https://95.163.229.90:3000',
+    'https://95.163.229.90:3002',
+    'https://95.163.229.90:3001'
+  ],
   credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization']
