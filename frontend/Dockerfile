@@ -1,5 +1,5 @@
 # Frontend Dockerfile
-FROM node:18-alpine
+FROM node:18-alpine as builder
 
 WORKDIR /app
 
@@ -15,8 +15,16 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Install serve to run the app
+# Production stage
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Install serve
 RUN npm install -g serve
+
+# Copy built app from builder stage
+COPY --from=builder /app/build ./build
 
 # Expose port
 EXPOSE 3000
