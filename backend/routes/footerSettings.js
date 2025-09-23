@@ -1,28 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql2/promise');
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'mysql',
-  port: process.env.DB_PORT || 3306,
-  database: process.env.DB_NAME || 'master_sps',
-  user: process.env.DB_USER || 'master_user',
-  password: process.env.DB_PASSWORD || 'master_password',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+const pool = require('../server'); // Используем pool из server.js
 
 // GET footer settings
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query(`
+    const [rows] = await pool.execute(`
       SELECT * FROM footer_settings 
       ORDER BY id ASC 
       LIMIT 1
     `);
     
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       // Return default settings if none exist
       const defaultSettings = {
         id: 1,
@@ -47,24 +36,15 @@ router.get('/', async (req, res) => {
     
     res.json({
       success: true,
-      data: result.rows[0]
-    waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+      data: rows[0]
+    });
   } catch (error) {
     console.error('Error fetching footer settings:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to fetch footer settings'
-    waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+    });
   }
-waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
 });
 
 // PUT update footer settings
@@ -83,63 +63,66 @@ router.put('/', async (req, res) => {
     } = req.body;
     
     // Check if settings exist
-    const existingSettings = await pool.query(`
+    const [existingSettings] = await pool.execute(`
       SELECT id FROM footer_settings ORDER BY id ASC LIMIT 1
     `);
     
     let result;
-    if (existingSettings.rows.length === 0) {
+    if (existingSettings.length === 0) {
       // Create new settings
-      result = await pool.query(`
+      const [insertResult] = await pool.execute(`
         INSERT INTO footer_settings (
           company_name, company_subtitle, contact_phone, contact_email, 
           contact_address, working_hours, form_title, form_description, 
           privacy_policy_url, created_at, updated_at
         )
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-        RETURNING *
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `, [
         company_name, company_subtitle, contact_phone, contact_email,
         contact_address, working_hours, form_title, form_description,
         privacy_policy_url
       ]);
+      
+      // Get the inserted record
+      const [newRecord] = await pool.execute(`
+        SELECT * FROM footer_settings WHERE id = ?
+      `, [insertResult.insertId]);
+      
+      result = newRecord[0];
     } else {
       // Update existing settings
-      result = await pool.query(`
+      await pool.execute(`
         UPDATE footer_settings 
-        SET company_name = $1, company_subtitle = $2, contact_phone = $3, 
-            contact_email = $4, contact_address = $5, working_hours = $6,
-            form_title = $7, form_description = $8, privacy_policy_url = $9,
-            updated_at = NOW()
-        WHERE id = $10
-        RETURNING *
+        SET company_name = ?, company_subtitle = ?, contact_phone = ?, 
+            contact_email = ?, contact_address = ?, working_hours = ?,
+            form_title = ?, form_description = ?, privacy_policy_url = ?,
+            updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
       `, [
         company_name, company_subtitle, contact_phone, contact_email,
         contact_address, working_hours, form_title, form_description,
-        privacy_policy_url, existingSettings.rows[0].id
+        privacy_policy_url, existingSettings[0].id
       ]);
+      
+      // Get the updated record
+      const [updatedRecord] = await pool.execute(`
+        SELECT * FROM footer_settings WHERE id = ?
+      `, [existingSettings[0].id]);
+      
+      result = updatedRecord[0];
     }
     
     res.json({
       success: true,
-      data: result.rows[0]
-    waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+      data: result
+    });
   } catch (error) {
     console.error('Error updating footer settings:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to update footer settings'
-    waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+    });
   }
-waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
 });
 
 module.exports = router;

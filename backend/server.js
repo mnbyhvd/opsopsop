@@ -77,7 +77,7 @@ app.get('/health', (req, res) => {
 // API routes will be added here
 app.use('/api/navigation', require('./routes/navigation'));
 app.use('/api/footer', require('./routes/footer'));
-// app.use('/api/footer-settings', require('./routes/footerSettings'));
+app.use('/api/footer-settings', require('./routes/footerSettings'));
 app.use('/api/requisites', require('./routes/requisites'));
 app.use('/api/scroll-section', require('./routes/scrollSection'));
 app.use('/api/about', require('./routes/about'));
@@ -88,9 +88,43 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/videos', require('./routes/videos'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/upload', require('./routes/upload'));
-// app.use('/api/export', require('./routes/export'));
+app.use('/api/export', require('./routes/export'));
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/product-modals', require('./routes/product_modals'));
+
+// Добавляем недостающие routes для админки
+app.get('/api/leads/stats/overview', async (req, res) => {
+  try {
+    const [totalLeads] = await pool.execute('SELECT COUNT(*) as total FROM leads');
+    const [newLeads] = await pool.execute('SELECT COUNT(*) as new FROM leads WHERE status = ?', ['new']);
+    const [inProgressLeads] = await pool.execute('SELECT COUNT(*) as in_progress FROM leads WHERE status = ?', ['in_progress']);
+    const [completedLeads] = await pool.execute('SELECT COUNT(*) as completed FROM leads WHERE status = ?', ['completed']);
+    
+    res.json({
+      success: true,
+      data: {
+        total: totalLeads[0].total,
+        new: newLeads[0].new,
+        in_progress: inProgressLeads[0].in_progress,
+        completed: completedLeads[0].completed
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching leads stats:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch leads stats' });
+  }
+});
+
+// Добавляем route для настроек видео
+app.get('/api/videos/settings', async (req, res) => {
+  try {
+    const [rows] = await pool.execute('SELECT * FROM videos WHERE is_active = true ORDER BY sort_order ASC');
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Error fetching video settings:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch video settings' });
+  }
+});
 
 // Статические файлы для загрузок с CORS заголовками
 app.use('/uploads', (req, res, next) => {

@@ -283,6 +283,60 @@ const ProductsSection: React.FC = () => {
     setHoverImage(null);
   }, []);
 
+  // Обработчик клика по изображению
+  const handleImageClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!maskLoaded || !canvasRef.current) return;
+
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const color = getPixelColor(x, y);
+    if (!color) return;
+
+    const area = getAreaByColor(color);
+    if (!area) return;
+
+    console.log('Clicked on area:', area.id, 'with color:', color);
+
+    // Находим модальные окна для этой области
+    const areaModals = modals.filter(modal => modal.area_id === area.id);
+    
+    if (areaModals.length > 0) {
+      setActiveArea(area);
+      setActiveModals(areaModals);
+      setIsModalOpen(true);
+      console.log('Opening modals for area:', area.id, 'modals:', areaModals);
+    } else {
+      console.log('No modals found for area:', area.id);
+    }
+  }, [maskLoaded, getPixelColor, getAreaByColor, modals]);
+
+  // Обработчик наведения мыши на изображение
+  const handleImageHover = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    if (!maskLoaded || !canvasRef.current) return;
+
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const color = getPixelColor(x, y);
+    if (!color) return;
+
+    const area = getAreaByColor(color);
+    if (!area || area.id === hoveredArea) return;
+
+    console.log('Hovering over area:', area.id, 'with color:', color);
+    setHoveredArea(area.id);
+    setHoverImage(area.hoverImage);
+  }, [maskLoaded, getPixelColor, getAreaByColor, hoveredArea]);
+
+  // Обработчик ухода мыши с изображения
+  const handleImageLeave = useCallback(() => {
+    setHoveredArea(null);
+    setHoverImage(null);
+  }, []);
+
   // Закрытие модального окна при клике вне его
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -299,6 +353,26 @@ const ProductsSection: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [isModalOpen, closeModal]);
+
+  // Отрисовка маски на canvas для определения областей
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const maskImg = maskImageRef.current;
+    
+    if (!canvas || !maskImg) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Устанавливаем размеры canvas как у изображения
+    canvas.width = maskImg.naturalWidth;
+    canvas.height = maskImg.naturalHeight;
+
+    // Отрисовываем маску на canvas
+    ctx.drawImage(maskImg, 0, 0);
+    
+    console.log('Mask drawn on canvas, size:', canvas.width, 'x', canvas.height);
+  }, [maskLoaded]);
 
   return (
     <section className="py-8 relative" style={{ marginTop: '-100px' }}>

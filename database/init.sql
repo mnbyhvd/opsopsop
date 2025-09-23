@@ -217,12 +217,10 @@ CREATE TABLE IF NOT EXISTS requisites (
 
 -- Insert sample navigation data
 INSERT IGNORE INTO navigation_menu (title, url, sort_order, parent_id, is_active) VALUES
-('О системе', '/about', 1, NULL, true),
+('Главная', '/', 1, NULL, true),
 ('Продукция', '/products', 2, NULL, true),
 ('Видео-презентации', '/videos', 3, NULL, true),
-('Документы', '/docs', 4, NULL, true),
-('Сертификаты', '/certificates', 5, NULL, true),
-('Поддержка', '/support', 6, NULL, true);
+('Реквизиты', '/requisites', 4, NULL, true);
 
 -- Insert sample about section data
 INSERT IGNORE INTO about_section (title, description, image_url, sort_order, is_active) VALUES
