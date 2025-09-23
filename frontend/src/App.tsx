@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
+import LoadingScreen from './components/LoadingScreen';
 import Home from './pages/Home';
 import About from './pages/About';
 import Products from './pages/Products';
@@ -14,6 +15,16 @@ import Support from './pages/Support';
 import Buy from './pages/Buy';
 
 const App: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleLoadingComplete = () => {
+    setIsLoading(false);
+  };
+
+  if (isLoading) {
+    return <LoadingScreen onLoadingComplete={handleLoadingComplete} />;
+  }
+
   return (
     <Router>
       <div className="min-h-screen flex flex-col">
