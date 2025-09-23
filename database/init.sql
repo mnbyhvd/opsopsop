@@ -222,8 +222,7 @@ INSERT IGNORE INTO navigation_menu (title, url, sort_order, parent_id, is_active
 ('Видео-презентации', '/videos', 3, NULL, true),
 ('Документы', '/docs', 4, NULL, true),
 ('Сертификаты', '/certificates', 5, NULL, true),
-('Поддержка', '/support', 6, NULL, true),
-('Купить', '/buy', 7, NULL, true);
+('Поддержка', '/support', 6, NULL, true);
 
 -- Insert sample about section data
 INSERT IGNORE INTO about_section (title, description, image_url, sort_order, is_active) VALUES

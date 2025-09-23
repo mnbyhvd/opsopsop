@@ -37,7 +37,7 @@ app.use(express.urlencoded({ extended: true }));
 // Database connection
 const mysql = require('mysql2/promise');
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'localhost',
+  host: process.env.DB_HOST || 'mysql',
   port: process.env.DB_PORT || 3306,
   database: process.env.DB_NAME || 'master_sps_db',
   user: process.env.DB_USER || 'master_sps_user',

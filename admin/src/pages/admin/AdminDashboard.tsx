@@ -13,7 +13,11 @@ import ScrollSectionAdmin from './ScrollSectionAdmin';
 
 type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section';
 
-const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  onLogout: () => void;
+}
+
+const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [activeSection, setActiveSection] = useState<AdminSection>('hero');
 
   const sections = [
@@ -112,6 +116,12 @@ const AdminDashboard: React.FC = () => {
               >
                 {sections.find(s => s.id === activeSection)?.name}
               </div>
+              <button
+                onClick={onLogout}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 hover:bg-red-700 rounded-md transition-colors"
+              >
+                Выйти
+              </button>
               <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
                 <span className="text-xs font-medium">A</span>
               </div>
