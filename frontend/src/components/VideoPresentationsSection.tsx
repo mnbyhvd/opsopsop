@@ -67,7 +67,7 @@ const VideoPresentationsSection: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/videos/settings');
+      const response = await fetch('/api/videos');
       if (response.ok) {
         const data = await response.json();
         setSettings(data.data);

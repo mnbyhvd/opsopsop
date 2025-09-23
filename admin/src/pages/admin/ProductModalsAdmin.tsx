@@ -1,5 +1,6 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
+import API_ENDPOINTS from '../../config/api';
 
 interface ProductModal {
   id: number;
@@ -47,7 +48,7 @@ const ProductModalsAdmin: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch(`/api/product-modals/${selectedArea}`);
+      const response = await fetch(`${API_ENDPOINTS.PRODUCT_MODALS}/${selectedArea}`);
       if (response.ok) {
         const data = await response.json();
         setModals(data.data || []);

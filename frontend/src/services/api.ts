@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
+import API_ENDPOINTS from '../config/api';
 
 export interface AboutItem {
   id: number;
@@ -59,7 +59,7 @@ export interface FooterItem {
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = endpoint.startsWith('http') ? endpoint : `${API_ENDPOINTS.HERO.replace('/api/hero', '')}${endpoint}`;
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ class ApiService {
 
   // About Section API
   async getAboutItems(): Promise<{ success: boolean; data: AboutItem[] }> {
-    return this.request<{ success: boolean; data: AboutItem[] }>('/about');
+    return this.request<{ success: boolean; data: AboutItem[] }>(API_ENDPOINTS.ABOUT);
   }
 
   async createAboutItem(item: Omit<AboutItem, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; data: AboutItem }> {
@@ -110,43 +110,43 @@ class ApiService {
 
   // Technical Specs API
   async getTechnicalSpecs(): Promise<{ success: boolean; data: TechnicalSpec[] }> {
-    return this.request<{ success: boolean; data: TechnicalSpec[] }>('/technical-specs');
+    return this.request<{ success: boolean; data: TechnicalSpec[] }>('/api/technical-specs');
   }
 
   async createTechnicalSpec(spec: Omit<TechnicalSpec, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; data: TechnicalSpec }> {
-    return this.request<{ success: boolean; data: TechnicalSpec }>('/technical-specs', {
+    return this.request<{ success: boolean; data: TechnicalSpec }>('/api/technical-specs', {
       method: 'POST',
       body: JSON.stringify(spec),
     });
   }
 
   async updateTechnicalSpec(id: number, spec: Partial<TechnicalSpec>): Promise<{ success: boolean; data: TechnicalSpec }> {
-    return this.request<{ success: boolean; data: TechnicalSpec }>(`/technical-specs/${id}`, {
+    return this.request<{ success: boolean; data: TechnicalSpec }>(`/api/technical-specs/${id}`, {
       method: 'PUT',
       body: JSON.stringify(spec),
     });
   }
 
   async deleteTechnicalSpec(id: number): Promise<{ success: boolean; message: string }> {
-    return this.request<{ success: boolean; message: string }>(`/technical-specs/${id}`, {
+    return this.request<{ success: boolean; message: string }>(`/api/technical-specs/${id}`, {
       method: 'DELETE',
     });
   }
 
   // Hero Section API
   async getHeroSection(): Promise<{ success: boolean; data: HeroSection | null }> {
-    return this.request<{ success: boolean; data: HeroSection | null }>('/hero');
+    return this.request<{ success: boolean; data: HeroSection | null }>('/api/hero');
   }
 
   async createHeroSection(hero: Omit<HeroSection, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; data: HeroSection }> {
-    return this.request<{ success: boolean; data: HeroSection }>('/hero', {
+    return this.request<{ success: boolean; data: HeroSection }>('/api/hero', {
       method: 'POST',
       body: JSON.stringify(hero),
     });
   }
 
   async updateHeroSection(id: number, hero: Partial<HeroSection>): Promise<{ success: boolean; data: HeroSection }> {
-    return this.request<{ success: boolean; data: HeroSection }>(`/hero/${id}`, {
+    return this.request<{ success: boolean; data: HeroSection }>(`/api/hero/${id}`, {
       method: 'PUT',
       body: JSON.stringify(hero),
     });
@@ -154,11 +154,11 @@ class ApiService {
 
   // Navigation API
   async getNavigationItems(): Promise<{ success: boolean; data: NavigationItem[] }> {
-    return this.request<{ success: boolean; data: NavigationItem[] }>('/navigation');
+    return this.request<{ success: boolean; data: NavigationItem[] }>('/api/navigation');
   }
 
   async createNavigationItem(item: Omit<NavigationItem, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; data: NavigationItem }> {
-    return this.request<{ success: boolean; data: NavigationItem }>('/navigation', {
+    return this.request<{ success: boolean; data: NavigationItem }>('/api/navigation', {
       method: 'POST',
       body: JSON.stringify(item),
     });
@@ -179,11 +179,11 @@ class ApiService {
 
   // Footer API
   async getFooterItems(): Promise<{ success: boolean; data: FooterItem[] }> {
-    return this.request<{ success: boolean; data: FooterItem[] }>('/footer');
+    return this.request<{ success: boolean; data: FooterItem[] }>('/api/footer');
   }
 
   async createFooterItem(item: Omit<FooterItem, 'id' | 'created_at' | 'updated_at'>): Promise<{ success: boolean; data: FooterItem }> {
-    return this.request<{ success: boolean; data: FooterItem }>('/footer', {
+    return this.request<{ success: boolean; data: FooterItem }>('/api/footer', {
       method: 'POST',
       body: JSON.stringify(item),
     });

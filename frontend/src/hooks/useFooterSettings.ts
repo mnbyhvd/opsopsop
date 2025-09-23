@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_ENDPOINTS from '../config/api';
 
 export interface FooterSettings {
   id: number;
@@ -40,7 +41,7 @@ export const useFooterSettings = () => {
     const fetchSettings = async () => {
       try {
         setLoading(true);
-        const response = await fetch('/api/footer-settings');
+        const response = await fetch(API_ENDPOINTS.FOOTER_SETTINGS);
         if (response.ok) {
           const data = await response.json();
           if (data.data) {

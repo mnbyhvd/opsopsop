@@ -53,7 +53,7 @@ const ProductsSection: React.FC = () => {
   // Загрузка настроек секции
   const fetchSettings = useCallback(async () => {
     try {
-      const response = await fetch('/api/products/settings');
+      const response = await fetch('/api/products');
       if (response.ok) {
         const data = await response.json();
         setSettings(data.data);
@@ -283,59 +283,8 @@ const ProductsSection: React.FC = () => {
     setHoverImage(null);
   }, []);
 
-  // Обработчик клика по изображению
-  const handleImageClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!maskLoaded || !canvasRef.current) return;
 
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
 
-    const color = getPixelColor(x, y);
-    if (!color) return;
-
-    const area = getAreaByColor(color);
-    if (!area) return;
-
-    console.log('Clicked on area:', area.id, 'with color:', color);
-
-    // Находим модальные окна для этой области
-    const areaModals = modals.filter(modal => modal.area_id === area.id);
-    
-    if (areaModals.length > 0) {
-      setActiveArea(area);
-      setActiveModals(areaModals);
-      setIsModalOpen(true);
-      console.log('Opening modals for area:', area.id, 'modals:', areaModals);
-    } else {
-      console.log('No modals found for area:', area.id);
-    }
-  }, [maskLoaded, getPixelColor, getAreaByColor, modals]);
-
-  // Обработчик наведения мыши на изображение
-  const handleImageHover = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    if (!maskLoaded || !canvasRef.current) return;
-
-    const rect = canvasRef.current.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    const color = getPixelColor(x, y);
-    if (!color) return;
-
-    const area = getAreaByColor(color);
-    if (!area || area.id === hoveredArea) return;
-
-    console.log('Hovering over area:', area.id, 'with color:', color);
-    setHoveredArea(area.id);
-    setHoverImage(area.hoverImage);
-  }, [maskLoaded, getPixelColor, getAreaByColor, hoveredArea]);
-
-  // Обработчик ухода мыши с изображения
-  const handleImageLeave = useCallback(() => {
-    setHoveredArea(null);
-    setHoverImage(null);
-  }, []);
 
   // Закрытие модального окна при клике вне его
   useEffect(() => {

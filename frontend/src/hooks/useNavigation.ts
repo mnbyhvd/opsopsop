@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import API_ENDPOINTS from '../config/api';
 import { navigationAPI, type NavigationItem } from '../services/api';
 
 // Re-export the interface from api service
@@ -54,7 +55,7 @@ export const useNavigation = () => {
       try {
         setLoading(true);
         // Add cache busting to ensure fresh data
-        const response = await fetch('/api/navigation?' + Date.now(), {
+        const response = await fetch(API_ENDPOINTS.NAVIGATION + '?' + Date.now(), {
           method: 'GET',
           headers: {
             'Cache-Control': 'no-cache',

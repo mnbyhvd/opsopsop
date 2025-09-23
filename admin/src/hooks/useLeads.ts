@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import API_ENDPOINTS from '../config/api';
 
 export interface Lead {
   id: number;
@@ -72,7 +73,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
         }
       });
 
-      const response = await fetch(`/api/leads?${queryParams}`);
+      const response = await fetch(`${API_ENDPOINTS.LEADS}?${queryParams}`);
       
       if (!response.ok) {
         throw new Error('Ошибка загрузки заявок');
@@ -81,8 +82,25 @@ export const useLeads = (filters: LeadFilters = {}) => {
       const data = await response.json();
       
       if (data.success) {
-        setLeads(data.data.leads);
-        setPagination(data.data.pagination);
+        // Если data.data - массив, то это простой формат
+        if (Array.isArray(data.data)) {
+          setLeads(data.data);
+          setPagination({
+            page: 1,
+            limit: data.data.length,
+            total: data.data.length,
+            pages: 1
+          });
+        } else {
+          // Если data.data - объект с leads и pagination
+          setLeads(data.data.leads || []);
+          setPagination(data.data.pagination || {
+            page: 1,
+            limit: 10,
+            total: 0,
+            pages: 0
+          });
+        }
       } else {
         throw new Error(data.message || 'Ошибка загрузки заявок');
       }
@@ -96,7 +114,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/leads/stats/overview');
+      const response = await fetch(API_ENDPOINTS.LEADS_STATS);
       
       if (!response.ok) {
         throw new Error('Ошибка загрузки статистики');
@@ -114,7 +132,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
 
   const createLead = async (leadData: Partial<Lead>) => {
     try {
-      const response = await fetch('/api/leads', {
+      const response = await fetch(API_ENDPOINTS.LEADS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +163,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
 
   const updateLead = async (id: number, leadData: Partial<Lead>) => {
     try {
-      const response = await fetch(`/api/leads/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.LEADS}/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +194,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
 
   const deleteLead = async (id: number) => {
     try {
-      const response = await fetch(`/api/leads/${id}`, {
+      const response = await fetch(`${API_ENDPOINTS.LEADS}/${id}`, {
         method: 'DELETE',
       });
 
@@ -203,7 +221,7 @@ export const useLeads = (filters: LeadFilters = {}) => {
 
   const getLead = async (id: number): Promise<Lead | null> => {
     try {
-      const response = await fetch(`/api/leads/${id}`);
+      const response = await fetch(`${API_ENDPOINTS.LEADS}/${id}`);
       
       if (!response.ok) {
         throw new Error('Ошибка загрузки заявки');

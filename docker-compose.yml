@@ -58,7 +58,7 @@ services:
       dockerfile: Dockerfile
     container_name: master_sps_frontend
     environment:
-      REACT_APP_API_URL: /api
+      REACT_APP_API_URL: http://localhost:3001
     ports:
       - "3000:3000"
     depends_on:
@@ -74,7 +74,7 @@ services:
       dockerfile: Dockerfile
     container_name: master_sps_admin
     environment:
-      REACT_APP_API_URL: /api
+      REACT_APP_API_URL: http://localhost:3001
       REACT_APP_BACKEND_URL: http://master_sps_backend:3001
     ports:
       - "3002:3000"

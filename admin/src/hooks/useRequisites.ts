@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import API_ENDPOINTS from '../config/api';
 
 export interface RequisitesData {
   id: number;
@@ -32,7 +33,7 @@ export const useRequisites = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/requisites');
+              const response = await fetch(API_ENDPOINTS.REQUISITES);
       
       if (!response.ok) {
         throw new Error('Ошибка загрузки реквизитов');
@@ -59,7 +60,7 @@ export const useRequisites = () => {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/requisites/1', {
+      const response = await fetch(`${API_ENDPOINTS.REQUISITES}/1`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

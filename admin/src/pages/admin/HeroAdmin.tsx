@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_ENDPOINTS from '../../config/api';
 
 interface HeroSettings {
   id: number;
@@ -25,7 +26,7 @@ const HeroAdmin: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch('/api/hero');
+      const response = await fetch(API_ENDPOINTS.HERO);
       if (response.ok) {
         const data = await response.json();
         if (data.data) {
@@ -44,7 +45,7 @@ const HeroAdmin: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await fetch('/api/hero', {
+      const response = await fetch(API_ENDPOINTS.HERO, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
