@@ -49,7 +49,7 @@ services:
     container_name: master_sps_frontend
     restart: unless-stopped
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL:-https://yourdomain.com/api}
+      REACT_APP_API_URL: ${REACT_APP_API_URL:-https://sps-master.ru/api}
     networks:
       - master_sps_network
 
