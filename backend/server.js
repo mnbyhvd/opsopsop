@@ -24,7 +24,9 @@ app.use(cors({
     'https://95.163.229.90',
     'https://95.163.229.90:3000',
     'https://95.163.229.90:3002',
-    'https://95.163.229.90:3001'
+    'https://95.163.229.90:3001',
+    'https://sps-master.ru',
+    'https://www.sps-master.ru'
   ],
   credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
