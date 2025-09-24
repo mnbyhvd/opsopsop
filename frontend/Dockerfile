@@ -6,13 +6,13 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with cache optimization
+RUN npm ci --silent
 
 # Copy all source files
 COPY . .
 
-# Build the app
+# Build the app with optimizations
 RUN npm run build
 
 # Production stage with Nginx

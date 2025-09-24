@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with cache optimization
+RUN npm ci --silent
 
 # Copy all source files
 COPY . .
