@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://sps-master.ru';
 
 export const API_ENDPOINTS = {
   HERO: `${API_BASE_URL}/api/hero`,

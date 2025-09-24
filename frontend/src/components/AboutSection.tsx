@@ -271,21 +271,20 @@ const AboutSection: React.FC = () => {
               >
                 {item.image_url ? (
                   <img 
-                    src={`/api${item.image_url}`} 
+                    src={item.image_url.startsWith('http') ? item.image_url : `/api${item.image_url}`} 
                     alt={item.title}
                     className="max-w-full max-h-full object-contain rounded-lg"
                     onLoad={() => {
                       console.log('Изображение загружено:', item.image_url);
                     }}
                     onError={(e) => {
-                      console.error('Ошибка загрузки изображения:', `/api${item.image_url}`);
-                      console.error('Ошибка:', e);
+                      console.error('Ошибка загрузки изображения:', item.image_url);
                       e.currentTarget.style.display = 'none';
                     }}
                   />
                 ) : (
                   <div 
-                    className="w-full h-full flex items-center justify-center text-gray-400"
+                    className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 rounded-lg"
                   >
                     <span className="text-lg">Изображение {index + 1}</span>
                   </div>
