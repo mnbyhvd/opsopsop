@@ -116,10 +116,4 @@ uploads/
 deploy/
 temp-deploy/
 
-# Build scripts
-build-*.sh
-deploy-*.sh
-check-*.sh
-fix-*.sh
-organize-*.sh
-update-*.sh
+
