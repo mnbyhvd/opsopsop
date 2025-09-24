@@ -4,9 +4,9 @@ const mysql = require('mysql2/promise');
 
 // Создаем отдельное подключение для этого роута
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'mysql',
+  host: process.env.DB_HOST || 'opsopsop-db',
   port: process.env.DB_PORT || 3306,
-  database: process.env.DB_NAME || 'master_sps_db',
+  database: process.env.DB_NAME || 'master_sps',
   user: process.env.DB_USER || 'master_sps_user',
   password: process.env.DB_PASSWORD || 'MasterSPS2024!',
   waitForConnections: true,
