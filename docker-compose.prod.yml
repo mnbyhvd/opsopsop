@@ -1,74 +1,71 @@
 version: '3.8'
 
 services:
-  # MySQL Database
-  mysql:
+  db:
     image: mysql:8.0
-    container_name: master_sps_db
-    restart: unless-stopped
+    container_name: opsopsop-db
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-MasterSPS2024!}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-master_sps_db}
-      MYSQL_USER: ${MYSQL_USER:-master_sps_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-MasterSPS2024!}
+      MYSQL_ROOT_PASSWORD: MasterSPS2024!
+      MYSQL_DATABASE: master_sps
+      MYSQL_USER: master_sps_user
+      MYSQL_PASSWORD: MasterSPS2024!
     volumes:
       - mysql_data:/var/lib/mysql
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-MasterSPS2024!}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pMasterSPS2024!"]
       timeout: 20s
       retries: 10
     networks:
       - master_sps_network
 
-  # Backend API
   backend:
     build: ./backend
-    container_name: master_sps_backend
-    restart: unless-stopped
+    container_name: opsopsop-backend
     environment:
       NODE_ENV: production
-      PORT: 3001
-      DB_HOST: mysql
+      DB_HOST: opsopsop-db
       DB_PORT: 3306
-      DB_NAME: ${MYSQL_DATABASE:-master_sps_db}
-      DB_USER: ${MYSQL_USER:-master_sps_user}
-      DB_PASSWORD: ${MYSQL_PASSWORD:-MasterSPS2024!}
+      DB_NAME: master_sps
+      DB_USER: master_sps_user
+      DB_PASSWORD: MasterSPS2024!
+      JWT_SECRET: your-super-secret-jwt-key-here
+      PORT: 3001
+    ports:
+      - "3001:3001"
     volumes:
       - ./backend/uploads:/app/uploads
     depends_on:
-      mysql:
+      db:
         condition: service_healthy
     networks:
       - master_sps_network
 
-  # Frontend
   frontend:
     build: ./frontend
-    container_name: master_sps_frontend
-    restart: unless-stopped
+    container_name: opsopsop-frontend
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL:-https://sps-master.ru/api}
+      REACT_APP_API_URL: https://sps-master.ru/api
+    ports:
+      - "3000:3000"
     networks:
       - master_sps_network
 
-  # Admin Panel
   admin:
     build: ./admin
-    container_name: master_sps_admin
-    restart: unless-stopped
+    container_name: opsopsop-admin
     environment:
-      REACT_APP_API_URL: ${REACT_APP_API_URL:-https://yourdomain.com/api}
-      REACT_APP_BACKEND_URL: http://master_sps_backend:3001
+      REACT_APP_API_URL: https://sps-master.ru/api
+    ports:
+      - "3000:3000"
     networks:
       - master_sps_network
 
-  # Nginx Reverse Proxy
   nginx:
     image: nginx:alpine
-    container_name: master_sps_nginx
-    restart: unless-stopped
+    container_name: opsopsop-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -76,11 +73,18 @@ services:
       - ./nginx.prod.conf:/etc/nginx/nginx.conf
       - ./ssl:/etc/nginx/ssl
     depends_on:
+      - backend
       - frontend
       - admin
-      - backend
     networks:
       - master_sps_network
+
+  certbot:
+    image: certbot/certbot
+    container_name: opsopsop-certbot
+    volumes:
+      - ./ssl:/etc/letsencrypt
+    command: certonly --webroot --webroot-path=/var/www/certbot --email vikulindmitrii@yandex.ru --agree-tos --no-eff-email -d sps-master.ru
 
 volumes:
   mysql_data:
