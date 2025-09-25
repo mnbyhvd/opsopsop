@@ -4,6 +4,7 @@ import API_ENDPOINTS from '../../config/api';
 interface HeroSettings {
   id: number;
   title: string;
+  subtitle: string;
   description: string;
   created_at: string;
   updated_at: string;
@@ -13,7 +14,8 @@ const HeroAdmin: React.FC = () => {
   const [settings, setSettings] = useState<HeroSettings>({
     id: 1,
     title: 'АПС МАСТЕР',
-    description: 'Интеллектуальная система пожарной сигнализации нового поколения',
+    subtitle: 'Интеллектуальная система пожарной сигнализации',
+    description: 'Новое поколение систем пожарной безопасности с цифровым протоколом M105',
     created_at: '',
     updated_at: ''
   });
@@ -52,6 +54,7 @@ const HeroAdmin: React.FC = () => {
         },
         body: JSON.stringify({
           title: settings.title,
+          subtitle: settings.subtitle,
           description: settings.description
         }),
       });
@@ -128,6 +131,21 @@ const HeroAdmin: React.FC = () => {
                 type="text"
                 value={settings.title}
                 onChange={(e) => handleInputChange('title', e.target.value)}
+                className="admin-input"
+              />
+            </div>
+            
+            <div>
+              <label 
+                className="block text-sm font-medium mb-2"
+                style={{ color: '#B8B8B8' }}
+              >
+                Подзаголовок
+              </label>
+              <input
+                type="text"
+                value={settings.subtitle}
+                onChange={(e) => handleInputChange('subtitle', e.target.value)}
                 className="admin-input"
               />
             </div>

@@ -116,4 +116,54 @@ router.put('/', async (req, res) => {
   }
 });
 
+// PUT обновить реквизиты по ID
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
+      phone, email, website, bank_name, bank_account, correspondent_account,
+      bik, director_name, director_position
+    } = req.body;
+
+    const [result] = await pool.execute(`
+      UPDATE requisites
+      SET
+        company_name = ?,
+        legal_name = ?,
+        inn = ?,
+        kpp = ?,
+        ogrn = ?,
+        legal_address = ?,
+        actual_address = ?,
+        phone = ?,
+        email = ?,
+        website = ?,
+        bank_name = ?,
+        bank_account = ?,
+        correspondent_account = ?,
+        bik = ?,
+        director_name = ?,
+        director_position = ?,
+        updated_at = NOW()
+      WHERE id = ?
+    `, [
+      company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
+      phone, email, website, bank_name, bank_account, correspondent_account,
+      bik, director_name, director_position, id
+    ]);
+
+    if (result.affectedRows > 0) {
+      // Получаем обновленные реквизиты
+      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [id]);
+      res.json({ success: true, data: rows[0] });
+    } else {
+      res.status(404).json({ success: false, error: 'Реквизиты не найдены' });
+    }
+  } catch (error) {
+    console.error('Error updating requisites:', error);
+    res.status(500).json({ success: false, error: 'Failed to update requisites' });
+  }
+});
+
 module.exports = router;

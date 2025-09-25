@@ -271,7 +271,7 @@ const AboutSection: React.FC = () => {
               >
                 {item.image_url ? (
                   <img 
-                    src={item.image_url.startsWith('http') ? item.image_url : `/api${item.image_url}`} 
+                    src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
                     alt={item.title}
                     className="max-w-full max-h-full object-contain rounded-lg"
                     onLoad={() => {

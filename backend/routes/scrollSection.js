@@ -98,26 +98,38 @@ router.put('/', async (req, res) => {
       text_blocks 
     } = req.body;
     
-    // Обновляем основную информацию о секции
-    const [sectionResult] = await connection.execute(`
-      UPDATE scroll_section 
-      SET 
-        section_title = ?,
-        section_subtitle = ?,
-        video_url = ?,
-        updated_at = CURRENT_TIMESTAMP
-      WHERE id = (SELECT id FROM scroll_section ORDER BY id DESC LIMIT 1)
-    `, [section_title, section_subtitle, video_url]);
-    
-    if (sectionResult.affectedRows === 0) {
-      throw new Error('Scroll section not found');
-    }
-    
-    // Получаем ID секции
-    const [sectionRows] = await connection.execute(`
+    // Проверяем, есть ли записи в таблице
+    const [existingRows] = await connection.execute(`
       SELECT id FROM scroll_section ORDER BY id DESC LIMIT 1
     `);
-    const sectionId = sectionRows[0].id;
+    
+    let sectionId;
+    if (existingRows.length === 0) {
+      // Создаем новую запись
+      const [insertResult] = await connection.execute(`
+        INSERT INTO scroll_section (section_title, section_subtitle, video_url, created_at, updated_at)
+        VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `, [section_title, section_subtitle, video_url]);
+      sectionId = insertResult.insertId;
+    } else {
+      // Обновляем существующую запись
+      const [sectionResult] = await connection.execute(`
+        UPDATE scroll_section 
+        SET 
+          section_title = ?,
+          section_subtitle = ?,
+          video_url = ?,
+          updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `, [section_title, section_subtitle, video_url, existingRows[0].id]);
+      
+      if (sectionResult.affectedRows === 0) {
+        throw new Error('Failed to update scroll section');
+      }
+      sectionId = existingRows[0].id;
+    }
+    
+    // sectionId уже получен выше
     
     // Удаляем старые текстовые блоки
     await connection.execute(`

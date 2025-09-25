@@ -16,6 +16,8 @@ const pool = mysql.createPool({
 // GET /api/leads - получить все заявки
 router.get('/', async (req, res) => {
   try {
+    console.log('GET /api/leads - запрос получен');
+    
     const [rows] = await pool.execute(`
       SELECT 
         id,
@@ -30,6 +32,8 @@ router.get('/', async (req, res) => {
       FROM leads 
       ORDER BY created_at DESC
     `);
+    
+    console.log(`GET /api/leads - найдено ${rows.length} заявок`);
     
     res.json({
       success: true,
@@ -87,10 +91,13 @@ router.get('/:id', async (req, res) => {
 // POST /api/leads - создать новую заявку
 router.post('/', async (req, res) => {
   try {
+    console.log('POST /api/leads - запрос получен:', req.body);
+    
     const { name, email, phone, company, message } = req.body;
     
     // Валидация обязательных полей
     if (!name || !email || !phone) {
+      console.log('POST /api/leads - ошибка валидации: отсутствуют обязательные поля');
       return res.status(400).json({
         success: false,
         error: 'Name, email and phone are required'
@@ -101,6 +108,8 @@ router.post('/', async (req, res) => {
       INSERT INTO leads (name, email, phone, company, message, status)
       VALUES (?, ?, ?, ?, ?, 'new')
     `, [name, email, phone, company || null, message || null]);
+    
+    console.log(`POST /api/leads - заявка создана с ID: ${result.insertId}`);
     
     const [newLead] = await pool.execute(`
       SELECT * FROM leads WHERE id = ?
