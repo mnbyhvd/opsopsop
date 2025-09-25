@@ -61,51 +61,54 @@ router.put('/', async (req, res) => {
       bik, director_name, director_position
     } = req.body;
 
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       UPDATE requisites
       SET
-        company_name = $1,
-        legal_name = $2,
-        inn = $3,
-        kpp = $4,
-        ogrn = $5,
-        legal_address = $6,
-        actual_address = $7,
-        phone = $8,
-        email = $9,
-        website = $10,
-        bank_name = $11,
-        bank_account = $12,
-        correspondent_account = $13,
-        bik = $14,
-        director_name = $15,
-        director_position = $16,
+        company_name = ?,
+        legal_name = ?,
+        inn = ?,
+        kpp = ?,
+        ogrn = ?,
+        legal_address = ?,
+        actual_address = ?,
+        phone = ?,
+        email = ?,
+        website = ?,
+        bank_name = ?,
+        bank_account = ?,
+        correspondent_account = ?,
+        bik = ?,
+        director_name = ?,
+        director_position = ?,
         updated_at = NOW()
       WHERE id = 1
-      RETURNING *;
     `, [
       company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
       phone, email, website, bank_name, bank_account, correspondent_account,
       bik, director_name, director_position
     ]);
 
-    if (result.rows.length > 0) {
-      res.json({ success: true, data: result.rows[0] });
+    if (result.affectedRows > 0) {
+      // Получаем обновленные реквизиты
+      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = 1');
+      res.json({ success: true, data: rows[0] });
     } else {
       // Если реквизитов нет, создаем их
-      const insertResult = await pool.query(`
+      const [insertResult] = await pool.execute(`
         INSERT INTO requisites (
           company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
           phone, email, website, bank_name, bank_account, correspondent_account,
           bik, director_name, director_position, created_at, updated_at
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, NOW(), NOW())
-        RETURNING *;
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
       `, [
         company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
         phone, email, website, bank_name, bank_account, correspondent_account,
         bik, director_name, director_position
       ]);
-      res.json({ success: true, data: insertResult.rows[0] });
+      
+      // Получаем созданные реквизиты
+      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [insertResult.insertId]);
+      res.json({ success: true, data: rows[0] });
     }
   } catch (error) {
     console.error('Error updating requisites:', error);

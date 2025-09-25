@@ -39,12 +39,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(`
+    const [rows] = await pool.execute(`
       SELECT * FROM advantages 
-      WHERE id = $1 AND is_active = true
+      WHERE id = ? AND is_active = true
     `, [id]);
     
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({
         success: false,
         error: 'Technical spec not found'
@@ -53,7 +53,7 @@ router.get('/:id', async (req, res) => {
     
     res.json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error fetching technical spec:', error);
@@ -69,15 +69,17 @@ router.post('/', async (req, res) => {
   try {
     const { title, description, value, sort_order, is_active } = req.body;
     
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       INSERT INTO advantages (title, description, value, sort_order, is_active, created_at)
-      VALUES ($1, $2, $3, $4, $5, NOW())
-      RETURNING *
+      VALUES (?, ?, ?, ?, ?, NOW())
     `, [title, description, value, sort_order || 0, is_active || true]);
+    
+    // Получаем созданный элемент
+    const [rows] = await pool.execute('SELECT * FROM advantages WHERE id = ?', [result.insertId]);
     
     res.status(201).json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error creating technical spec:', error);
@@ -94,23 +96,25 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { title, description, value, sort_order, is_active } = req.body;
     
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       UPDATE advantages 
-      SET title = $1, description = $2, value = $3, sort_order = $4, is_active = $5, updated_at = NOW()
-      WHERE id = $6
-      RETURNING *
+      SET title = ?, description = ?, value = ?, sort_order = ?, is_active = ?, updated_at = NOW()
+      WHERE id = ?
     `, [title, description, value, sort_order, is_active, id]);
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         error: 'Technical spec not found'
       });
     }
     
+    // Получаем обновленный элемент
+    const [rows] = await pool.execute('SELECT * FROM advantages WHERE id = ?', [id]);
+    
     res.json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error updating technical spec:', error);
@@ -126,13 +130,12 @@ router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
     
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       DELETE FROM advantages 
-      WHERE id = $1
-      RETURNING *
+      WHERE id = ?
     `, [id]);
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         error: 'Technical spec not found'

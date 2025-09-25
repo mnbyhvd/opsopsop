@@ -68,7 +68,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, index, onEdit, onDele
               {item.image_url && (
                 <div className="flex-shrink-0">
                   <img 
-                    src={`/api${item.image_url}`} 
+                    src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
                     alt={item.title}
                     className="w-24 h-16 object-contain rounded-lg"
                   />
@@ -444,7 +444,7 @@ const AboutAdmin: React.FC = () => {
                 {editingItem.image_url && (
                   <div className="mt-4">
                     <img 
-                      src={`/api${editingItem.image_url}`} 
+                      src={editingItem.image_url.startsWith('http') ? editingItem.image_url : editingItem.image_url.startsWith('/uploads') ? editingItem.image_url : `/api${editingItem.image_url}`} 
                       alt="Preview" 
                       className="w-32 h-20 object-contain rounded"
                     />

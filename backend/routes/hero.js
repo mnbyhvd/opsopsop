@@ -48,12 +48,20 @@ router.put('/', async (req, res) => {
   try {
     const { title, subtitle, description, background_image, is_active } = req.body;
     
+    // Проверяем, что все обязательные поля переданы
+    if (!title || !subtitle) {
+      return res.status(400).json({
+        success: false,
+        error: 'Title and subtitle are required'
+      });
+    }
+    
     // Update the active hero section
     const [result] = await pool.execute(`
       UPDATE hero_section 
       SET title = ?, subtitle = ?, description = ?, background_image = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
       WHERE is_active = true
-    `, [title, subtitle, description, background_image, is_active]);
+    `, [title, subtitle, description || null, background_image || null, is_active !== undefined ? is_active : true]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({

@@ -38,12 +38,12 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'SELECT * FROM videos WHERE id = $1',
+    const [rows] = await pool.execute(
+      'SELECT * FROM videos WHERE id = ?',
       [id]
     );
     
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({
         success: false,
         error: 'Video not found'
@@ -52,7 +52,7 @@ router.get('/:id', async (req, res) => {
     
     res.json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error fetching video:', error);
@@ -77,15 +77,17 @@ router.post('/', async (req, res) => {
       is_active = true
     } = req.body;
     
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       INSERT INTO videos (title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
-      RETURNING *
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `, [title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active]);
+    
+    // Получаем созданное видео
+    const [rows] = await pool.execute('SELECT * FROM videos WHERE id = ?', [result.insertId]);
     
     res.status(201).json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error creating video:', error);
@@ -111,24 +113,26 @@ router.put('/:id', async (req, res) => {
       is_active
     } = req.body;
     
-    const result = await pool.query(`
+    const [result] = await pool.execute(`
       UPDATE videos 
-      SET title = $1, description = $2, video_url = $3, youtube_url = $4, thumbnail_url = $5, 
-          duration = $6, sort_order = $7, is_active = $8, updated_at = NOW()
-      WHERE id = $9
-      RETURNING *
+      SET title = ?, description = ?, video_url = ?, youtube_url = ?, thumbnail_url = ?, 
+          duration = ?, sort_order = ?, is_active = ?, updated_at = NOW()
+      WHERE id = ?
     `, [title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active, id]);
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         error: 'Video not found'
       });
     }
     
+    // Получаем обновленное видео
+    const [rows] = await pool.execute('SELECT * FROM videos WHERE id = ?', [id]);
+    
     res.json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error updating video:', error);
@@ -143,12 +147,12 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await pool.query(
-      'DELETE FROM videos WHERE id = $1 RETURNING *',
+    const [result] = await pool.execute(
+      'DELETE FROM videos WHERE id = ?',
       [id]
     );
     
-    if (result.rows.length === 0) {
+    if (result.affectedRows === 0) {
       return res.status(404).json({
         success: false,
         error: 'Video not found'
@@ -171,13 +175,13 @@ router.delete('/:id', async (req, res) => {
 // GET /api/videos/settings - получить настройки секции
 router.get('/settings', async (req, res) => {
   try {
-    const result = await pool.query(`
+    const [rows] = await pool.execute(`
       SELECT * FROM video_presentations_settings 
       ORDER BY id DESC 
       LIMIT 1
     `);
     
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.json({
         success: true,
         data: null
@@ -186,7 +190,7 @@ router.get('/settings', async (req, res) => {
     
     res.json({
       success: true,
-      data: result.rows[0]
+      data: rows[0]
     });
   } catch (error) {
     console.error('Error fetching video settings:', error);
@@ -203,33 +207,39 @@ router.put('/settings', async (req, res) => {
     const { title, subtitle } = req.body;
     
     // Сначала проверяем, есть ли уже настройки
-    const existingResult = await pool.query(`
+    const [existingRows] = await pool.execute(`
       SELECT id FROM video_presentations_settings 
       ORDER BY id DESC 
       LIMIT 1
     `);
     
     let result;
-    if (existingResult.rows.length > 0) {
+    if (existingRows.length > 0) {
       // Обновляем существующие настройки
-      result = await pool.query(`
+      const [updateResult] = await pool.execute(`
         UPDATE video_presentations_settings 
-        SET title = $1, subtitle = $2, updated_at = NOW()
-        WHERE id = $3
-        RETURNING *
-      `, [title, subtitle, existingResult.rows[0].id]);
+        SET title = ?, subtitle = ?, updated_at = NOW()
+        WHERE id = ?
+      `, [title, subtitle, existingRows[0].id]);
+      
+      // Получаем обновленные настройки
+      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [existingRows[0].id]);
+      result = { data: rows[0] };
     } else {
       // Создаем новые настройки
-      result = await pool.query(`
+      const [insertResult] = await pool.execute(`
         INSERT INTO video_presentations_settings (title, subtitle, created_at, updated_at)
-        VALUES ($1, $2, NOW(), NOW())
-        RETURNING *
+        VALUES (?, ?, NOW(), NOW())
       `, [title, subtitle]);
+      
+      // Получаем созданные настройки
+      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [insertResult.insertId]);
+      result = { data: rows[0] };
     }
     
     res.json({
       success: true,
-      data: result.rows[0]
+      data: result.data
     });
   } catch (error) {
     console.error('Error updating video settings:', error);
