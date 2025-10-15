@@ -353,3 +353,6 @@ CREATE INDEX idx_videos_is_active ON videos(is_active);
 CREATE INDEX idx_products_category ON products(category);
 CREATE INDEX idx_products_is_active ON products(is_active);
 CREATE INDEX idx_products_sort_order ON products(sort_order);
+
+-- Применяем миграцию для исправления структуры
+SOURCE /docker-entrypoint-initdb.d/migration_fix.sql;
