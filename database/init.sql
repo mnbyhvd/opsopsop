@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS videos (
     title VARCHAR(255) NOT NULL,
     description TEXT,
     video_url VARCHAR(500),
+    youtube_url VARCHAR(500),
     thumbnail_url VARCHAR(500),
     duration VARCHAR(20),
     sort_order INT DEFAULT 1,

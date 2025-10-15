@@ -201,4 +201,30 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// GET /api/leads/stats/overview - получить статистику заявок
+router.get('/stats/overview', async (req, res) => {
+  try {
+    const [totalLeads] = await pool.execute('SELECT COUNT(*) as total FROM leads');
+    const [newLeads] = await pool.execute('SELECT COUNT(*) as new FROM leads WHERE status = ?', ['new']);
+    const [inProgressLeads] = await pool.execute('SELECT COUNT(*) as in_progress FROM leads WHERE status = ?', ['in_progress']);
+    const [completedLeads] = await pool.execute('SELECT COUNT(*) as completed FROM leads WHERE status = ?', ['completed']);
+    
+    res.json({
+      success: true,
+      data: {
+        total: totalLeads[0].total,
+        new: newLeads[0].new,
+        in_progress: inProgressLeads[0].in_progress,
+        completed: completedLeads[0].completed
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching leads stats:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to fetch leads stats' 
+    });
+  }
+});
+
 module.exports = router;
