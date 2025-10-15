@@ -45,7 +45,9 @@ services:
     build: ./frontend
     container_name: opsopsop-frontend
     environment:
-      REACT_APP_API_URL: https://sps-master.ru
+      REACT_APP_API_URL: /api
+    expose:
+      - "80"
     networks:
       - master_sps_network
 
@@ -53,7 +55,9 @@ services:
     build: ./admin
     container_name: opsopsop-admin
     environment:
-      REACT_APP_API_URL: https://sps-master.ru
+      REACT_APP_API_URL: /api
+    expose:
+      - "80"
     networks:
       - master_sps_network
 
