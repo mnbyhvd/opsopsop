@@ -33,7 +33,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <Router basename="/admin">
+    <Router>
       <div className="min-h-screen">
         <Routes>
           <Route path="/*" element={<AdminDashboard onLogout={logout} />} />
