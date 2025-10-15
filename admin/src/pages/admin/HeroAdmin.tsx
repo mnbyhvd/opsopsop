@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import API_ENDPOINTS from '../../config/api';
+import { apiService } from '../../services/apiService';
 
 interface HeroSettings {
   id: number;
@@ -28,12 +28,9 @@ const HeroAdmin: React.FC = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await fetch(API_ENDPOINTS.HERO);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.data) {
-          setSettings(data.data);
-        }
+      const response = await apiService.getHero();
+      if (response.success && response.data) {
+        setSettings(response.data as HeroSettings);
       }
     } catch (error) {
       console.error('Error fetching hero settings:', error);
@@ -47,24 +44,17 @@ const HeroAdmin: React.FC = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const response = await fetch(API_ENDPOINTS.HERO, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: settings.title,
-          subtitle: settings.subtitle,
-          description: settings.description
-        }),
+      const response = await apiService.updateHeroSection(settings.id, {
+        title: settings.title,
+        subtitle: settings.subtitle,
+        description: settings.description
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        setSettings(result.data);
+      if (response.success) {
+        setSettings(response.data as HeroSettings);
         alert('Настройки Hero секции сохранены!');
       } else {
-        console.error('Error saving hero settings');
+        console.error('Error saving hero settings:', response.error);
         alert('Ошибка при сохранении настроек');
       }
     } catch (error) {

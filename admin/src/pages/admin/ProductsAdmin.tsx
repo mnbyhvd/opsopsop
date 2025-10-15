@@ -26,12 +26,26 @@ interface Product {
   name: string;
   description: string;
   image_url: string;
-  hover_image_url: string;
-  detail_page_url: string;
+  category_id: number | null;
+  category_name: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
+}
+
+interface ProductDocument {
+  id: number;
+  name: string;
+  description: string;
+  file_url: string;
+  file_type: string;
+  file_size: number;
+  sort_order: number;
+}
+
+interface Category {
+  name: string;
 }
 
 interface SortableProductProps {
@@ -104,13 +118,22 @@ const SortableProduct: React.FC<SortableProductProps> = ({ product, index, onEdi
                 >
                   {product.description}
                 </p>
+                {product.category_name && (
+                  <div 
+                    className="text-xs mb-2 px-2 py-1 bg-red-500/20 text-red-400 rounded-full inline-block"
+                    style={{
+                      fontFamily: 'Inter'
+                    }}
+                  >
+                    {product.category_name}
+                  </div>
+                )}
                 <div 
                   className="text-xs"
                   style={{ color: '#8B8B8B' }}
                 >
                   Порядок: {product.sort_order} | 
-                  Статус: {product.is_active ? 'Активен' : 'Неактивен'} |
-                  URL: {product.detail_page_url}
+                  Статус: {product.is_active ? 'Активен' : 'Неактивен'}
                 </div>
               </div>
             </div>
@@ -141,7 +164,10 @@ const ProductsAdmin: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadingHoverImage, setUploadingHoverImage] = useState(false);
+  const [productDocuments, setProductDocuments] = useState<ProductDocument[]>([]);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isNewCategory, setIsNewCategory] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -152,7 +178,21 @@ const ProductsAdmin: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories/unique');
+      if (response.ok) {
+        const data = await response.json();
+        setCategories(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
 
   const fetchProducts = async () => {
     try {
@@ -200,24 +240,81 @@ const ProductsAdmin: React.FC = () => {
     }
   };
 
-  const handleHoverImageUpload = async (file: File) => {
+
+  const fetchProductDocuments = async (productId: number) => {
+    try {
+      const response = await fetch(`/api/products/${productId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProductDocuments(data.data.documents || []);
+      }
+    } catch (error) {
+      console.error('Error fetching product documents:', error);
+    }
+  };
+
+  const handleDocumentUpload = async (file: File) => {
     if (!editingProduct) return;
     
-    setUploadingHoverImage(true);
+    setUploadingDocument(true);
     try {
-      const imageUrl = await uploadFile(file);
-      setEditingProduct({ ...editingProduct, hover_image_url: imageUrl });
+      const fileUrl = await uploadFile(file);
+      const fileType = file.type || 'application/octet-stream';
+      const fileSize = file.size;
+      
+      // Добавляем документ к продукту
+      const response = await fetch(`/api/products/${editingProduct.id}/documents`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: file.name,
+          description: '',
+          file_url: fileUrl,
+          file_type: fileType,
+          file_size: fileSize,
+          sort_order: productDocuments.length + 1
+        }),
+      });
+      
+      if (response.ok) {
+        await fetchProductDocuments(editingProduct.id);
+      } else {
+        throw new Error('Ошибка добавления документа');
+      }
     } catch (error) {
-      console.error('Error uploading hover image:', error);
-      alert('Ошибка загрузки изображения при наведении');
+      console.error('Error uploading document:', error);
+      alert('Ошибка загрузки документа');
     } finally {
-      setUploadingHoverImage(false);
+      setUploadingDocument(false);
+    }
+  };
+
+  const handleDeleteDocument = async (documentId: number) => {
+    if (!editingProduct) return;
+    
+    try {
+      const response = await fetch(`/api/products/${editingProduct.id}/documents/${documentId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        await fetchProductDocuments(editingProduct.id);
+      } else {
+        throw new Error('Ошибка удаления документа');
+      }
+    } catch (error) {
+      console.error('Error deleting document:', error);
+      alert('Ошибка удаления документа');
     }
   };
 
   const handleEdit = (product: Product) => {
     setEditingProduct({ ...product });
     setIsCreating(false);
+    setIsNewCategory(false);
+    fetchProductDocuments(product.id);
   };
 
   const handleCreate = () => {
@@ -226,14 +323,15 @@ const ProductsAdmin: React.FC = () => {
       name: '',
       description: '',
       image_url: '',
-      hover_image_url: '',
-      detail_page_url: '',
+      category_id: null,
+      category_name: null,
       sort_order: products.length + 1,
       is_active: true,
       created_at: '',
       updated_at: ''
     });
     setIsCreating(true);
+    setIsNewCategory(false);
   };
 
   const handleSave = async () => {
@@ -472,6 +570,66 @@ const ProductsAdmin: React.FC = () => {
                   className="block text-sm font-medium mb-2"
                   style={{ color: '#B8B8B8' }}
                 >
+                  Категория
+                </label>
+                <div className="space-y-2">
+                  {/* Выпадающий список существующих категорий */}
+                  <select
+                    value={isNewCategory ? '__new__' : (editingProduct.category_name || '')}
+                    onChange={(e) => {
+                      const selectedCategory = e.target.value;
+                      if (selectedCategory === '__new__') {
+                        setIsNewCategory(true);
+                        setEditingProduct({
+                          ...editingProduct, 
+                          category_name: '',
+                          category_id: null
+                        });
+                      } else {
+                        setIsNewCategory(false);
+                        setEditingProduct({
+                          ...editingProduct, 
+                          category_name: selectedCategory,
+                          category_id: null
+                        });
+                      }
+                    }}
+                    className="admin-input w-full"
+                  >
+                    <option value="">Выберите существующую категорию</option>
+                    {categories.map((category, index) => (
+                      <option key={index} value={category.name}>
+                        {category.name}
+                      </option>
+                    ))}
+                    <option value="__new__">+ Создать новую категорию</option>
+                  </select>
+                  
+                  {/* Поле для ввода новой категории (показывается только если выбрано "Создать новую") */}
+                  {isNewCategory && (
+                    <>
+                      <div className="text-sm text-gray-400 mb-1">Введите название новой категории:</div>
+                      <input
+                        type="text"
+                        value={editingProduct.category_name || ''}
+                        onChange={(e) => setEditingProduct({
+                          ...editingProduct, 
+                          category_name: e.target.value,
+                          category_id: null
+                        })}
+                        className="admin-input w-full"
+                        placeholder="Введите название новой категории"
+                      />
+                    </>
+                  )}
+                </div>
+              </div>
+              
+              <div>
+                <label 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: '#B8B8B8' }}
+                >
                   Изображение (обычное)
                 </label>
                 <FileUpload
@@ -498,66 +656,7 @@ const ProductsAdmin: React.FC = () => {
                 )}
               </div>
               
-              <div>
-                <label 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: '#B8B8B8' }}
-                >
-                  Изображение (при наведении)
-                </label>
-                <FileUpload
-                  onFileSelect={handleHoverImageUpload}
-                  accept="image/*"
-                  maxSize={5}
-                  disabled={uploadingHoverImage}
-                />
-                {editingProduct.hover_image_url && (
-                  <div className="mt-2">
-                    <img 
-                      src={`${editingProduct.hover_image_url}`} 
-                      alt="Preview" 
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    <input
-                      type="text"
-                      value={editingProduct.hover_image_url}
-                      onChange={(e) => setEditingProduct({...editingProduct, hover_image_url: e.target.value})}
-                      className="admin-input mt-2"
-                      placeholder="Или введите URL вручную"
-                    />
-                  </div>
-                )}
-              </div>
               
-              <div>
-                <label 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: '#B8B8B8' }}
-                >
-                  URL страницы продукта
-                </label>
-                <input
-                  type="text"
-                  value={editingProduct.detail_page_url || ''}
-                  onChange={(e) => setEditingProduct({...editingProduct, detail_page_url: e.target.value})}
-                  className="admin-input"
-                />
-              </div>
-              
-              <div>
-                <label 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: '#B8B8B8' }}
-                >
-                  Порядок сортировки
-                </label>
-                <input
-                  type="number"
-                  value={editingProduct.sort_order}
-                  onChange={(e) => setEditingProduct({...editingProduct, sort_order: parseInt(e.target.value) || 0})}
-                  className="admin-input"
-                />
-              </div>
               
               <div className="flex items-center">
                 <input
@@ -577,6 +676,58 @@ const ProductsAdmin: React.FC = () => {
                 </label>
               </div>
             </div>
+
+            {/* Секция документов */}
+            {!isCreating && editingProduct && (
+              <div>
+                <label 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: '#B8B8B8' }}
+                >
+                  Документы продукта
+                </label>
+                
+                <FileUpload
+                  onFileSelect={handleDocumentUpload}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
+                  maxSize={10}
+                  disabled={uploadingDocument}
+                />
+                
+                {productDocuments.length > 0 && (
+                  <div className="mt-4 space-y-2">
+                    {productDocuments.map((doc) => (
+                      <div 
+                        key={doc.id}
+                        className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-red-500 rounded flex items-center justify-center">
+                            <span className="text-white text-xs font-bold">
+                              {doc.file_type.split('/')[1]?.toUpperCase().substring(0, 3) || 'DOC'}
+                            </span>
+                          </div>
+                          <div>
+                            <div className="text-white font-medium">{doc.name}</div>
+                            <div className="text-gray-400 text-sm">
+                              {(doc.file_size / 1024).toFixed(1)} KB
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteDocument(doc.id)}
+                          className="text-red-400 hover:text-red-300 p-1"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
             
             <div className="flex gap-4 mt-8">
               <button

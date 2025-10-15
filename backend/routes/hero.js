@@ -18,7 +18,6 @@ router.get('/', async (req, res) => {
   try {
     const [rows] = await pool.execute(`
       SELECT * FROM hero_section 
-      WHERE is_active = true 
       ORDER BY created_at DESC
       LIMIT 1
     `);
@@ -127,11 +126,18 @@ router.put('/:id', async (req, res) => {
     const { id } = req.params;
     const { title, subtitle, description, background_image, is_active } = req.body;
     
+    // Convert undefined to null for MySQL
+    const safeTitle = title !== undefined ? title : null;
+    const safeSubtitle = subtitle !== undefined ? subtitle : null;
+    const safeDescription = description !== undefined ? description : null;
+    const safeBackgroundImage = background_image !== undefined ? background_image : null;
+    const safeIsActive = is_active !== undefined ? is_active : null;
+    
     const [result] = await pool.execute(`
       UPDATE hero_section 
       SET title = ?, subtitle = ?, description = ?, background_image = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `, [title, subtitle, description, background_image, is_active, id]);
+    `, [safeTitle, safeSubtitle, safeDescription, safeBackgroundImage, safeIsActive, id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({

@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
-import { apiService, type TechnicalSpec } from '../services/api';
+import { apiService } from '../services/apiService';
 
-// Re-export the interface from api service
-export type { TechnicalSpec as Advantage };
-
-type Advantage = TechnicalSpec;
+export interface Advantage {
+  id: number;
+  title: string;
+  description: string;
+  value?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 const fallbackData: Advantage[] = [
   {
@@ -63,7 +69,7 @@ export const useAdvantages = () => {
         const response = await apiService.getTechnicalSpecs();
         
         if (response.success) {
-          setAdvantages(response.data);
+          setAdvantages(response.data as Advantage[]);
         } else {
           throw new Error('Failed to fetch advantages');
         }

@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { apiService } from '../services/apiService';
 
 interface HeroData {
   id: number;
   title: string;
-  description: string;
+  subtitle?: string;
+  description?: string;
+  background_image?: string;
+  is_active?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -18,12 +22,9 @@ const HeroSection: React.FC = () => {
 
   const fetchHeroData = async () => {
     try {
-      const response = await fetch('/api/hero');
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          setHeroData(data.data);
-        }
+      const response = await apiService.getHero();
+      if (response.success && response.data) {
+        setHeroData(response.data as HeroData);
       }
     } catch (error) {
       console.error('Error fetching hero data:', error);
@@ -95,7 +96,7 @@ const HeroSection: React.FC = () => {
       {/* Main content */}
       <div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center h-full">
         <h1 
-          className="mb-8 uppercase text-center"
+          className="mb-4 uppercase text-center"
           style={{
             fontFamily: 'Inter',
             fontWeight: 700,
@@ -103,9 +104,26 @@ const HeroSection: React.FC = () => {
             lineHeight: '100%',
             letterSpacing: '0%'
           }}
-        >
-          {heroData?.title || 'АПС МАСТЕР:<br />СКОРОСТЬ И НАДЕЖНОСТЬ'}
-        </h1>
+          dangerouslySetInnerHTML={{
+            __html: heroData?.title || 'АПС МАСТЕР:<br />СКОРОСТЬ И НАДЕЖНОСТЬ'
+          }}
+        />
+        
+        {heroData?.subtitle && (
+          <h2 
+            className="mb-6 text-center"
+            style={{
+              fontFamily: 'Inter',
+              fontWeight: 500,
+              fontSize: '32px',
+              lineHeight: '120%',
+              letterSpacing: '0%',
+              color: '#666'
+            }}
+          >
+            {heroData.subtitle}
+          </h2>
+        )}
         
         <p 
           className="mb-10 max-w-3xl mx-auto text-center"

@@ -1,8 +1,17 @@
 import { useState, useEffect } from 'react';
-import { apiService, type AboutItem } from '../services/api';
+import { apiService } from '../services/apiService';
 
-// Re-export the interface from api service
-export type { AboutItem };
+export interface AboutItem {
+  id: number;
+  title: string;
+  description: string;
+  image_url?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 
 // Fallback данные
 const fallbackData: AboutItem[] = [
@@ -57,11 +66,11 @@ export const useAbout = () => {
     const fetchAboutItems = async () => {
       try {
         setLoading(true);
-        const response = await apiService.getAboutItems();
+        const response = await apiService.getAbout();
         if (response.success) {
           console.log('Raw API data:', response.data);
           // Сортируем данные по sort_order
-          const sortedData = response.data.sort((a, b) => a.sort_order - b.sort_order);
+          const sortedData = (response.data as AboutItem[]).sort((a, b) => a.sort_order - b.sort_order);
           console.log('Sorted data:', sortedData);
           console.log('First element:', sortedData[0]);
           console.log('All elements with sort_order:', sortedData.map(item => ({ id: item.id, title: item.title, sort_order: item.sort_order })));

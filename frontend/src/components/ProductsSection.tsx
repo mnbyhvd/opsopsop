@@ -164,19 +164,12 @@ const ProductsSection: React.FC = () => {
   // Получение цвета пикселя на canvas
   const getPixelColor = useCallback((x: number, y: number): string | null => {
     const canvas = canvasRef.current;
-    if (!canvas || !maskImageRef.current) return null;
+    if (!canvas) return null;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    // Устанавливаем размеры canvas как у изображения
-    canvas.width = maskImageRef.current.naturalWidth;
-    canvas.height = maskImageRef.current.naturalHeight;
-
-    // Рисуем маску на canvas
-    ctx.drawImage(maskImageRef.current, 0, 0);
-
-    // Получаем данные пикселя
+    // Получаем данные пикселя напрямую с canvas (он уже настроен в useEffect)
     const imageData = ctx.getImageData(x, y, 1, 1);
     const data = imageData.data;
     const r = data[0];
@@ -196,17 +189,18 @@ const ProductsSection: React.FC = () => {
       return;
     }
     
-    if (!maskImageRef.current) {
-      console.log('Mask image ref is null for click');
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      console.log('Canvas ref is null for click');
       return;
     }
 
     const rect = event.currentTarget.getBoundingClientRect();
-    const scaleX = maskImageRef.current.naturalWidth / rect.width;
-    const scaleY = maskImageRef.current.naturalHeight / rect.height;
-
-    const x = Math.floor((event.clientX - rect.left) * scaleX);
-    const y = Math.floor((event.clientY - rect.top) * scaleY);
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    // Координаты относительно canvas
+    const x = Math.floor(event.clientX - canvasRect.left);
+    const y = Math.floor(event.clientY - canvasRect.top);
 
     const pixelColor = getPixelColor(x, y);
     if (!pixelColor) return;
@@ -217,20 +211,24 @@ const ProductsSection: React.FC = () => {
       console.log('All modals:', modals);
       console.log('Modals for area:', modals.filter(modal => modal.area_id === area.id));
       
-      // Сначала закрыть предыдущие модальные окна
+      // Закрыть предыдущие модальные окна и открыть новые
       setIsModalOpen(false);
       setActiveArea(null);
       setActiveModals([]);
       setHoveredArea(null);
       setHoverImage(null);
       
-      // Затем открыть новые модальные окна для новой области
+      // Открыть модальные окна для новой области
       setTimeout(() => {
         setActiveArea(area);
         const areaModals = modals.filter(modal => modal.area_id === area.id);
         setActiveModals(areaModals);
         setIsModalOpen(true);
-      }, 50); // Небольшая задержка для плавного перехода
+        
+        // Установить hover эффект для активной области
+        setHoveredArea(area.id);
+        setHoverImage(area.hoverImage);
+      }, 50);
     }
   }, [getPixelColor, getAreaByColor, maskLoaded, modals]);
 
@@ -241,17 +239,23 @@ const ProductsSection: React.FC = () => {
       return;
     }
     
-    if (!maskImageRef.current) {
-      console.log('Mask image ref is null');
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      console.log('Canvas ref is null');
+      return;
+    }
+
+    // Если модальные окна открыты, не меняем hover эффект
+    if (isModalOpen) {
       return;
     }
 
     const rect = event.currentTarget.getBoundingClientRect();
-    const scaleX = maskImageRef.current.naturalWidth / rect.width;
-    const scaleY = maskImageRef.current.naturalHeight / rect.height;
-
-    const x = Math.floor((event.clientX - rect.left) * scaleX);
-    const y = Math.floor((event.clientY - rect.top) * scaleY);
+    const canvasRect = canvas.getBoundingClientRect();
+    
+    // Координаты относительно canvas
+    const x = Math.floor(event.clientX - canvasRect.left);
+    const y = Math.floor(event.clientY - canvasRect.top);
 
     const pixelColor = getPixelColor(x, y);
     if (!pixelColor) return;
@@ -264,15 +268,21 @@ const ProductsSection: React.FC = () => {
       setHoveredArea(null);
       setHoverImage(null);
     }
-  }, [getPixelColor, getAreaByColor, maskLoaded]);
+  }, [getPixelColor, getAreaByColor, maskLoaded, isModalOpen]);
 
   // Обработка ухода курсора
   const handleImageLeave = useCallback(() => {
     if (!isModalOpen) {
       setHoveredArea(null);
       setHoverImage(null);
+    } else {
+      // Если модальные окна открыты, показываем hover эффект для активной области
+      if (activeArea) {
+        setHoveredArea(activeArea.id);
+        setHoverImage(activeArea.hoverImage);
+      }
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, activeArea]);
 
   // Закрытие модального окна
   const closeModal = useCallback(() => {
@@ -282,9 +292,6 @@ const ProductsSection: React.FC = () => {
     setHoveredArea(null);
     setHoverImage(null);
   }, []);
-
-
-
 
   // Закрытие модального окна при клике вне его
   useEffect(() => {
@@ -313,14 +320,18 @@ const ProductsSection: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Устанавливаем размеры canvas как у изображения
-    canvas.width = maskImg.naturalWidth;
-    canvas.height = maskImg.naturalHeight;
+    // Получаем размеры основной картинки
+    const mainImg = document.querySelector('img[src="/images/products/main-product.png"]') as HTMLImageElement;
+    if (!mainImg) return;
 
-    // Отрисовываем маску на canvas
-    ctx.drawImage(maskImg, 0, 0);
+    // Устанавливаем внутренние размеры canvas как у отображаемой картинки
+    canvas.width = mainImg.offsetWidth;
+    canvas.height = mainImg.offsetHeight;
+
+    // Отрисовываем маску на canvas с масштабированием под отображаемый размер
+    ctx.drawImage(maskImg, 0, 0, canvas.width, canvas.height);
     
-    console.log('Mask drawn on canvas, size:', canvas.width, 'x', canvas.height);
+    console.log('Canvas synced with displayed image size:', canvas.width, 'x', canvas.height);
   }, [maskLoaded]);
 
   return (
@@ -358,225 +369,253 @@ const ProductsSection: React.FC = () => {
           </p>
         </div>
 
-        {/* Интерактивная картинка */}
-        <div className="col-start-1 col-end-13 relative px-16 overflow-hidden">
+        {/* Интерактивная картинка - только заглушка */}
+        <div className="col-start-1 col-end-13 relative">
           {!maskLoaded && (
             <div className="text-center py-8 text-gray-400">
               Загрузка интерактивных областей...
             </div>
           )}
-          
-          {/* Эллипс под картинкой */}
-          <div 
-            className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-            style={{
-              overflow: 'visible',
-              width: '1000px',
-              height: '450px',
-              opacity: 0.2,
-              top: '52%',
-              backgroundColor: '#D9D9D9',
-              borderRadius: '50%',
-              filter: 'blur(308.4px)',
-              zIndex: -1
-            }}
-          />
-          
-
-          <div 
-            className={`relative w-full ${maskLoaded ? 'cursor-pointer' : 'cursor-default'}`}
-            onClick={handleImageClick}
-            onMouseMove={handleImageHover}
-            onMouseLeave={handleImageLeave}
-          >
-            {/* Основное изображение */}
-            <img
-              src="/images/products/main-product.png"
-              alt="Продукция"
-              className="w-full h-auto"
-              style={{
-                maxWidth: '100%',
-                height: 'auto',
-                objectFit: 'contain',
-                display: 'block'
-              }}
-            />
-
-            {/* Hover изображение (накладывается поверх без изменения размера) */}
-            <AnimatePresence>
-              {hoverImage && (
-                <motion.img
-                  key={hoverImage}
-                  src={hoverImage}
-                  alt="Продукция hover"
-                  className="absolute inset-0 w-full h-full"
-                  style={{
-                    objectFit: 'contain',
-                    zIndex: 1,
-                    display: 'block'
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-            </AnimatePresence>
-
-            {/* Скрытый canvas для определения областей */}
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 pointer-events-none opacity-0"
-              style={{ zIndex: -1 }}
-            />
-          </div>
         </div>
+      </PageContainer>
 
-        {/* Модальные окна */}
+        {/* Картинка полностью вне всех контейнеров - во всю ширину экрана */}
+        <div 
+          className={`relative ${maskLoaded ? 'cursor-pointer' : 'cursor-default'} overflow-x-auto overflow-y-hidden hide-scrollbar`}
+          style={{
+            width: '100vw',
+            position: 'relative',
+            left: '50%',
+            right: '50%',
+            marginLeft: '-50vw',
+            marginRight: '-50vw',
+            marginTop: '0',
+            marginBottom: '0'
+          }}
+          onClick={handleImageClick}
+          onMouseMove={handleImageHover}
+          onMouseLeave={handleImageLeave}
+        >
+        {/* Основное изображение - исходные размеры */}
+        <img
+          src="/images/products/main-product.png"
+          alt="Продукция"
+          style={{
+            width: 'auto',
+            height: 'auto',
+            display: 'block',
+            maxWidth: 'none'
+          }}
+        />
+
+        {/* Hover изображение (тотально привязано к основной картинке) */}
         <AnimatePresence>
-          {isModalOpen && activeArea && activeModals.length > 0 && (
-            <div 
-              className="absolute z-50"
+          {hoverImage && (
+            <motion.img
+              key={hoverImage}
+              src={hoverImage}
+              alt="Продукция hover"
               style={{
+                position: 'absolute',
                 top: 0,
                 left: 0,
-                right: 0,
-                bottom: 0,
-                pointerEvents: 'none'
+                width: 'auto',
+                height: 'auto',
+                display: 'block',
+                maxWidth: 'none',
+                zIndex: 1
               }}
-            >
-              {activeModals.map((modal, index) => {
-                // Автоматическое позиционирование модальных окон
-                const getModalPosition = (index: number) => {
-                  const modalWidth = 320; // ширина модального окна
-                  const modalHeight = 200; // примерная высота модального окна
-                  const offset = 20; // отступ от края
-                  
-                  switch (index) {
-                    case 0: // Первое - справа снизу
-                      return {
-                        left: `calc(50% + ${offset}px)`,
-                        top: `calc(50% + ${offset}px)`,
-                        transform: 'translate(0, 0)'
-                      };
-                    case 1: // Второе - слева сверху
-                      return {
-                        left: `calc(50% - ${modalWidth + offset}px)`,
-                        top: `calc(50% - ${modalHeight + offset}px)`,
-                        transform: 'translate(0, 0)'
-                      };
-                    case 2: // Третье - справа сверху
-                      return {
-                        left: `calc(50% + ${offset}px)`,
-                        top: `calc(50% - ${modalHeight + offset}px)`,
-                        transform: 'translate(0, 0)'
-                      };
-                    case 3: // Четвертое - слева снизу
-                      return {
-                        left: `calc(50% - ${modalWidth + offset}px)`,
-                        top: `calc(50% + ${offset}px)`,
-                        transform: 'translate(0, 0)'
-                      };
-                    default: // Дополнительные - по кругу
-                      const angle = (index * 90) * (Math.PI / 180);
-                      const radius = 200;
-                      const x = Math.cos(angle) * radius;
-                      const y = Math.sin(angle) * radius;
-                      return {
-                        left: `calc(50% + ${x}px)`,
-                        top: `calc(50% + ${y}px)`,
-                        transform: 'translate(-50%, -50%)'
-                      };
-                  }
-                };
-
-                const position = getModalPosition(index);
-
-                return (
-                  <motion.div
-                    key={modal.id}
-                    ref={index === 0 ? modalRef : undefined}
-                    initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                    animate={{ scale: 1, opacity: 1, y: 0 }}
-                    exit={{ scale: 0.8, opacity: 0, y: 20 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="absolute p-6 rounded-2xl"
-                    style={{
-                      backdropFilter: 'blur(12px)',
-                      backgroundColor: 'rgba(0, 0, 0, 0.2)',
-                      border: '1px solid rgba(51, 51, 51, 0.2)',
-                      width: '320px',
-                      maxWidth: '90vw',
-                      left: position.left,
-                      top: position.top,
-                      transform: position.transform,
-                      pointerEvents: 'auto'
-                    }}
-                  >
-                    <h3 
-                      className="modal-title"
-                      style={{
-                        marginBottom: '16px !important'
-                      }}
-                    >
-                      {modal.title}
-                    </h3>
-                    
-                    <p 
-                      className="modal-text"
-                      style={{
-                        marginBottom: '24px !important'
-                      }}
-                    >
-                      {modal.description}
-                    </p>
-                    
-                    {modal.button_text && (
-                      <button
-                        onClick={() => {
-                          setIsModalOpen(false);
-                          setActiveArea(null);
-                          setActiveModals([]);
-                          setHoveredArea(null);
-                          setHoverImage(null);
-                          navigate('/products');
-                        }}
-                        className="modal-link"
-                        style={{
-                          fontFamily: 'Inter !important',
-                          fontWeight: 700,
-                          fontSize: '16px !important',
-                          lineHeight: '100% !important',
-                          letterSpacing: '0% !important',
-                          color: '#F2F0F0 !important',
-                          textDecoration: 'underline !important',
-                          textDecorationStyle: 'solid',
-                          textDecorationThickness: '1px',
-                          textUnderlineOffset: '2px',
-                          display: 'inline-block !important',
-                          transition: 'opacity 0.2s !important',
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          padding: 0
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.opacity = '0.7';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.opacity = '1';
-                        }}
-                      >
-                        {modal.button_text}
-                      </button>
-                    )}
-                  </motion.div>
-                );
-              })}
-            </div>
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            />
           )}
         </AnimatePresence>
-      </PageContainer>
+
+        {/* Скрытый canvas для определения областей (тотально привязан к основной картинке) */}
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: 'auto',
+            height: 'auto',
+            display: 'block',
+            maxWidth: 'none',
+            pointerEvents: 'none',
+            opacity: 0,
+            zIndex: -1
+          }}
+        />
+      </div>
+
+      {/* Эллипс под картинкой */}
+      <div 
+        className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+        style={{
+          overflow: 'visible',
+          width: '1000px',
+          height: '450px',
+          opacity: 0.2,
+          top: '60%',
+          backgroundColor: '#D9D9D9',
+          borderRadius: '50%',
+          filter: 'blur(308.4px)',
+          zIndex: -1
+        }}
+      />
+
+      {/* Возвращаемся к контейнеру для модальных окон */}
+      <div className="container mx-auto px-4 md:px-8 lg:px-16">
+        <div className="grid grid-cols-12 gap-4 md:gap-8 lg:gap-16">
+          {/* Модальные окна */}
+          <AnimatePresence>
+            {isModalOpen && activeArea && activeModals.length > 0 && (
+              <div 
+                className="absolute z-50"
+                style={{
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  pointerEvents: 'none'
+                }}
+              >
+                {activeModals.map((modal, index) => {
+                  // Автоматическое позиционирование модальных окон
+                  const getModalPosition = (index: number) => {
+                    const modalWidth = 320; // ширина модального окна
+                    const modalHeight = 200; // примерная высота модального окна
+                    const offset = 20; // отступ от края
+                    
+                    switch (index) {
+                      case 0: // Первое - справа снизу
+                        return {
+                          left: `calc(50% + ${offset}px)`,
+                          top: `calc(50% + ${offset}px)`,
+                          transform: 'translate(0, 0)'
+                        };
+                      case 1: // Второе - слева сверху
+                        return {
+                          left: `calc(50% - ${modalWidth + offset}px)`,
+                          top: `calc(50% - ${modalHeight + offset}px)`,
+                          transform: 'translate(0, 0)'
+                        };
+                      case 2: // Третье - справа сверху
+                        return {
+                          left: `calc(50% + ${offset}px)`,
+                          top: `calc(50% - ${modalHeight + offset}px)`,
+                          transform: 'translate(0, 0)'
+                        };
+                      case 3: // Четвертое - слева снизу
+                        return {
+                          left: `calc(50% - ${modalWidth + offset}px)`,
+                          top: `calc(50% + ${offset}px)`,
+                          transform: 'translate(0, 0)'
+                        };
+                      default: // Дополнительные - по кругу
+                        const angle = (index * 90) * (Math.PI / 180);
+                        const radius = 200;
+                        const x = Math.cos(angle) * radius;
+                        const y = Math.sin(angle) * radius;
+                        return {
+                          left: `calc(50% + ${x}px)`,
+                          top: `calc(50% + ${y}px)`,
+                          transform: 'translate(-50%, -50%)'
+                        };
+                    }
+                  };
+
+                  const position = getModalPosition(index);
+
+                  return (
+                    <motion.div
+                      key={modal.id}
+                      ref={index === 0 ? modalRef : undefined}
+                      initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                      animate={{ scale: 1, opacity: 1, y: 0 }}
+                      exit={{ scale: 0.8, opacity: 0, y: 20 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="absolute p-6 rounded-2xl"
+                      style={{
+                        backdropFilter: 'blur(12px)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        border: '1px solid rgba(51, 51, 51, 0.2)',
+                        width: '320px',
+                        maxWidth: '90vw',
+                        left: position.left,
+                        top: position.top,
+                        transform: position.transform,
+                        pointerEvents: 'auto'
+                      }}
+                    >
+                      <h3 
+                        className="modal-title"
+                        style={{
+                          marginBottom: '16px !important'
+                        }}
+                      >
+                        {modal.title}
+                      </h3>
+                      
+                      <p 
+                        className="modal-text"
+                        style={{
+                          marginBottom: '24px !important'
+                        }}
+                      >
+                        {modal.description}
+                      </p>
+                      
+                      {modal.button_text && (
+                        <button
+                          onClick={() => {
+                            setIsModalOpen(false);
+                            setActiveArea(null);
+                            setActiveModals([]);
+                            setHoveredArea(null);
+                            setHoverImage(null);
+                            navigate('/products');
+                          }}
+                          className="modal-link"
+                          style={{
+                            fontFamily: 'Inter !important',
+                            fontWeight: 700,
+                            fontSize: '16px !important',
+                            lineHeight: '100% !important',
+                            letterSpacing: '0% !important',
+                            color: '#F2F0F0 !important',
+                            textDecoration: 'underline !important',
+                            textDecorationStyle: 'solid',
+                            textDecorationThickness: '1px',
+                            textUnderlineOffset: '2px',
+                            display: 'inline-block !important',
+                            transition: 'opacity 0.2s !important',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            padding: 0
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.opacity = '0.7';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.opacity = '1';
+                          }}
+                        >
+                          {modal.button_text}
+                        </button>
+                      )}
+                    </motion.div>
+                  );
+                })}
+              </div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
     </section>
   );
 };

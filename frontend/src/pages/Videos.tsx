@@ -38,15 +38,6 @@ const Videos: React.FC = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#0D0D0D' }}>
-      {/* Фоновое изображение */}
-      <div 
-        className="fixed inset-0 bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: 'url(/1.png)',
-          opacity: 0.1,
-          zIndex: -1
-        }}
-      />
       {/* Hero секция */}
       <section className="py-20 relative">
         <PageContainer>

@@ -37,7 +37,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
       <div className="container">
         <div className="flex items-center justify-between py-4">
           {/* Left capsule: logo + navigation */}
-          <div className="hidden md:flex items-center gap-8 glass px-6 h-10" style={{ border: 'none', width: 'fit-content' }}>
+          <div className="hidden lg:flex items-center gap-8 glass px-6 h-10" style={{ border: 'none', width: 'fit-content' }}>
             <Link to="/" className="shrink-0">
               <img src={logoSrc} alt="МАСТЕР" className="h-6 w-auto select-none" draggable={false} />
             </Link>
@@ -57,14 +57,14 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           </div>
 
           {/* Mobile: logo + бургер */}
-          <div className="flex md:hidden items-center gap-3">
+          <div className="flex lg:hidden items-center gap-3">
             <Link to="/" className="shrink-0">
               <img src={logoSrc} alt="МАСТЕР" className="h-6 w-auto select-none" draggable={false} />
             </Link>
           </div>
 
-          {/* Right: Buy button */}
-          <div className="flex items-center gap-4">
+          {/* Right: Buy button - скрыт на мобильных */}
+          <div className="hidden md:flex items-center gap-4">
             <button
               onClick={scrollToContactForm}
               className="inline-flex items-center gap-2 rounded-xl border px-5 py-2 font-medium shadow-sm transition-all"
@@ -90,7 +90,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button
               onClick={toggleMobileMenu}
               className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-gray-100"
@@ -104,7 +104,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
 
         {/* Mobile dropdown */}
         {isMobileMenuOpen && (
-          <div className="md:hidden pb-3">
+          <div className="lg:hidden pb-3">
             <div className="p-3 rounded-2xl" style={{ border: '1px solid var(--glass-border)', background: 'color-mix(in srgb, white 5%, transparent)', backdropFilter: 'blur(var(--blur-glass))' }}>
               {items.map((item) => (
                 <Link
@@ -118,6 +118,33 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                   {item.title}
                 </Link>
               ))}
+              
+              {/* Кнопка Купить в мобильном меню */}
+              <button
+                onClick={() => {
+                  closeMobileMenu();
+                  scrollToContactForm();
+                }}
+                className="w-full mt-3 inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all"
+                style={{
+                  borderColor: '#ffffff',
+                  background: '#ffffff',
+                  color: '#111827',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg)';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#111827';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                }}
+              >
+                <ShoppingBag size={16} />
+                Купить
+              </button>
             </div>
           </div>
         )}

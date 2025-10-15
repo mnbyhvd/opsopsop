@@ -12,6 +12,9 @@ RUN npm ci --silent
 # Copy all source files
 COPY . .
 
+# Ensure CRA picks API base at build time for local/prod proxies
+ENV REACT_APP_API_URL=/api
+
 # Build the app
 RUN npm run build
 

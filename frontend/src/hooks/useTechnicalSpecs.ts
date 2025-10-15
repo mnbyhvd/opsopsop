@@ -1,8 +1,16 @@
 import { useState, useEffect } from 'react';
-import { apiService, type TechnicalSpec } from '../services/api';
+import { apiService } from '../services/apiService';
 
-// Re-export the interface from api service
-export type { TechnicalSpec };
+export interface TechnicalSpec {
+  id: number;
+  title: string;
+  description: string;
+  value?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 // Fallback данные
 const fallbackData: TechnicalSpec[] = [
@@ -59,7 +67,7 @@ export const useTechnicalSpecs = () => {
         setLoading(true);
         const response = await apiService.getTechnicalSpecs();
         if (response.success) {
-          setTechnicalSpecs(response.data);
+          setTechnicalSpecs(response.data as TechnicalSpec[]);
           setError(null);
         } else {
           throw new Error('Failed to fetch technical specs data');

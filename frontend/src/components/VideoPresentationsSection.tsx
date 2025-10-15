@@ -28,6 +28,7 @@ const VideoPresentationsSection: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState<VideoPresentation | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // Создаем массив элементов для слайдера (дублируем для бесконечности)
@@ -50,6 +51,24 @@ const VideoPresentationsSection: React.FC = () => {
     fetchVideos();
     fetchSettings();
   }, []);
+
+  // Отслеживаем размер экрана
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Вычисляем правильное смещение в зависимости от размера экрана
+  const getTransformValue = () => {
+    const slideWidth = isMobile ? 100 : 50; // 100% для мобильных, 50% для десктопа
+    return `translateX(${currentSlide * -slideWidth}%)`;
+  };
 
   const fetchVideos = async () => {
     try {
@@ -221,12 +240,12 @@ const VideoPresentationsSection: React.FC = () => {
               <div 
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{
-                  transform: `translateX(${currentSlide * -50}%)`
+                  transform: getTransformValue()
                 }}
               >
                 {/* Рендерим все элементы слайдера */}
                 {sliderItems.map((video, index) => (
-                  <div key={`video-${video.sliderIndex}`} className="w-1/2 flex-shrink-0 px-3">
+                  <div key={`video-${video.sliderIndex}`} className="w-full md:w-1/2 flex-shrink-0 px-3">
                     <div 
                       className="relative w-full h-80 overflow-hidden cursor-pointer group"
                       style={{ 

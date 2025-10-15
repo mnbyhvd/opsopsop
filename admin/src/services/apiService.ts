@@ -46,6 +46,20 @@ class ApiService {
     return this.request(API_ENDPOINTS.HERO);
   }
 
+  async updateHeroSection(id: number, hero: any) {
+    return this.request(`${API_ENDPOINTS.HERO}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(hero),
+    });
+  }
+
+  async createHeroSection(hero: any) {
+    return this.request(API_ENDPOINTS.HERO, {
+      method: 'POST',
+      body: JSON.stringify(hero),
+    });
+  }
+
   // About
   async getAbout() {
     return this.request(API_ENDPOINTS.ABOUT);

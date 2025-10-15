@@ -95,6 +95,7 @@ app.use('/api/advantages', require('./routes/advantages'));
 app.use('/api/technical-specs', require('./routes/technicalSpecs'));
 app.use('/api/hero', require('./routes/hero'));
 app.use('/api/products', require('./routes/products'));
+app.use('/api/categories', require('./routes/categories'));
 app.use('/api/videos', require('./routes/videos'));
 app.use('/api/documents', require('./routes/documents'));
 app.use('/api/upload', require('./routes/upload'));

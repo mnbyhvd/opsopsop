@@ -98,6 +98,105 @@ class ApiService {
       body: JSON.stringify(leadData),
     });
   }
+
+  // Hero Section API
+  async updateHeroSection(id: number, hero: any) {
+    return this.request(`${API_ENDPOINTS.HERO}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(hero),
+    });
+  }
+
+  async createHeroSection(hero: any) {
+    return this.request(API_ENDPOINTS.HERO, {
+      method: 'POST',
+      body: JSON.stringify(hero),
+    });
+  }
+
+  // About Section API
+  async createAboutItem(item: any) {
+    return this.request(API_ENDPOINTS.ABOUT, {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async updateAboutItem(id: number, item: any) {
+    return this.request(`${API_ENDPOINTS.ABOUT}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async deleteAboutItem(id: number) {
+    return this.request(`${API_ENDPOINTS.ABOUT}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Technical Specs API
+  async createTechnicalSpec(spec: any) {
+    return this.request(API_ENDPOINTS.TECHNICAL_SPECS, {
+      method: 'POST',
+      body: JSON.stringify(spec),
+    });
+  }
+
+  async updateTechnicalSpec(id: number, spec: any) {
+    return this.request(`${API_ENDPOINTS.TECHNICAL_SPECS}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(spec),
+    });
+  }
+
+  async deleteTechnicalSpec(id: number) {
+    return this.request(`${API_ENDPOINTS.TECHNICAL_SPECS}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Navigation API
+  async createNavigationItem(item: any) {
+    return this.request(API_ENDPOINTS.NAVIGATION, {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async updateNavigationItem(id: number, item: any) {
+    return this.request(`${API_ENDPOINTS.NAVIGATION}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async deleteNavigationItem(id: number) {
+    return this.request(`${API_ENDPOINTS.NAVIGATION}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Footer API
+  async createFooterItem(item: any) {
+    return this.request(API_ENDPOINTS.FOOTER, {
+      method: 'POST',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async updateFooterItem(id: number, item: any) {
+    return this.request(`${API_ENDPOINTS.FOOTER}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(item),
+    });
+  }
+
+  async deleteFooterItem(id: number) {
+    return this.request(`${API_ENDPOINTS.FOOTER}/${id}`, {
+      method: 'DELETE',
+    });
+  }
 }
 
 export const apiService = new ApiService();

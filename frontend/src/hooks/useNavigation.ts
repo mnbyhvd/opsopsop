@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
-import API_ENDPOINTS from '../config/api';
-import { navigationAPI, type NavigationItem } from '../services/api';
+import { apiService } from '../services/apiService';
 
-// Re-export the interface from api service
-export type { NavigationItem };
+export interface NavigationItem {
+  id: number;
+  title: string;
+  url: string;
+  sort_order: number;
+  parent_id?: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 // Fallback данные
 const fallbackData: NavigationItem[] = [
@@ -54,23 +61,11 @@ export const useNavigation = () => {
     const fetchNavigation = async () => {
       try {
         setLoading(true);
-        // Add cache busting to ensure fresh data
-        const response = await fetch(API_ENDPOINTS.NAVIGATION + '?' + Date.now(), {
-          method: 'GET',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        });
+        const response = await apiService.getNavigation();
         
-        if (response.ok) {
-          const data = await response.json();
-          if (data.success) {
-            setNavigation(data.data);
-            setError(null);
-          } else {
-            throw new Error('Failed to fetch navigation data');
-          }
+        if (response.success) {
+          setNavigation(response.data as NavigationItem[]);
+          setError(null);
         } else {
           throw new Error('Failed to fetch navigation data');
         }

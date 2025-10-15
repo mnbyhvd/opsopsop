@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
-import { footerAPI, type FooterItem } from '../services/api';
+import { apiService } from '../services/apiService';
 
-// Re-export the interface from api service
-export type { FooterItem };
+export interface FooterItem {
+  id: number;
+  section_type: string;
+  title?: string;
+  content?: string;
+  url?: string;
+  icon?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
 
 export interface FooterData {
   navigation: FooterItem[];
@@ -72,10 +82,10 @@ export const useFooter = () => {
     const fetchFooterData = async () => {
       try {
         setLoading(true);
-        const response = await footerAPI.getItems();
+        const response = await apiService.getFooter();
         if (response.success) {
           // Group footer data by section type
-          const grouped = response.data.reduce((acc: FooterData, item: FooterItem) => {
+          const grouped = (response.data as FooterItem[]).reduce((acc: FooterData, item: FooterItem) => {
             if (!acc[item.section_type as keyof FooterData]) {
               acc[item.section_type as keyof FooterData] = [];
             }

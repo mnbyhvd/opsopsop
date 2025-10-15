@@ -35,18 +35,30 @@ const DownloadInfoSection: React.FC = () => {
 
   const downloadAll = async () => {
     try {
+      console.log('Начинаем создание ZIP архива...');
       const zip = new JSZip();
       
       // Добавляем все документы в ZIP
       for (const doc of documents) {
         try {
+          console.log(`Загружаем документ: ${doc.title}`);
+          // Проверяем, является ли URL внешним
+          if (doc.url.startsWith('http') && !doc.url.includes('localhost') && !doc.url.includes('127.0.0.1')) {
+            console.log(`Пропускаем внешний URL: ${doc.url}`);
+            continue;
+          }
+          
           // Формируем полный URL для файла
           const fullUrl = doc.url.startsWith('http') ? doc.url : `/api${doc.url}`;
+          console.log(`URL документа: ${fullUrl}`);
           const response = await fetch(fullUrl);
           if (response.ok) {
             const blob = await response.blob();
             const fileExtension = doc.file_type?.split('/')[1] || 'pdf';
             zip.file(`documents/${doc.title}.${fileExtension}`, blob);
+            console.log(`Документ ${doc.title} добавлен в ZIP`);
+          } else {
+            console.error(`Ошибка загрузки документа ${doc.title}: ${response.status}`);
           }
         } catch (error) {
           console.error(`Ошибка загрузки документа ${doc.title}:`, error);
@@ -56,22 +68,35 @@ const DownloadInfoSection: React.FC = () => {
       // Добавляем все сертификаты в ZIP
       for (const cert of certificates) {
         try {
+          console.log(`Загружаем сертификат: ${cert.title}`);
+          // Проверяем, является ли URL внешним
+          if (cert.url.startsWith('http') && !cert.url.includes('localhost') && !cert.url.includes('127.0.0.1')) {
+            console.log(`Пропускаем внешний URL: ${cert.url}`);
+            continue;
+          }
+          
           // Формируем полный URL для файла
           const fullUrl = cert.url.startsWith('http') ? cert.url : `/api${cert.url}`;
+          console.log(`URL сертификата: ${fullUrl}`);
           const response = await fetch(fullUrl);
           if (response.ok) {
             const blob = await response.blob();
             const fileExtension = cert.file_type?.split('/')[1] || 'pdf';
             zip.file(`certificates/${cert.title}.${fileExtension}`, blob);
+            console.log(`Сертификат ${cert.title} добавлен в ZIP`);
+          } else {
+            console.error(`Ошибка загрузки сертификата ${cert.title}: ${response.status}`);
           }
         } catch (error) {
           console.error(`Ошибка загрузки сертификата ${cert.title}:`, error);
         }
       }
       
+      console.log('Генерируем ZIP файл...');
       // Генерируем ZIP файл
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       
+      console.log('Скачиваем ZIP файл...');
       // Скачиваем ZIP файл
       const link = document.createElement('a');
       link.href = URL.createObjectURL(zipBlob);
@@ -80,6 +105,8 @@ const DownloadInfoSection: React.FC = () => {
       
       // Очищаем URL
       URL.revokeObjectURL(link.href);
+      
+      console.log('ZIP файл успешно скачан!');
       
     } catch (error) {
       console.error('Ошибка создания ZIP архива:', error);
@@ -138,7 +165,7 @@ const DownloadInfoSection: React.FC = () => {
               textTransform: 'uppercase'
             }}
           >
-            /ИНФОРМАЦИЯ ДЛЯ СКАЧИВАНИЯ
+          ИНФОРМАЦИЯ ДЛЯ СКАЧИВАНИЯ
           </h2>
         </div>
 

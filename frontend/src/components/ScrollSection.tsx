@@ -306,7 +306,7 @@ const ScrollSection: React.FC = () => {
         {/* Заголовок и подзаголовок */}
         <div className="col-start-1 col-end-13 text-center mb-16 px-16">
           <h2 
-            className="mb-6"
+            className="mb-12"
             style={{
               fontFamily: 'Bebas Neue',
               fontSize: '64px',
@@ -349,24 +349,28 @@ const ScrollSection: React.FC = () => {
                 }}
               >
                 <div className="w-full text-left">
-                  <h3 
-                    className="text-3xl font-bold mb-4"
-                    style={{ 
-                      fontFamily: 'Bebas Neue',
-                      color: '#D71920'
-                    }}
-                  >
-                    {block.title}
-                  </h3>
-                  <p 
-                    className="text-lg"
-                    style={{ 
-                      fontFamily: 'Inter',
-                      color: '#F2F0F0'
-                    }}
-                  >
-                    {block.description}
-                  </p>
+                  <div className="relative h-full">
+                    <div className="absolute inset-0 flex flex-col justify-between">
+                      <h3 
+                        className="text-3xl font-bold"
+                        style={{ 
+                          fontFamily: 'Bebas Neue',
+                          color: '#D71920'
+                        }}
+                      >
+                        {block.title}
+                      </h3>
+                      <p 
+                        className="text-lg"
+                        style={{ 
+                          fontFamily: 'Inter',
+                          color: '#F2F0F0'
+                        }}
+                      >
+                        {block.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             ))}

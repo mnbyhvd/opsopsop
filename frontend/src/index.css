@@ -164,8 +164,6 @@ p {
   --radius-xl: 16px;
   --radius-lg: 12px;
   --blur-glass: 12px;
-  
-
 }
 
 @layer base {
@@ -235,4 +233,14 @@ p {
   50% {
     transform: translateY(-50%) rotate(-22deg);
   }
+}
+
+/* Скрытие скроллбара для горизонтального скролла */
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
