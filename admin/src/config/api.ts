@@ -1,10 +1,11 @@
 // API Configuration
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://sps-master.ru';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '/api';
 
 export const API_ENDPOINTS = {
   HERO: `${API_BASE_URL}/hero`,
   NAVIGATION: `${API_BASE_URL}/navigation`,
   PRODUCTS: `${API_BASE_URL}/products`,
+  CATEGORIES: `${API_BASE_URL}/categories`,
   LEADS: `${API_BASE_URL}/leads`,
   LEADS_STATS: `${API_BASE_URL}/leads/stats/overview`,
   REQUISITES: `${API_BASE_URL}/requisites`,
