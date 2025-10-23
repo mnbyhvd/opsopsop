@@ -710,7 +710,7 @@ const ProductsAdmin: React.FC = () => {
                           <div>
                             <div className="text-white font-medium">{doc.name}</div>
                             <div className="text-gray-400 text-sm">
-                              {(doc.file_size / 1024).toFixed(1)} KB
+                              {doc.file_size ? `${(doc.file_size / 1024).toFixed(1)} KB` : 'N/A'}
                             </div>
                           </div>
                         </div>
