@@ -46,7 +46,7 @@ services:
     build: 
       context: ./frontend
       args:
-        REACT_APP_API_URL: /api
+        REACT_APP_API_URL: ""
     container_name: opsopsop-frontend
     expose:
       - "80"
@@ -57,7 +57,7 @@ services:
     build: 
       context: ./admin
       args:
-        REACT_APP_API_URL: /api
+        REACT_APP_API_URL: ""
     container_name: opsopsop-admin
     expose:
       - "80"
