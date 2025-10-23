@@ -77,9 +77,9 @@ export interface Product {
   image_url: string;
   category: string;
   category_name: string;
-  category_name_from_table: string;
   category_id: number | null;
   youtube_url: string | null;
+  price: number | null;
   specifications: Record<string, any>;
   sort_order: number;
   is_active: boolean;

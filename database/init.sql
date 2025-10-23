@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS products (
     image_url VARCHAR(500),
     category VARCHAR(100) NOT NULL,
     category_id INT NULL,
-    category_name VARCHAR(255) DEFAULT NULL,
     youtube_url VARCHAR(500) DEFAULT NULL,
     specifications JSON,
     price DECIMAL(10,2),
@@ -153,6 +152,9 @@ CREATE TABLE IF NOT EXISTS video_presentations_settings (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     subtitle TEXT,
+    description TEXT,
+    background_video_url VARCHAR(500),
+    is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -283,11 +285,11 @@ INSERT IGNORE INTO navigation_menu (title, url, sort_order, parent_id, is_active
 ('Реквизиты', '/requisites', 4, NULL, true);
 
 -- Insert sample categories data
-INSERT IGNORE INTO categories (name, description) VALUES
-('Датчики', 'Датчики температуры и дыма'),
-('Модули', 'Модули пожаротушения'),
-('Панели', 'Контрольные панели'),
-('Компоненты', 'Вспомогательные компоненты');
+INSERT IGNORE INTO categories (name, description, image_url, sort_order, is_active) VALUES
+('Датчики', 'Датчики температуры и дыма', '/images/categories/sensors.jpg', 1, true),
+('Модули', 'Модули пожаротушения', '/images/categories/modules.jpg', 2, true),
+('Панели', 'Контрольные панели', '/images/categories/panels.jpg', 3, true),
+('Компоненты', 'Вспомогательные компоненты', '/images/categories/components.jpg', 4, true);
 
 -- Insert sample about section data
 INSERT IGNORE INTO about_section (title, description, image_url, sort_order, is_active) VALUES
@@ -308,11 +310,11 @@ INSERT IGNORE INTO hero_section (title, subtitle, description, background_image,
 ('АПС МАСТЕР', 'Система автоматического пожаротушения нового поколения', 'Инновационная система пожаротушения с цифровым протоколом M105, кольцевой топологией шлейфов и сетью MasterNet для максимальной надежности и эффективности.', '/hero-background.jpg', true);
 
 -- Insert sample products data
-INSERT IGNORE INTO products (name, description, image_url, category, category_id, specifications, price, sort_order, is_active) VALUES
-('Датчик температуры МАСТЕР-Т', 'Высокоточный датчик для измерения температуры окружающей среды с цифровым протоколом M105', '/placeholder-product-1.png', 'Датчики', 1, '{"range": "-40°C до +85°C", "accuracy": "±0.5°C", "protection": "IP67", "protocol": "M105"}', 15000.00, 1, true),
-('Модуль пожаротушения МАСТЕР-М', 'Автоматический модуль для тушения пожара с быстрым срабатыванием и цифровым управлением', '/placeholder-product-2.png', 'Модули', 2, '{"response_time": "<3 сек", "volume": "2-6 литров", "type": "Порошковый", "protocol": "M105"}', 25000.00, 2, true),
-('Контрольная панель МАСТЕР-П', 'Центральная панель управления системой пожаротушения с поддержкой сети MasterNet', '/placeholder-product-3.png', 'Панели', 3, '{"channels": "до 32", "power": "12-24V", "interface": "LCD дисплей", "network": "MasterNet"}', 45000.00, 3, true),
-('Изолятор короткого замыкания ИКЗ', 'Встроенный изолятор для автоматической изоляции поврежденных участков шлейфа', '/placeholder-product-4.png', 'Компоненты', 4, '{"voltage": "12-24V", "current": "до 2А", "protection": "IP65", "mounting": "DIN-рейка"}', 5000.00, 4, true);
+INSERT IGNORE INTO products (name, description, image_url, category, category_id, youtube_url, specifications, price, sort_order, is_active) VALUES
+('Датчик температуры МАСТЕР-Т', 'Высокоточный датчик для измерения температуры окружающей среды с цифровым протоколом M105', '/placeholder-product-1.png', 'Датчики', 1, 'https://youtube.com/watch?v=master-t', '{"range": "-40°C до +85°C", "accuracy": "±0.5°C", "protection": "IP67", "protocol": "M105"}', 15000.00, 1, true),
+('Модуль пожаротушения МАСТЕР-М', 'Автоматический модуль для тушения пожара с быстрым срабатыванием и цифровым управлением', '/placeholder-product-2.png', 'Модули', 2, 'https://youtube.com/watch?v=master-m', '{"response_time": "<3 сек", "volume": "2-6 литров", "type": "Порошковый", "protocol": "M105"}', 25000.00, 2, true),
+('Контрольная панель МАСТЕР-П', 'Центральная панель управления системой пожаротушения с поддержкой сети MasterNet', '/placeholder-product-3.png', 'Панели', 3, 'https://youtube.com/watch?v=master-p', '{"channels": "до 32", "power": "12-24V", "interface": "LCD дисплей", "network": "MasterNet"}', 45000.00, 3, true),
+('Изолятор короткого замыкания ИКЗ', 'Встроенный изолятор для автоматической изоляции поврежденных участков шлейфа', '/placeholder-product-4.png', 'Компоненты', 4, 'https://youtube.com/watch?v=ikz', '{"voltage": "12-24V", "current": "до 2А", "protection": "IP65", "mounting": "DIN-рейка"}', 5000.00, 4, true);
 
 -- Insert sample videos data
 INSERT IGNORE INTO videos (title, description, video_url, youtube_url, thumbnail_url, category, duration, sort_order, is_active) VALUES
@@ -361,8 +363,8 @@ INSERT IGNORE INTO footer_settings (company_name, company_subtitle, contact_phon
 ('ООО "АПС МАСТЕР"', 'Системы автоматического пожаротушения', '+7 (495) 123-45-67', 'info@aps-master.ru', 'г. Москва, ул. Примерная, д. 1', 'Пн-Пт 10:00-18:00', 'СВЯЖИТЕСЬ С НАМИ', 'Оставьте заявку и получите спецификацию и коммерческое предложение, подобранные именно под ваши задачи.', '#privacy');
 
 -- Insert sample video presentations settings data
-INSERT IGNORE INTO video_presentations_settings (title, subtitle) VALUES
-('ВИДЕО-ПРЕЗЕНТАЦИИ', 'Демонстрация возможностей системы автоматического пожаротушения МАСТЕР');
+INSERT IGNORE INTO video_presentations_settings (title, subtitle, description, background_video_url, is_active) VALUES
+('ВИДЕО-ПРЕЗЕНТАЦИИ', 'Демонстрация возможностей системы автоматического пожаротушения МАСТЕР', 'Посмотрите наши видео-презентации и узнайте больше о возможностях системы МАСТЕР', '/videos/demo.mp4', true);
 
 -- Insert sample scroll section data
 INSERT IGNORE INTO scroll_section (section_title, section_subtitle, video_url) VALUES

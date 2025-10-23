@@ -46,7 +46,9 @@ router.get('/', async (req, res) => {
         p.image_url,
         p.category,
         p.category_id,
-        c.name as category_name_from_table,
+        c.name as category_name,
+        p.youtube_url,
+        p.price,
         p.specifications,
         p.sort_order,
         p.is_active,
@@ -88,7 +90,9 @@ router.get('/:id', async (req, res) => {
         p.image_url,
         p.category,
         p.category_id,
-        c.name as category_name_from_table,
+        c.name as category_name,
+        p.youtube_url,
+        p.price,
         p.specifications,
         p.sort_order,
         p.is_active,
@@ -160,8 +164,10 @@ router.post('/', async (req, res) => {
       name, 
       description, 
       image_url, 
-      category_name, 
+      category, 
       category_id,
+      youtube_url,
+      price,
       specifications, 
       sort_order,
       is_active
@@ -171,16 +177,18 @@ router.post('/', async (req, res) => {
     const safeName = name || null;
     const safeDescription = description || null;
     const safeImageUrl = image_url || null;
-    const safeCategoryName = category_name || null;
+    const safeCategoryName = category || null;
     const safeCategoryId = category_id || null;
+    const safeYoutubeUrl = youtube_url || null;
+    const safePrice = price || null;
     const safeSpecifications = specifications ? JSON.stringify(specifications) : null;
     const safeSortOrder = sort_order || 0;
     const safeIsActive = is_active !== undefined ? is_active : true;
     
     const [result] = await pool.execute(`
-      INSERT INTO products (name, description, image_url, category_name, category_id, specifications, sort_order, is_active)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [safeName, safeDescription, safeImageUrl, safeCategoryName, safeCategoryId, safeSpecifications, safeSortOrder, safeIsActive]);
+      INSERT INTO products (name, description, image_url, category, category_id, youtube_url, price, specifications, sort_order, is_active)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [safeName, safeDescription, safeImageUrl, safeCategoryName, safeCategoryId, safeYoutubeUrl, safePrice, safeSpecifications, safeSortOrder, safeIsActive]);
     
     const [newProduct] = await pool.execute(`
       SELECT 
@@ -190,7 +198,9 @@ router.post('/', async (req, res) => {
         p.image_url,
         p.category,
         p.category_id,
-        c.name as category_name_from_table,
+        c.name as category_name,
+        p.youtube_url,
+        p.price,
         p.specifications,
         p.sort_order,
         p.is_active,
@@ -224,8 +234,10 @@ router.put('/:id', async (req, res) => {
       name, 
       description, 
       image_url, 
-      category_name, 
+      category, 
       category_id,
+      youtube_url,
+      price,
       specifications, 
       sort_order,
       is_active 
@@ -235,8 +247,10 @@ router.put('/:id', async (req, res) => {
     const safeName = name || null;
     const safeDescription = description || null;
     const safeImageUrl = image_url || null;
-    const safeCategoryName = category_name || null;
+    const safeCategoryName = category || null;
     const safeCategoryId = category_id || null;
+    const safeYoutubeUrl = youtube_url || null;
+    const safePrice = price || null;
     const safeSpecifications = specifications ? JSON.stringify(specifications) : null;
     const safeSortOrder = sort_order || 0;
     const safeIsActive = is_active !== undefined ? is_active : true;
@@ -247,14 +261,16 @@ router.put('/:id', async (req, res) => {
         name = COALESCE(?, name),
         description = COALESCE(?, description),
         image_url = COALESCE(?, image_url),
-        category_name = COALESCE(?, category_name),
+        category = COALESCE(?, category),
         category_id = COALESCE(?, category_id),
+        youtube_url = COALESCE(?, youtube_url),
+        price = COALESCE(?, price),
         specifications = COALESCE(?, specifications),
         sort_order = COALESCE(?, sort_order),
         is_active = COALESCE(?, is_active),
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `, [safeName, safeDescription, safeImageUrl, safeCategoryName, safeCategoryId, safeSpecifications, safeSortOrder, safeIsActive, id]);
+    `, [safeName, safeDescription, safeImageUrl, safeCategoryName, safeCategoryId, safeYoutubeUrl, safePrice, safeSpecifications, safeSortOrder, safeIsActive, id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({
@@ -271,7 +287,9 @@ router.put('/:id', async (req, res) => {
         p.image_url,
         p.category,
         p.category_id,
-        c.name as category_name_from_table,
+        c.name as category_name,
+        p.youtube_url,
+        p.price,
         p.specifications,
         p.sort_order,
         p.is_active,
