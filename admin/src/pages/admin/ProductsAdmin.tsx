@@ -45,7 +45,14 @@ interface ProductDocument {
 }
 
 interface Category {
+  id: number;
   name: string;
+  description: string | null;
+  image_url: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
 
 interface SortableProductProps {
@@ -183,7 +190,7 @@ const ProductsAdmin: React.FC = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/categories/unique');
+      const response = await fetch('/api/categories');
       if (response.ok) {
         const data = await response.json();
         setCategories(data.data || []);
@@ -338,6 +345,36 @@ const ProductsAdmin: React.FC = () => {
     if (!editingProduct) return;
 
     try {
+      let productData = { ...editingProduct };
+      
+      // Если создается новая категория, сначала создаем её
+      if (isNewCategory && editingProduct.category_name) {
+        const categoryResponse = await fetch('/api/categories', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: editingProduct.category_name,
+            description: '',
+            image_url: null,
+            sort_order: 0
+          }),
+        });
+        
+        if (categoryResponse.ok) {
+          const categoryResult = await categoryResponse.json();
+          productData.category_id = categoryResult.data.id;
+          productData.category_name = categoryResult.data.name;
+          
+          // Обновляем список категорий
+          setCategories([...categories, categoryResult.data]);
+        } else {
+          console.error('Error creating category');
+          return;
+        }
+      }
+      
       const url = isCreating 
         ? '/api/products'
         : `/api/products/${editingProduct.id}`;
@@ -349,7 +386,7 @@ const ProductsAdmin: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editingProduct),
+        body: JSON.stringify(productData),
       });
 
       if (response.ok) {
@@ -363,6 +400,7 @@ const ProductsAdmin: React.FC = () => {
         }
         setEditingProduct(null);
         setIsCreating(false);
+        setIsNewCategory(false);
       } else {
         console.error('Error saving product');
       }
@@ -575,7 +613,7 @@ const ProductsAdmin: React.FC = () => {
                 <div className="space-y-2">
                   {/* Выпадающий список существующих категорий */}
                   <select
-                    value={isNewCategory ? '__new__' : (editingProduct.category_name || '')}
+                    value={isNewCategory ? '__new__' : (editingProduct.category_id || '')}
                     onChange={(e) => {
                       const selectedCategory = e.target.value;
                       if (selectedCategory === '__new__') {
@@ -587,18 +625,20 @@ const ProductsAdmin: React.FC = () => {
                         });
                       } else {
                         setIsNewCategory(false);
+                        const categoryId = parseInt(selectedCategory);
+                        const selectedCategoryData = categories.find(c => c.id === categoryId);
                         setEditingProduct({
                           ...editingProduct, 
-                          category_name: selectedCategory,
-                          category_id: null
+                          category_name: selectedCategoryData?.name || '',
+                          category_id: categoryId
                         });
                       }
                     }}
                     className="admin-input w-full"
                   >
                     <option value="">Выберите существующую категорию</option>
-                    {categories.map((category, index) => (
-                      <option key={index} value={category.name}>
+                    {categories.map((category) => (
+                      <option key={category.id} value={category.id}>
                         {category.name}
                       </option>
                     ))}
