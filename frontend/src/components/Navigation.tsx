@@ -21,7 +21,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
 
   const logoSrc = `${process.env.PUBLIC_URL || ''}/logo-master.svg`;
 
-  const items = navigation.length
+  const items = (navigation && navigation.length > 0)
     ? navigation
     : [
         { id: 1, title: 'Главная', url: '/', sort_order: 1, parent_id: null, is_active: true, created_at: '', updated_at: '' },

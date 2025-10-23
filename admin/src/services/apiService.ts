@@ -70,6 +70,59 @@ class ApiService {
     return this.request(API_ENDPOINTS.PRODUCTS);
   }
 
+  async getProduct(id: number) {
+    return this.request(`${API_ENDPOINTS.PRODUCTS}/${id}`);
+  }
+
+  async createProduct(productData: any) {
+    return this.request(API_ENDPOINTS.PRODUCTS, {
+      method: 'POST',
+      body: JSON.stringify(productData),
+    });
+  }
+
+  async updateProduct(id: number, productData: any) {
+    return this.request(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(productData),
+    });
+  }
+
+  async deleteProduct(id: number) {
+    return this.request(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Categories
+  async getCategories() {
+    return this.request(API_ENDPOINTS.CATEGORIES);
+  }
+
+  async getUniqueCategories() {
+    return this.request(`${API_ENDPOINTS.CATEGORIES}/unique`);
+  }
+
+  async createCategory(categoryData: any) {
+    return this.request(API_ENDPOINTS.CATEGORIES, {
+      method: 'POST',
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  async updateCategory(id: number, categoryData: any) {
+    return this.request(`${API_ENDPOINTS.CATEGORIES}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(categoryData),
+    });
+  }
+
+  async deleteCategory(id: number) {
+    return this.request(`${API_ENDPOINTS.CATEGORIES}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   // Leads
   async getLeads() {
     return this.request(API_ENDPOINTS.LEADS);
@@ -120,6 +173,41 @@ class ApiService {
   // Videos
   async getVideos() {
     return this.request(API_ENDPOINTS.VIDEOS);
+  }
+
+  async getVideo(id: number) {
+    return this.request(`${API_ENDPOINTS.VIDEOS}/${id}`);
+  }
+
+  async createVideo(videoData: any) {
+    return this.request(API_ENDPOINTS.VIDEOS, {
+      method: 'POST',
+      body: JSON.stringify(videoData),
+    });
+  }
+
+  async updateVideo(id: number, videoData: any) {
+    return this.request(`${API_ENDPOINTS.VIDEOS}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(videoData),
+    });
+  }
+
+  async deleteVideo(id: number) {
+    return this.request(`${API_ENDPOINTS.VIDEOS}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getVideoSettings() {
+    return this.request(`${API_ENDPOINTS.VIDEOS}/settings`);
+  }
+
+  async updateVideoSettings(settingsData: any) {
+    return this.request(`${API_ENDPOINTS.VIDEOS}/settings`, {
+      method: 'PUT',
+      body: JSON.stringify(settingsData),
+    });
   }
 
   // Technical Specs
@@ -177,6 +265,25 @@ class ApiService {
   // Scroll Section
   async getScrollSection() {
     return this.request(API_ENDPOINTS.SCROLL_SECTION);
+  }
+
+  // Upload
+  async uploadFile(file: File, type: string = 'image') {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('type', type);
+
+    return this.request(API_ENDPOINTS.UPLOAD, {
+      method: 'POST',
+      body: formData,
+    });
+  }
+
+  // Export
+  async exportData(type: string = 'leads') {
+    return this.request(`${API_ENDPOINTS.EXPORT}/${type}`, {
+      method: 'GET',
+    });
   }
 }
 

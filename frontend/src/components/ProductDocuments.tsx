@@ -9,8 +9,8 @@ interface ProductDocumentsProps {
 const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
   const [downloadingZip, setDownloadingZip] = useState(false);
 
-  const getFileIcon = (fileType: string) => {
-    const type = fileType.toLowerCase();
+  const getFileIcon = (fileType: string | null) => {
+    const type = fileType?.toLowerCase() || '';
     if (type.includes('pdf')) {
       return (
         <svg className="w-8 h-8 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -38,8 +38,8 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
     }
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+  const formatFileSize = (bytes: number | null) => {
+    if (!bytes || bytes === 0) return '0 Bytes';
     const k = 1024;
     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
@@ -163,7 +163,7 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
               )}
               <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                 <span style={{ fontFamily: 'Inter' }}>
-                  {document.file_type.toUpperCase()}
+                  {document.file_type?.toUpperCase() || 'UNKNOWN'}
                 </span>
                 <span style={{ fontFamily: 'Inter' }}>
                   {formatFileSize(document.file_size)}

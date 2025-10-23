@@ -56,7 +56,9 @@ const ProductsSection: React.FC = () => {
       const response = await fetch('/api/products');
       if (response.ok) {
         const data = await response.json();
-        setSettings(data.data);
+        if (data.success && data.data) {
+          setSettings(data.data);
+        }
       }
     } catch (error) {
       console.error('Error fetching product settings:', error);
@@ -78,7 +80,7 @@ const ProductsSection: React.FC = () => {
         const response = await fetch(`/api/product-modals/${area.id}`);
         if (response.ok) {
           const data = await response.json();
-          if (data.success && data.data) {
+          if (data.success && data.data && Array.isArray(data.data)) {
             allModals.push(...data.data.filter((modal: ProductModal) => modal.is_active));
           }
         }
@@ -139,7 +141,7 @@ const ProductsSection: React.FC = () => {
     maskImg.crossOrigin = 'anonymous';
     maskImg.onload = () => {
       console.log('Mask image loaded successfully');
-      (maskImageRef as React.MutableRefObject<HTMLImageElement>).current = maskImg;
+      (maskImageRef as React.MutableRefObject<HTMLImageElement | null>).current = maskImg;
       setMaskLoaded(true);
     };
     maskImg.onerror = () => {
@@ -321,7 +323,7 @@ const ProductsSection: React.FC = () => {
     if (!ctx) return;
 
     // Получаем размеры основной картинки
-    const mainImg = document.querySelector('img[src="/images/products/main-product.png"]') as HTMLImageElement;
+    const mainImg = document.querySelector('img[src="/images/products/main-product.png"]') as HTMLImageElement | null;
     if (!mainImg) return;
 
     // Устанавливаем внутренние размеры canvas как у отображаемой картинки

@@ -43,20 +43,22 @@ services:
       - master_sps_network
 
   frontend:
-    build: ./frontend
+    build: 
+      context: ./frontend
+      args:
+        REACT_APP_API_URL: /api
     container_name: opsopsop-frontend
-    environment:
-      REACT_APP_API_URL: /api
     expose:
       - "80"
     networks:
       - master_sps_network
 
   admin:
-    build: ./admin
+    build: 
+      context: ./admin
+      args:
+        REACT_APP_API_URL: /api
     container_name: opsopsop-admin
-    environment:
-      REACT_APP_API_URL: /api
     expose:
       - "80"
     networks:

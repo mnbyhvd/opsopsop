@@ -104,7 +104,7 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
               Категории
               {selectedCategoryId && (
                 <span className="ml-1 px-2 py-1 text-xs bg-red-500 text-white rounded-full">
-                  {categories.find(c => c.id === selectedCategoryId)?.name}
+                  {categories.find(c => c.id === selectedCategoryId)?.name || 'Категория'}
                 </span>
               )}
               <svg

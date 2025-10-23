@@ -103,7 +103,7 @@ const Footer: React.FC = () => {
                       color: '#F2F0F0'
                     }}
                   >
-                    {settings.form_title}
+                    {settings.form_title || 'Свяжитесь с нами'}
                   </h2>
                   
                   <p 
@@ -113,7 +113,7 @@ const Footer: React.FC = () => {
                       color: '#F2F0F0'
                     }}
                   >
-                    {settings.form_description}
+                    {settings.form_description || 'Оставьте заявку и мы свяжемся с вами в ближайшее время'}
                   </p>
                 </motion.div>
             </div>
@@ -270,7 +270,7 @@ const Footer: React.FC = () => {
                     >
                       Согласен на{' '}
                       <a 
-                        href={settings.privacy_policy_url}
+                        href={settings.privacy_policy_url || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="underline hover:no-underline transition-all duration-200"
@@ -421,7 +421,7 @@ const Footer: React.FC = () => {
                         color: '#F2F0F0'
                       }}
                     >
-                      {settings.contact_phone}
+                      {settings.contact_phone || '+7 (495) 123-45-67'}
                     </p>
                     <p 
                       className="text-base"
@@ -430,7 +430,7 @@ const Footer: React.FC = () => {
                         color: '#F2F0F0'
                       }}
                     >
-                      {settings.contact_email}
+                      {settings.contact_email || 'info@example.com'}
                     </p>
                     <p 
                       className="text-base"

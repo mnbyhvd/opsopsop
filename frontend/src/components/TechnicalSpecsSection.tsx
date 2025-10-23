@@ -57,9 +57,11 @@ const TechnicalSpecsSection: React.FC = () => {
             technicalSpecs.forEach((spec, index) => {
               if (spec.value) {
                 const targetValue = parseInt(spec.value);
-                setTimeout(() => {
-                  animateCounter(targetValue, index, 2000);
-                }, index * 200); // Задержка 200мс между анимациями
+                if (!isNaN(targetValue)) {
+                  setTimeout(() => {
+                    animateCounter(targetValue, index, 2000);
+                  }, index * 200); // Задержка 200мс между анимациями
+                }
               }
             });
           }

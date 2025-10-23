@@ -99,11 +99,17 @@ const Videos: React.FC = () => {
                 >
                   {/* Видео превью */}
                   <div className="relative w-full md:w-80 h-48 bg-gray-700/50 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
-                    <img 
-                      src={video.thumbnail_url} 
-                      alt={video.title}
-                      className="w-full h-full object-cover"
-                    />
+                    {video.thumbnail_url ? (
+                      <img 
+                        src={video.thumbnail_url} 
+                        alt={video.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400">
+                        <span>Превью видео</span>
+                      </div>
+                    )}
                     {/* Play кнопка */}
                     <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center backdrop-blur-sm">
@@ -134,7 +140,7 @@ const Videos: React.FC = () => {
                       {video.description}
                     </p>
                     <div className="text-sm text-gray-400" style={{ fontFamily: 'Inter' }}>
-                      {video.category} • {video.duration}
+                      {video.category || 'Видео'} • {video.duration}
                     </div>
                   </div>
                 </motion.div>
@@ -208,7 +214,7 @@ const Videos: React.FC = () => {
                 {selectedVideo.description}
               </p>
               <div className="text-sm text-gray-400" style={{ fontFamily: 'Inter' }}>
-                {selectedVideo.category} • {selectedVideo.duration}
+                {selectedVideo.category || 'Видео'} • {selectedVideo.duration}
               </div>
             </div>
           </div>

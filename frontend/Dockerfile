@@ -12,8 +12,9 @@ RUN npm ci --silent
 # Copy all source files
 COPY . .
 
-# Set environment variable for API URL
-ENV REACT_APP_API_URL=/api
+# Accept build argument for API URL
+ARG REACT_APP_API_URL=/api
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
 
 # Build the app with optimizations
 RUN npm run build

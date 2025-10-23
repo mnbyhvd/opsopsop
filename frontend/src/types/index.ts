@@ -56,17 +56,17 @@ export interface FooterProps {
 export interface ProductImage {
   id: number;
   image_url: string;
-  alt_text: string;
+  alt_text: string | null;
   sort_order: number;
 }
 
 export interface ProductDocument {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   file_url: string;
-  file_type: string;
-  file_size: number;
+  file_type: string | null;
+  file_size: number | null;
   sort_order: number;
 }
 
@@ -75,9 +75,11 @@ export interface Product {
   name: string;
   description: string;
   image_url: string;
+  category: string;
   category_name: string;
   category_name_from_table: string;
-  category_id: number;
+  category_id: number | null;
+  youtube_url: string | null;
   specifications: Record<string, any>;
   sort_order: number;
   is_active: boolean;
@@ -90,8 +92,8 @@ export interface Product {
 export interface Category {
   id: number;
   name: string;
-  description: string;
-  image_url: string;
+  description: string | null;
+  image_url: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;

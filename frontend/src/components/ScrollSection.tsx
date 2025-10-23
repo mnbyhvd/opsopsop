@@ -60,7 +60,7 @@ const FALLBACK_DATA: ScrollSectionData = {
 
 const ScrollSection: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const textBlocksRef = useRef<HTMLDivElement[]>([]);
+  const textBlocksRef = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
   const animationFrameRef = useRef<number | null>(null);

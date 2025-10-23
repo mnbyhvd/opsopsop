@@ -25,7 +25,7 @@ interface Product {
   id: number;
   name: string;
   description: string;
-  image_url: string;
+  image_url: string | null;
   category_id: number | null;
   category_name: string | null;
   sort_order: number;
@@ -37,10 +37,10 @@ interface Product {
 interface ProductDocument {
   id: number;
   name: string;
-  description: string;
+  description: string | null;
   file_url: string;
-  file_type: string;
-  file_size: number;
+  file_type: string | null;
+  file_size: number | null;
   sort_order: number;
 }
 

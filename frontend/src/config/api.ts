@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
   REQUISITES: `${API_BASE_URL}/requisites`,
   DOCUMENTS: `${API_BASE_URL}/documents`,
   VIDEOS: `${API_BASE_URL}/videos`,
+  VIDEO_SETTINGS: `${API_BASE_URL}/videos/settings`,
   ABOUT: `${API_BASE_URL}/about`,
   ADVANTAGES: `${API_BASE_URL}/advantages`,
   TECHNICAL_SPECS: `${API_BASE_URL}/technical-specs`,
@@ -18,6 +19,8 @@ export const API_ENDPOINTS = {
   FOOTER_SETTINGS: `${API_BASE_URL}/footer-settings`,
   PRODUCT_MODALS: `${API_BASE_URL}/product-modals`,
   SCROLL_SECTION: `${API_BASE_URL}/scroll-section`,
+  UPLOAD: `${API_BASE_URL}/upload`,
+  EXPORT: `${API_BASE_URL}/export`,
 };
 
 export default API_ENDPOINTS;

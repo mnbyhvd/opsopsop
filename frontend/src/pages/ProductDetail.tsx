@@ -110,7 +110,7 @@ const ProductDetail: React.FC = () => {
                 className="text-sm text-red-400 mb-2"
                 style={{ fontFamily: 'Inter' }}
               >
-                {product.category_name || product.category_name_from_table}
+                {product.category_name || product.category_name_from_table || product.category || 'Категория'}
               </div>
               <h1 
                 className="text-3xl md:text-4xl font-bold mb-4"

@@ -103,17 +103,6 @@ app.use('/api/export', require('./routes/export'));
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/product-modals', require('./routes/product_modals'));
 
-// Добавляем route для настроек видео
-app.get('/api/videos/settings', async (req, res) => {
-  try {
-    const [rows] = await pool.execute('SELECT * FROM videos WHERE is_active = true ORDER BY sort_order ASC');
-    res.json({ success: true, data: rows });
-  } catch (error) {
-    console.error('Error fetching video settings:', error);
-    res.status(500).json({ success: false, error: 'Failed to fetch video settings' });
-  }
-});
-
 // Статические файлы для загрузок с CORS заголовками
 app.use('/uploads', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');

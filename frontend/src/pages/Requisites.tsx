@@ -105,7 +105,7 @@ const Requisites: React.FC = () => {
                     color: '#F2F0F0'
                   }}
                 >
-                  {requisites.legal_name}
+                  {requisites.legal_name || 'Название организации'}
                 </p>
                 <p 
                   className="text-lg mt-2"
@@ -114,7 +114,7 @@ const Requisites: React.FC = () => {
                     color: '#B8B8B8'
                   }}
                 >
-                  Краткое наименование: {requisites.company_name}
+                  Краткое наименование: {requisites.company_name || 'Краткое наименование'}
                 </p>
               </div>
 
@@ -142,7 +142,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.inn}
+                        {requisites.inn || 'ИНН'}
                       </span>
                     </div>
                     <div>
@@ -156,7 +156,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.kpp}
+                        {requisites.kpp || 'КПП'}
                       </span>
                     </div>
                     <div>
@@ -170,7 +170,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.ogrn}
+                        {requisites.ogrn || 'ОГРН'}
                       </span>
                     </div>
                   </div>
@@ -198,7 +198,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.actual_address}
+                        {requisites.actual_address || 'Адрес'}
                       </span>
                     </div>
                     <div>
@@ -212,7 +212,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.phone}
+                        {requisites.phone || 'Телефон'}
                       </span>
                     </div>
                     <div>
@@ -226,7 +226,7 @@ const Requisites: React.FC = () => {
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.email}
+                        {requisites.email || 'Email'}
                       </span>
                     </div>
                   </div>
@@ -256,7 +256,7 @@ const Requisites: React.FC = () => {
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bank_name}
+                      {requisites.bank_name || 'Банк'}
                     </span>
                   </div>
                   <div>
@@ -270,7 +270,7 @@ const Requisites: React.FC = () => {
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bik}
+                      {requisites.bik || 'БИК'}
                     </span>
                   </div>
                   <div>
@@ -284,7 +284,7 @@ const Requisites: React.FC = () => {
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bank_account}
+                      {requisites.bank_account || 'Расчетный счет'}
                     </span>
                   </div>
                   <div>
@@ -298,7 +298,7 @@ const Requisites: React.FC = () => {
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.correspondent_account}
+                      {requisites.correspondent_account || 'Корреспондентский счет'}
                     </span>
                   </div>
                 </div>

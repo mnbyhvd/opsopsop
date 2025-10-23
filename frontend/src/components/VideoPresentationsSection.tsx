@@ -75,7 +75,9 @@ const VideoPresentationsSection: React.FC = () => {
       const response = await fetch('/api/videos');
       if (response.ok) {
         const data = await response.json();
-        setVideos(data.data || []);
+        if (data.success && data.data && Array.isArray(data.data)) {
+          setVideos(data.data);
+        }
       }
     } catch (error) {
       console.error('Error fetching videos:', error);
@@ -89,7 +91,9 @@ const VideoPresentationsSection: React.FC = () => {
       const response = await fetch('/api/videos');
       if (response.ok) {
         const data = await response.json();
-        setSettings(data.data);
+        if (data.success && data.data) {
+          setSettings(data.data);
+        }
       }
     } catch (error) {
       console.error('Error fetching video settings:', error);
@@ -346,7 +350,7 @@ const VideoPresentationsSection: React.FC = () => {
               <div className="relative w-full h-96 md:h-[500px] rounded-lg overflow-hidden">
                 {isYouTube(selectedVideo) ? (
                   <iframe
-                    src={getYouTubeEmbedUrl(selectedVideo.youtube_url!)}
+                    src={getYouTubeEmbedUrl(selectedVideo.youtube_url || '')}
                     className="w-full h-full"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
