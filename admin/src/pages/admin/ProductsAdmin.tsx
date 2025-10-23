@@ -704,7 +704,7 @@ const ProductsAdmin: React.FC = () => {
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 bg-red-500 rounded flex items-center justify-center">
                             <span className="text-white text-xs font-bold">
-                              {doc.file_type.split('/')[1]?.toUpperCase().substring(0, 3) || 'DOC'}
+                              {doc.file_type?.split('/')[1]?.toUpperCase().substring(0, 3) || 'DOC'}
                             </span>
                           </div>
                           <div>
