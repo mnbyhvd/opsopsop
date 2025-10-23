@@ -161,7 +161,7 @@ const Products: React.FC = () => {
                       {product.description}
                     </p>
                     <div className="text-sm text-gray-400" style={{ fontFamily: 'Inter' }}>
-                      {product.category_name || product.category_name_from_table || product.category || 'Категория'}
+                      {product.category_name || product.category || 'Категория'}
                     </div>
                   </div>
                 </motion.div>
