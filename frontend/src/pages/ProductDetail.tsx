@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PageContainer from '../components/PageContainer';
 import ProductImageCarousel from '../components/ProductImageCarousel';
@@ -12,16 +12,6 @@ const ProductDetail: React.FC = () => {
   const productId = id ? parseInt(id, 10) : 0;
   
   const { product, loading, error } = useProduct(productId);
-  const location = useLocation();
-  const documentsRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    // Автоскролл к документам, если передан хэш #documents или state.scrollTo
-    const shouldScrollToDocs = location.hash === '#documents' || (location.state as any)?.scrollTo === 'documents';
-    if (shouldScrollToDocs && documentsRef.current) {
-      documentsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }, [location.hash, location.state]);
 
   if (loading) {
     return (
@@ -145,8 +135,8 @@ const ProductDetail: React.FC = () => {
               </p>
             </div>
 
-            {/* Технические характеристики */}
-            {product.specifications && Object.keys(product.specifications).length > 0 && (
+            {/* Документы */}
+            {product.documents && product.documents.length > 0 && (
               <div>
                 <h2 
                   className="text-lg md:text-xl font-bold mb-4"
@@ -155,29 +145,9 @@ const ProductDetail: React.FC = () => {
                     color: '#F2F0F0'
                   }}
                 >
-                  ТЕХНИЧЕСКИЕ ХАРАКТЕРИСТИКИ
+                  ДОКУМЕНТЫ ДЛЯ СКАЧИВАНИЯ
                 </h2>
-                <div className="space-y-3">
-                  {Object.entries(product.specifications).map(([key, value]) => (
-                    <div 
-                      key={key}
-                      className="flex justify-between items-center py-2 border-b border-gray-700"
-                    >
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        {key}:
-                      </span>
-                      <span 
-                        className="text-white font-medium text-right ml-4"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        {String(value)}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <ProductDocuments documents={product.documents} />
               </div>
             )}
 
@@ -194,21 +164,6 @@ const ProductDetail: React.FC = () => {
         </PageContainer>
       </section>
 
-      {/* Документы */}
-      {product.documents && product.documents.length > 0 && (
-        <section className="py-8 md:py-16 relative" id="documents">
-          <PageContainer>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <div ref={documentsRef} />
-              <ProductDocuments documents={product.documents} />
-            </motion.div>
-          </PageContainer>
-        </section>
-      )}
     </div>
   );
 };
