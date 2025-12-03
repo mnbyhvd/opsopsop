@@ -191,7 +191,7 @@ const VideoPresentationsSection: React.FC = () => {
               textTransform: 'uppercase'
             }}
           >
-            {settings?.title || 'ВИДЕО-ПРЕЗЕНТАЦИИ'}
+            {settings?.title || 'ВИДЕОПРЕЗЕНТАЦИИ'}
           </h2>
           <p 
             className="text-lg"

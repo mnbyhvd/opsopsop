@@ -331,18 +331,8 @@ const Footer: React.FC = () => {
                   viewport={{ once: true }}
                 >
                   <div className="flex flex-col space-y-3 mb-6">
-                    {/* Первый логотип */}
-                    <img 
-                      src="/logo1.png" 
-                      alt="Логотип 1" 
-                      style={{ 
-                        width: '151px',
-                        height: '32px',
-                        objectFit: 'contain'
-                      }}
-                    />
                     
-                    {/* Второй логотип */}
+                    {/* "Элемент" логотип */}
                     <img 
                       src="/logo2.png" 
                       alt="Логотип 2" 
@@ -439,7 +429,7 @@ const Footer: React.FC = () => {
                         color: '#F2F0F0'
                       }}
                     >
-                      г. Москва, ул. Остоженка, д.1/9
+                       {settings.contact_address || 'г. Обнинск, проезд Самсоновский, д. 10'}
                     </p>
                     <p 
                       className="text-base"
@@ -448,7 +438,7 @@ const Footer: React.FC = () => {
                         color: '#F2F0F0'
                       }}
                     >
-                      Пн-Пт 10:00-18:00
+                      {settings.working_hours || 'Пн-Пт 10:00-18:00'}
                     </p>
                   </div>
                 </motion.div>
@@ -463,17 +453,6 @@ const Footer: React.FC = () => {
                   viewport={{ once: true }}
                   className="flex justify-end"
                 >
-                  <button 
-                    onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                    className="flex items-center space-x-2 text-base hover:text-red-500 transition-colors duration-200"
-                    style={{
-                      fontFamily: 'Inter',
-                      color: '#F2F0F0'
-                    }}
-                  >
-                    <span>Наверх</span>
-                    <span>^</span>
-                  </button>
                 </motion.div>
             </div>
 

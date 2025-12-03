@@ -118,21 +118,21 @@ const Products: React.FC = () => {
                 </div>
               ) : (
                 filteredProducts.map((product, index) => (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: index * 0.1 }}
-                    viewport={{ once: true }}
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  viewport={{ once: true }}
                     onClick={() => handleProductClick(product.id)}
                     className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 cursor-pointer hover:scale-105 transition-all duration-300"
-                    style={{
-                      backgroundColor: 'rgba(98, 98, 98, 0.3)',
-                      backdropFilter: 'blur(38.400001525878906px)',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      borderRadius: '30px'
-                    }}
-                  >
+                  style={{
+                    backgroundColor: 'rgba(98, 98, 98, 0.3)',
+                    backdropFilter: 'blur(38.400001525878906px)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '30px'
+                  }}
+                >
                   <div className="w-full md:w-64 h-48 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
                     {product.image_url ? (
                       <img 

@@ -353,10 +353,11 @@ const ProductsSection: React.FC = () => {
               fontSize: '64px',
               fontWeight: 400,
               color: '#F2F0F0',
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              textAlign: 'center'
             }}
           >
-            {settings?.title || '/ПРОДУКЦИЯ'}
+            {settings?.title || 'ПРОДУКЦИЯ'}
           </h2>
           <p 
             className="text-lg"

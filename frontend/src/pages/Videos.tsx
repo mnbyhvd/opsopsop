@@ -100,11 +100,11 @@ const Videos: React.FC = () => {
                   {/* Видео превью */}
                   <div className="relative w-full md:w-80 h-48 bg-gray-700/50 flex items-center justify-center overflow-hidden rounded-lg flex-shrink-0">
                     {video.thumbnail_url ? (
-                      <img 
-                        src={video.thumbnail_url} 
-                        alt={video.title}
-                        className="w-full h-full object-cover"
-                      />
+                    <img 
+                      src={video.thumbnail_url} 
+                      alt={video.title}
+                      className="w-full h-full object-cover"
+                    />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-gray-400">
                         <span>Превью видео</span>

@@ -45,9 +45,9 @@ const HeroAdmin: React.FC = () => {
     setSaving(true);
     try {
       const response = await apiService.updateHeroSection(settings.id, {
-        title: settings.title,
-        subtitle: settings.subtitle,
-        description: settings.description
+          title: settings.title,
+          subtitle: settings.subtitle,
+          description: settings.description
       });
 
       if (response.success) {
