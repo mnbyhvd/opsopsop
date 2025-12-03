@@ -84,6 +84,7 @@ const ProductDetail: React.FC = () => {
               images={product.images || []}
               mainImage={product.image_url}
               productName={product.name}
+              
             />
           </motion.div>
 

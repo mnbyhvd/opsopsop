@@ -49,7 +49,7 @@ const DownloadInfoSection: React.FC = () => {
           }
           
           // Формируем полный URL для файла
-          const fullUrl = doc.url.startsWith('http') ? doc.url : `/api${doc.url}`;
+          const fullUrl = doc.url.startsWith('http') ? doc.url : `${doc.url}`;
           console.log(`URL документа: ${fullUrl}`);
           const response = await fetch(fullUrl);
           if (response.ok) {
@@ -76,7 +76,7 @@ const DownloadInfoSection: React.FC = () => {
           }
           
           // Формируем полный URL для файла
-          const fullUrl = cert.url.startsWith('http') ? cert.url : `/api${cert.url}`;
+          const fullUrl = cert.url.startsWith('http') ? cert.url : `${cert.url}`;
           console.log(`URL сертификата: ${fullUrl}`);
           const response = await fetch(fullUrl);
           if (response.ok) {
@@ -116,7 +116,7 @@ const DownloadInfoSection: React.FC = () => {
 
   const downloadFile = (url: string, title: string) => {
     // Логика для скачивания отдельного файла
-    const fullUrl = url.startsWith('http') ? url : `/api${url}`;
+    const fullUrl = url.startsWith('http') ? url : `${url}`;
     const link = document.createElement('a');
     link.href = fullUrl;
     link.download = title;
