@@ -182,7 +182,7 @@ const Requisites: React.FC = () => {
                         style={{ fontFamily: 'Inter'
                         }}
                       >
-                        Адрес: 125493, г. Москва, ул. Флотская, д. 7, этаж 6, офис 276
+                        Адрес: 249038, г. Обнинск, Самсоновский проезд, д.10
                       </span>
                       <span 
                         className="ml-2 text-white"
