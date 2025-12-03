@@ -45,7 +45,7 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
   return (
     <div className="w-full">
       {/* Основное изображение */}
-      <div className="relative w-full h-72 md:h-80 xl:h-96 mb-4 rounded-2xl overflow-hidden">
+      <div className="relative w-full h-72 md:h-80 xl:h-96 mb-4 rounded-2xl object-contain">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}

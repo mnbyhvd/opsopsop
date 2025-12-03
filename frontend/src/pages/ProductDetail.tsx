@@ -138,15 +138,6 @@ const ProductDetail: React.FC = () => {
             {/* Документы */}
             {product.documents && product.documents.length > 0 && (
               <div>
-                <h2 
-                  className="text-lg md:text-xl font-bold mb-4"
-                  style={{ 
-                    fontFamily: 'Bebas Neue',
-                    color: '#F2F0F0'
-                  }}
-                >
-                  ДОКУМЕНТЫ ДЛЯ СКАЧИВАНИЯ
-                </h2>
                 <ProductDocuments documents={product.documents} />
               </div>
             )}

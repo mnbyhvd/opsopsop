@@ -138,7 +138,7 @@ const Products: React.FC = () => {
                       <img 
                         src={product.image_url} 
                         alt={product.name}
-                        className="w-full h-full object-cover rounded-lg"
+                        className="w-full h-full object-contain rounded-lg"
                       />
                     ) : (
                       <span className="text-gray-400">Изображение продукта</span>
