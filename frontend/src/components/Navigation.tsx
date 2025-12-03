@@ -24,7 +24,6 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   const items = (navigation && navigation.length > 0)
     ? navigation
     : [
-        { id: 1, title: 'Главная', url: '/', sort_order: 1, parent_id: null, is_active: true, created_at: '', updated_at: '' },
         { id: 2, title: 'Продукция', url: '/products', sort_order: 2, parent_id: null, is_active: true, created_at: '', updated_at: '' },
         { id: 3, title: 'Видео-презентации', url: '/videos', sort_order: 3, parent_id: null, is_active: true, created_at: '', updated_at: '' },
       ];
