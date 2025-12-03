@@ -105,17 +105,9 @@ const Requisites: React.FC = () => {
                     color: '#F2F0F0'
                   }}
                 >
-                  {requisites.legal_name || 'Название организации'}
+                  {requisites.legal_name || 'ООО «Элемент»'}
                 </p>
-                <p 
-                  className="text-lg mt-2"
-                  style={{ 
-                    fontFamily: 'Inter',
-                    color: '#B8B8B8'
-                  }}
-                >
-                  Краткое наименование: {requisites.company_name || 'Краткое наименование'}
-                </p>
+
               </div>
 
               {/* Основные реквизиты */}
@@ -136,13 +128,12 @@ const Requisites: React.FC = () => {
                         className="text-gray-400"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        ИНН:
+                        ИНН: 7743296992
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.inn || 'ИНН'}
                       </span>
                     </div>
                     <div>
@@ -150,13 +141,12 @@ const Requisites: React.FC = () => {
                         className="text-gray-400"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        КПП:
+                        КПП: 774301001
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.kpp || 'КПП'}
                       </span>
                     </div>
                     <div>
@@ -164,13 +154,12 @@ const Requisites: React.FC = () => {
                         className="text-gray-400"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        ОГРН:
+                        ОГРН: 1197746225412
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.ogrn || 'ОГРН'}
                       </span>
                     </div>
                   </div>
@@ -190,15 +179,15 @@ const Requisites: React.FC = () => {
                     <div>
                       <span 
                         className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
+                        style={{ fontFamily: 'Inter'
+                        }}
                       >
-                        Адрес:
+                        Адрес: 125493, г. Москва, ул. Флотская, д. 7, этаж 6, офис 276
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.actual_address || 'Адрес'}
                       </span>
                     </div>
                     <div>
@@ -206,13 +195,12 @@ const Requisites: React.FC = () => {
                         className="text-gray-400"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        Телефон:
+                        Телефон: +7 (484) 394-1717
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.phone || 'Телефон'}
                       </span>
                     </div>
                     <div>
@@ -220,13 +208,12 @@ const Requisites: React.FC = () => {
                         className="text-gray-400"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        Email:
+                        Email: office@h-t-s.ru
                       </span>
                       <span 
                         className="ml-2 text-white"
                         style={{ fontFamily: 'Inter' }}
                       >
-                        {requisites.email || 'Email'}
                       </span>
                     </div>
                   </div>
@@ -250,13 +237,12 @@ const Requisites: React.FC = () => {
                       className="text-gray-400"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      Банк:
+                      Банк: АО "АЛЬФА-БАНК" Г. МОСКВА
                     </span>
                     <span 
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bank_name || 'Банк'}
                     </span>
                   </div>
                   <div>
@@ -264,13 +250,12 @@ const Requisites: React.FC = () => {
                       className="text-gray-400"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      БИК:
+                      БИК: 044525593
                     </span>
                     <span 
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bik || 'БИК'}
                     </span>
                   </div>
                   <div>
@@ -278,13 +263,12 @@ const Requisites: React.FC = () => {
                       className="text-gray-400"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      Расчетный счет:
+                      Расчетный счет: 40702810202870002536
                     </span>
                     <span 
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.bank_account || 'Расчетный счет'}
                     </span>
                   </div>
                   <div>
@@ -292,13 +276,12 @@ const Requisites: React.FC = () => {
                       className="text-gray-400"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      Корреспондентский счет:
+                      Корреспондентский счет: 30101810200000000593
                     </span>
                     <span 
                       className="ml-2 text-white"
                       style={{ fontFamily: 'Inter' }}
                     >
-                      {requisites.correspondent_account || 'Корреспондентский счет'}
                     </span>
                   </div>
                 </div>
