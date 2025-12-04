@@ -627,29 +627,29 @@ const ProductsAdmin: React.FC = () => {
                 <div className="space-y-2">
                   {/* Выпадающий список существующих категорий */}
                   <select
-                    value={isNewCategory ? '__new__' : (editingProduct.category_id || '')}
-                    onChange={(e) => {
-                      const selectedCategory = e.target.value;
-                      if (selectedCategory === '__new__') {
-                        setIsNewCategory(true);
-                        setEditingProduct({
-                          ...editingProduct, 
-                          category_name: '',
-                          category_id: null
-                        });
-                      } else {
-                        setIsNewCategory(false);
-                        const categoryId = parseInt(selectedCategory);
-                        const selectedCategoryData = categories.find(c => c.id === categoryId);
-                        setEditingProduct({
-                          ...editingProduct, 
-                          category_name: selectedCategoryData?.name || '',
-                          category_id: categoryId
-                        });
-                      }
-                    }}
-                    className="admin-input w-full"
-                  >
+  value={isNewCategory ? '__new__' : (editingProduct.category_id || '')}
+  onChange={(e) => {
+    const selectedCategory = e.target.value;
+    if (selectedCategory === '__new__') {
+      setIsNewCategory(true);
+      setEditingProduct({
+        ...editingProduct, 
+        category_name: '',
+        category_id: null
+      });
+    } else {
+      setIsNewCategory(false);
+      const categoryId = parseInt(selectedCategory);
+      const selectedCategoryData = categories.find(c => c.id === categoryId);
+      setEditingProduct({
+        ...editingProduct, 
+        category_name: selectedCategoryData?.name || '',
+        category_id: categoryId
+      });
+    }
+  }}
+>
+
                     <option value="">Выберите существующую категорию</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
