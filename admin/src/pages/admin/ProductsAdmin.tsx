@@ -718,7 +718,7 @@ const ProductsAdmin: React.FC = () => {
             </div>
 
             {/* Секция документов */}
-            {!isCreating && editingProduct && (
+            {isCreating || editingProduct && (
               <div>
                 <label 
                   className="block text-sm font-medium mb-2"
