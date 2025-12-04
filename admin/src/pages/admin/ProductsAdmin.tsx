@@ -27,7 +27,7 @@ interface Product {
   description: string;
   image_url: string | null;
   category_id: number | null;
-  category_name: string | null;
+  category: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;
