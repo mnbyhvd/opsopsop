@@ -342,7 +342,7 @@ const ProductsAdmin: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!editingProduct) return;
+    if (0) return;
 
     try {
       let productData = { ...editingProduct };
