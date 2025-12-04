@@ -125,14 +125,14 @@ const SortableProduct: React.FC<SortableProductProps> = ({ product, index, onEdi
                 >
                   {product.description}
                 </p>
-                {product.category_name && (
+                {product.category && (
                   <div 
                     className="text-xs mb-2 px-2 py-1 bg-red-500/20 text-red-400 rounded-full inline-block"
                     style={{
                       fontFamily: 'Inter'
                     }}
                   >
-                    {product.category_name}
+                    {product.category}
                   </div>
                 )}
                 <div 
@@ -331,7 +331,7 @@ const ProductsAdmin: React.FC = () => {
       description: '',
       image_url: '',
       category_id: null,
-      category_name: null,
+      category: null,
       sort_order: products.length + 1,
       is_active: true,
       created_at: '',
@@ -349,17 +349,17 @@ const ProductsAdmin: React.FC = () => {
   
       // Если создается новая категория
       if (isNewCategory) {
-        if (!editingProduct.category_name || editingProduct.category_name.trim() === '') {
+        if (!editingProduct.category || editingProduct.category.trim() === '') {
           alert('Введите название новой категории');
           return;
         }
   
-        console.log('Создаём новую категорию:', editingProduct.category_name);
+        console.log('Создаём новую категорию:', editingProduct.category);
         const categoryResponse = await fetch('/api/categories', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: editingProduct.category_name,
+            name: editingProduct.category,
             description: '',
             image_url: null,
             sort_order: 0
@@ -377,7 +377,7 @@ const ProductsAdmin: React.FC = () => {
   
         // Обновляем продукт с новым category_id
         productData.category_id = newCategory.id;
-        productData.category_name = newCategory.name;
+        productData.category = newCategory.name;
   
         // Добавляем новую категорию в список
         setCategories([...categories, newCategory]);
@@ -634,7 +634,7 @@ const ProductsAdmin: React.FC = () => {
       setIsNewCategory(true);
       setEditingProduct({
         ...editingProduct, 
-        category_name: '',
+        category: '',
         category_id: null
       });
     } else {
@@ -643,7 +643,7 @@ const ProductsAdmin: React.FC = () => {
       const selectedCategoryData = categories.find(c => c.id === categoryId);
       setEditingProduct({
         ...editingProduct, 
-        category_name: selectedCategoryData?.name || '',
+        category: selectedCategoryData?.name || '',
         category_id: categoryId
       });
     }
@@ -665,10 +665,10 @@ const ProductsAdmin: React.FC = () => {
                       <div className="text-sm text-gray-400 mb-1">Введите название новой категории:</div>
                       <input
                         type="text"
-                        value={editingProduct.category_name || ''}
+                        value={editingProduct.category || ''}
                         onChange={(e) => setEditingProduct({
                           ...editingProduct, 
-                          category_name: e.target.value,
+                          category: e.target.value,
                           category_id: null
                         })}
                         className="admin-input w-full"
