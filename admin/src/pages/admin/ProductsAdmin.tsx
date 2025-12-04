@@ -342,18 +342,22 @@ const ProductsAdmin: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (0) return;
-
+    if (!editingProduct) return;
+  
     try {
       let productData = { ...editingProduct };
-      
-      // Если создается новая категория, сначала создаем её
-      if (isNewCategory && editingProduct.category_name) {
+  
+      // Если создается новая категория
+      if (isNewCategory) {
+        if (!editingProduct.category_name || editingProduct.category_name.trim() === '') {
+          alert('Введите название новой категории');
+          return;
+        }
+  
+        console.log('Создаём новую категорию:', editingProduct.category_name);
         const categoryResponse = await fetch('/api/categories', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             name: editingProduct.category_name,
             description: '',
@@ -361,54 +365,64 @@ const ProductsAdmin: React.FC = () => {
             sort_order: 0
           }),
         });
-        
-        if (categoryResponse.ok) {
-          const categoryResult = await categoryResponse.json();
-          productData.category_id = categoryResult.data.id;
-          productData.category_name = categoryResult.data.name;
-          
-          // Обновляем список категорий
-          setCategories([...categories, categoryResult.data]);
-        } else {
-          console.error('Error creating category');
+  
+        if (!categoryResponse.ok) {
+          console.error('Ошибка создания категории');
+          alert('Не удалось создать категорию');
           return;
         }
+  
+        const categoryResult = await categoryResponse.json();
+        const newCategory = categoryResult.data;
+  
+        // Обновляем продукт с новым category_id
+        productData.category_id = newCategory.id;
+        productData.category_name = newCategory.name;
+  
+        // Добавляем новую категорию в список
+        setCategories([...categories, newCategory]);
       }
-      
-      const url = isCreating 
-        ? '/api/products'
-        : `/api/products/${editingProduct.id}`;
-      
+  
+      // Логируем данные продукта перед отправкой
+      console.log('Создаём/обновляем продукт:', productData);
+  
+      const url = isCreating ? '/api/products' : `/api/products/${editingProduct.id}`;
       const method = isCreating ? 'POST' : 'PUT';
-      
+  
       const response = await fetch(url, {
         method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productData),
       });
-
-      if (response.ok) {
-        const result = await response.json();
-        if (isCreating) {
-          setProducts([...products, result.data]);
-        } else {
-          setProducts(products.map(product => 
-            product.id === editingProduct.id ? result.data : product
-          ));
-        }
-        setEditingProduct(null);
-        setIsCreating(false);
-        setIsNewCategory(false);
-      } else {
-        console.error('Error saving product');
+  
+      if (!response.ok) {
+        console.error('Ошибка создания/обновления продукта');
+        const errText = await response.text();
+        console.error(errText);
+        alert('Не удалось сохранить продукт');
+        return;
       }
+  
+      const result = await response.json();
+  
+      if (isCreating) {
+        setProducts([...products, result.data]);
+      } else {
+        setProducts(products.map(p => p.id === editingProduct.id ? result.data : p));
+      }
+  
+      // Сбрасываем состояние формы
+      setEditingProduct(null);
+      setIsCreating(false);
+      setIsNewCategory(false);
+  
+      alert('Продукт успешно сохранён');
     } catch (error) {
-      console.error('Error saving product:', error);
+      console.error('Ошибка в handleSave:', error);
+      alert('Произошла ошибка при сохранении продукта');
     }
   };
-
+  
   const handleDelete = async (id: number) => {
     if (!window.confirm('Вы уверены, что хотите удалить этот продукт?')) return;
 
