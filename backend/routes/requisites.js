@@ -61,6 +61,24 @@ router.put('/', async (req, res) => {
       bik, director_name, director_position
     } = req.body;
 
+    // Преобразуем undefined в null для MySQL
+    const safeCompanyName = company_name !== undefined ? company_name : null;
+    const safeLegalName = legal_name !== undefined ? legal_name : null;
+    const safeInn = inn !== undefined ? inn : null;
+    const safeKpp = kpp !== undefined ? kpp : null;
+    const safeOgrn = ogrn !== undefined ? ogrn : null;
+    const safeLegalAddress = legal_address !== undefined ? legal_address : null;
+    const safeActualAddress = actual_address !== undefined ? actual_address : null;
+    const safePhone = phone !== undefined ? phone : null;
+    const safeEmail = email !== undefined ? email : null;
+    const safeWebsite = website !== undefined ? website : null;
+    const safeBankName = bank_name !== undefined ? bank_name : null;
+    const safeBankAccount = bank_account !== undefined ? bank_account : null;
+    const safeCorrespondentAccount = correspondent_account !== undefined ? correspondent_account : null;
+    const safeBik = bik !== undefined ? bik : null;
+    const safeDirectorName = director_name !== undefined ? director_name : null;
+    const safeDirectorPosition = director_position !== undefined ? director_position : null;
+
     const [result] = await pool.execute(`
       UPDATE requisites
       SET
@@ -83,9 +101,9 @@ router.put('/', async (req, res) => {
         updated_at = NOW()
       WHERE id = 1
     `, [
-      company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-      phone, email, website, bank_name, bank_account, correspondent_account,
-      bik, director_name, director_position
+      safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
+      safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+      safeBik, safeDirectorName, safeDirectorPosition
     ]);
 
     if (result.affectedRows > 0) {
@@ -126,6 +144,24 @@ router.put('/:id', async (req, res) => {
       bik, director_name, director_position
     } = req.body;
 
+    // Преобразуем undefined в null для MySQL
+    const safeCompanyName = company_name !== undefined ? company_name : null;
+    const safeLegalName = legal_name !== undefined ? legal_name : null;
+    const safeInn = inn !== undefined ? inn : null;
+    const safeKpp = kpp !== undefined ? kpp : null;
+    const safeOgrn = ogrn !== undefined ? ogrn : null;
+    const safeLegalAddress = legal_address !== undefined ? legal_address : null;
+    const safeActualAddress = actual_address !== undefined ? actual_address : null;
+    const safePhone = phone !== undefined ? phone : null;
+    const safeEmail = email !== undefined ? email : null;
+    const safeWebsite = website !== undefined ? website : null;
+    const safeBankName = bank_name !== undefined ? bank_name : null;
+    const safeBankAccount = bank_account !== undefined ? bank_account : null;
+    const safeCorrespondentAccount = correspondent_account !== undefined ? correspondent_account : null;
+    const safeBik = bik !== undefined ? bik : null;
+    const safeDirectorName = director_name !== undefined ? director_name : null;
+    const safeDirectorPosition = director_position !== undefined ? director_position : null;
+
     const [result] = await pool.execute(`
       UPDATE requisites
       SET
@@ -148,9 +184,9 @@ router.put('/:id', async (req, res) => {
         updated_at = NOW()
       WHERE id = ?
     `, [
-      company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-      phone, email, website, bank_name, bank_account, correspondent_account,
-      bik, director_name, director_position, id
+      safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
+      safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+      safeBik, safeDirectorName, safeDirectorPosition, id
     ]);
 
     if (result.affectedRows > 0) {

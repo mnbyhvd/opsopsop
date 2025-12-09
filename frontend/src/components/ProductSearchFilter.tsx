@@ -35,12 +35,12 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
   const hasActiveFilters = Boolean(searchValue) || Boolean(selectedCategoryId);
 
   return (
-    <div className="w-full mb-12">
+    <div className="w-full mb-12 relative z-40">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6"
+        className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 relative"
         style={{
           backgroundColor: 'rgba(98, 98, 98, 0.3)',
           backdropFilter: 'blur(38.400001525878906px)',
@@ -76,7 +76,7 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
         </div>
 
         {/* Фильтры и кнопка очистки в одной строке */}
-        <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div className="flex flex-col sm:flex-row gap-4 items-center relative">
           {/* Кнопка фильтров */}
           <div className="relative">
             <button
@@ -131,7 +131,7 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-full left-0 mt-2 w-64 max-h-80 overflow-auto bg-gray-800 border border-gray-600 rounded-xl shadow-xl z-50"
+                className="absolute top-full left-0 mt-2 w-64 max-h-80 overflow-auto bg-gray-800 border border-gray-600 rounded-xl shadow-xl z-40"
               >
                 <div className="p-2">
                   <button

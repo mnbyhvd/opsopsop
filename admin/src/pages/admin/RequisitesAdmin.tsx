@@ -39,7 +39,7 @@ const RequisitesAdmin: React.FC = () => {
     placeholder = ''
   }: {
     label: string;
-    value: string;
+    value: string | null | undefined;
     onChange: (value: string) => void;
     type?: string;
     rows?: number;
@@ -54,7 +54,7 @@ const RequisitesAdmin: React.FC = () => {
       </label>
       {rows > 1 ? (
         <textarea
-          value={value}
+          value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           rows={rows}
           placeholder={placeholder}
@@ -74,7 +74,7 @@ const RequisitesAdmin: React.FC = () => {
       ) : (
         <input
           type={type}
-          value={value}
+          value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           className="w-full p-3 rounded-xl transition-all duration-200 focus:outline-none"
@@ -102,10 +102,13 @@ const RequisitesAdmin: React.FC = () => {
 
     try {
       setSaving(true);
+      setMessage(null);
       const result = await updateRequisites(localRequisites);
       
-      if (result.success) {
+      if (result.success && result.data) {
+        setLocalRequisites(result.data);
         setMessage({ type: 'success', text: 'Реквизиты успешно сохранены' });
+        setTimeout(() => setMessage(null), 3000);
       } else {
         setMessage({ type: 'error', text: result.error || 'Ошибка сохранения реквизитов' });
       }
@@ -122,7 +125,7 @@ const RequisitesAdmin: React.FC = () => {
     if (localRequisites) {
       setLocalRequisites({
         ...localRequisites,
-        [field]: value,
+        [field]: value || '',
         updated_at: new Date().toISOString()
       });
     }
