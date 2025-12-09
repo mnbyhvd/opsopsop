@@ -1,51 +1,50 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { useRequisites } from '../../hooks/useRequisites';
 
-const RequisitesAdmin: React.FC = () => {
-  const { requisites, loading, error, updateRequisites } = useRequisites();
-  const [localRequisites, setLocalRequisites] = useState(requisites);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const isEditingRef = useRef(false);
+// Стили для полей ввода
+const inputStyles = {
+  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
+  color: '#F2F0F0',
+  fontFamily: 'Inter'
+};
 
-  // Синхронизация с данными из хука (только если не редактируем)
-  useEffect(() => {
-    if (requisites && !isEditingRef.current) {
-      setLocalRequisites(requisites);
-    }
-  }, [requisites]);
+const labelStyles = {
+  fontFamily: 'Inter',
+  color: '#E5E5E5',
+  fontSize: '14px',
+  fontWeight: 500
+};
 
-  // Стили для полей ввода
-  const inputStyles = {
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    color: '#F2F0F0',
-    fontFamily: 'Inter'
+// Компонент для поля ввода (вынесен за пределы основного компонента для стабильности)
+const InputField = memo(({ 
+  label, 
+  value, 
+  onChange, 
+  type = 'text', 
+  rows = 1,
+  placeholder = ''
+}: {
+  label: string;
+  value: string | null | undefined;
+  onChange: (value: string) => void;
+  type?: string;
+  rows?: number;
+  placeholder?: string;
+}) => {
+  const handleFocus = (e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    e.target.style.borderColor = '#D71920';
+    e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    e.target.style.boxShadow = '0 0 0 2px rgba(215, 25, 32, 0.2)';
   };
 
-  const labelStyles = {
-    fontFamily: 'Inter',
-    color: '#E5E5E5',
-    fontSize: '14px',
-    fontWeight: 500
+  const handleBlur = (e: React.FocusEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+    e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+    e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+    e.target.style.boxShadow = 'none';
   };
 
-  // Компонент для поля ввода
-  const InputField = ({ 
-    label, 
-    value, 
-    onChange, 
-    type = 'text', 
-    rows = 1,
-    placeholder = ''
-  }: {
-    label: string;
-    value: string | null | undefined;
-    onChange: (value: string) => void;
-    type?: string;
-    rows?: number;
-    placeholder?: string;
-  }) => (
+  return (
     <div>
       <label 
         className="block text-sm font-medium mb-2"
@@ -56,52 +55,44 @@ const RequisitesAdmin: React.FC = () => {
       {rows > 1 ? (
         <textarea
           value={value || ''}
-          onChange={(e) => {
-            isEditingRef.current = true;
-            onChange(e.target.value);
-          }}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           rows={rows}
           placeholder={placeholder}
           className="w-full p-3 rounded-xl transition-all duration-200 focus:outline-none resize-none"
           style={inputStyles}
-          onFocus={(e) => {
-            isEditingRef.current = true;
-            e.target.style.borderColor = '#D71920';
-            e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-            e.target.style.boxShadow = '0 0 0 2px rgba(215, 25, 32, 0.2)';
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-            e.target.style.boxShadow = 'none';
-          }}
         />
       ) : (
         <input
           type={type}
           value={value || ''}
-          onChange={(e) => {
-            isEditingRef.current = true;
-            onChange(e.target.value);
-          }}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
           placeholder={placeholder}
           className="w-full p-3 rounded-xl transition-all duration-200 focus:outline-none"
           style={inputStyles}
-          onFocus={(e) => {
-            isEditingRef.current = true;
-            e.target.style.borderColor = '#D71920';
-            e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-            e.target.style.boxShadow = '0 0 0 2px rgba(215, 25, 32, 0.2)';
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = 'rgba(255, 255, 255, 0.2)';
-            e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
-            e.target.style.boxShadow = 'none';
-          }}
         />
       )}
     </div>
   );
+});
+
+InputField.displayName = 'InputField';
+
+const RequisitesAdmin: React.FC = () => {
+  const { requisites, loading, error, updateRequisites } = useRequisites();
+  const [localRequisites, setLocalRequisites] = useState<typeof requisites>(null);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  // Инициализация данных при первой загрузке
+  useEffect(() => {
+    if (requisites) {
+      setLocalRequisites(requisites);
+    }
+  }, [requisites]);
 
   // Загрузка данных реквизитов
 
@@ -112,10 +103,13 @@ const RequisitesAdmin: React.FC = () => {
     try {
       setSaving(true);
       setMessage(null);
-      const result = await updateRequisites(localRequisites);
+      
+      // Отправляем только нужные поля, исключая id, created_at, updated_at
+      const { id, created_at, updated_at, ...dataToSend } = localRequisites;
+      const result = await updateRequisites(dataToSend);
       
       if (result.success && result.data) {
-        isEditingRef.current = false;
+        // Обновляем локальное состояние данными с сервера
         setLocalRequisites(result.data);
         setMessage({ type: 'success', text: 'Реквизиты успешно сохранены' });
         setTimeout(() => setMessage(null), 3000);
@@ -132,13 +126,11 @@ const RequisitesAdmin: React.FC = () => {
 
   // Обработка изменений в полях
   const handleChange = useCallback((field: keyof any, value: string) => {
-    isEditingRef.current = true;
     setLocalRequisites(prev => {
       if (!prev) return prev;
       return {
         ...prev,
-        [field]: value || '',
-        updated_at: new Date().toISOString()
+        [field]: value || ''
       };
     });
   }, []);

@@ -144,6 +144,8 @@ router.put('/:id', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid requisites ID' });
     }
 
+    console.log('PUT /api/requisites/:id - запрос получен:', { id: requisitesId, body: req.body });
+
     const {
       company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
       phone, email, website, bank_name, bank_account, correspondent_account,
@@ -168,58 +170,41 @@ router.put('/:id', async (req, res) => {
     const safeDirectorName = director_name !== undefined ? director_name : null;
     const safeDirectorPosition = director_position !== undefined ? director_position : null;
 
-    // Проверяем, существует ли запись
-    const [existingRows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
-    
-    if (existingRows.length === 0) {
-      // Если записи нет, создаем её
-      const [insertResult] = await pool.execute(`
-        INSERT INTO requisites (
-          id, company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-          phone, email, website, bank_name, bank_account, correspondent_account,
-          bik, director_name, director_position, created_at, updated_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-      `, [
-        requisitesId, safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
-        safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
-        safeBik, safeDirectorName, safeDirectorPosition
-      ]);
-      
-      // Получаем созданные реквизиты
-      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
-      return res.json({ success: true, data: rows[0] });
-    }
-
+    // Используем INSERT ... ON DUPLICATE KEY UPDATE для безопасного обновления/создания
     const [result] = await pool.execute(`
-      UPDATE requisites
-      SET
-        company_name = ?,
-        legal_name = ?,
-        inn = ?,
-        kpp = ?,
-        ogrn = ?,
-        legal_address = ?,
-        actual_address = ?,
-        phone = ?,
-        email = ?,
-        website = ?,
-        bank_name = ?,
-        bank_account = ?,
-        correspondent_account = ?,
-        bik = ?,
-        director_name = ?,
-        director_position = ?,
+      INSERT INTO requisites (
+        id, company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
+        phone, email, website, bank_name, bank_account, correspondent_account,
+        bik, director_name, director_position, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+      ON DUPLICATE KEY UPDATE
+        company_name = VALUES(company_name),
+        legal_name = VALUES(legal_name),
+        inn = VALUES(inn),
+        kpp = VALUES(kpp),
+        ogrn = VALUES(ogrn),
+        legal_address = VALUES(legal_address),
+        actual_address = VALUES(actual_address),
+        phone = VALUES(phone),
+        email = VALUES(email),
+        website = VALUES(website),
+        bank_name = VALUES(bank_name),
+        bank_account = VALUES(bank_account),
+        correspondent_account = VALUES(correspondent_account),
+        bik = VALUES(bik),
+        director_name = VALUES(director_name),
+        director_position = VALUES(director_position),
         updated_at = NOW()
-      WHERE id = ?
     `, [
-      safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
+      requisitesId, safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
       safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
-      safeBik, safeDirectorName, safeDirectorPosition, requisitesId
+      safeBik, safeDirectorName, safeDirectorPosition
     ]);
 
-    if (result.affectedRows > 0) {
-      // Получаем обновленные реквизиты
-      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
+    // Получаем обновленные/созданные реквизиты
+    const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
+    
+    if (rows.length > 0) {
       res.json({ success: true, data: rows[0] });
     } else {
       res.status(404).json({ success: false, error: 'Реквизиты не найдены' });
