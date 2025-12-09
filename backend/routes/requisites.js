@@ -119,9 +119,9 @@ router.put('/', async (req, res) => {
           bik, director_name, director_position, created_at, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
       `, [
-        company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-        phone, email, website, bank_name, bank_account, correspondent_account,
-        bik, director_name, director_position
+        safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
+        safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+        safeBik, safeDirectorName, safeDirectorPosition
       ]);
       
       // Получаем созданные реквизиты
@@ -138,6 +138,12 @@ router.put('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
+    const requisitesId = parseInt(id, 10);
+    
+    if (isNaN(requisitesId)) {
+      return res.status(400).json({ success: false, error: 'Invalid requisites ID' });
+    }
+
     const {
       company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
       phone, email, website, bank_name, bank_account, correspondent_account,
@@ -161,6 +167,28 @@ router.put('/:id', async (req, res) => {
     const safeBik = bik !== undefined ? bik : null;
     const safeDirectorName = director_name !== undefined ? director_name : null;
     const safeDirectorPosition = director_position !== undefined ? director_position : null;
+
+    // Проверяем, существует ли запись
+    const [existingRows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
+    
+    if (existingRows.length === 0) {
+      // Если записи нет, создаем её
+      const [insertResult] = await pool.execute(`
+        INSERT INTO requisites (
+          id, company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
+          phone, email, website, bank_name, bank_account, correspondent_account,
+          bik, director_name, director_position, created_at, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+      `, [
+        requisitesId, safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
+        safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+        safeBik, safeDirectorName, safeDirectorPosition
+      ]);
+      
+      // Получаем созданные реквизиты
+      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
+      return res.json({ success: true, data: rows[0] });
+    }
 
     const [result] = await pool.execute(`
       UPDATE requisites
@@ -186,19 +214,29 @@ router.put('/:id', async (req, res) => {
     `, [
       safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
       safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
-      safeBik, safeDirectorName, safeDirectorPosition, id
+      safeBik, safeDirectorName, safeDirectorPosition, requisitesId
     ]);
 
     if (result.affectedRows > 0) {
       // Получаем обновленные реквизиты
-      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [id]);
+      const [rows] = await pool.execute('SELECT * FROM requisites WHERE id = ?', [requisitesId]);
       res.json({ success: true, data: rows[0] });
     } else {
       res.status(404).json({ success: false, error: 'Реквизиты не найдены' });
     }
   } catch (error) {
     console.error('Error updating requisites:', error);
-    res.status(500).json({ success: false, error: 'Failed to update requisites' });
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      sqlMessage: error.sqlMessage,
+      sql: error.sql
+    });
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to update requisites',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 });
 
