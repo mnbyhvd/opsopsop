@@ -34,7 +34,6 @@ router.get('/', async (req, res) => {
           actual_address: '',
           phone: '',
           email: '',
-          website: '',
           bank_name: '',
           bank_account: '',
           correspondent_account: '',
@@ -57,7 +56,7 @@ router.put('/', async (req, res) => {
   try {
     const {
       company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-      phone, email, website, bank_name, bank_account, correspondent_account,
+      phone, email, bank_name, bank_account, correspondent_account,
       bik, director_name, director_position
     } = req.body;
 
@@ -71,7 +70,6 @@ router.put('/', async (req, res) => {
     const safeActualAddress = actual_address !== undefined ? actual_address : null;
     const safePhone = phone !== undefined ? phone : null;
     const safeEmail = email !== undefined ? email : null;
-    const safeWebsite = website !== undefined ? website : null;
     const safeBankName = bank_name !== undefined ? bank_name : null;
     const safeBankAccount = bank_account !== undefined ? bank_account : null;
     const safeCorrespondentAccount = correspondent_account !== undefined ? correspondent_account : null;
@@ -91,7 +89,6 @@ router.put('/', async (req, res) => {
         actual_address = ?,
         phone = ?,
         email = ?,
-        website = ?,
         bank_name = ?,
         bank_account = ?,
         correspondent_account = ?,
@@ -102,7 +99,7 @@ router.put('/', async (req, res) => {
       WHERE id = 1
     `, [
       safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
-      safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+      safePhone, safeEmail, safeBankName, safeBankAccount, safeCorrespondentAccount,
       safeBik, safeDirectorName, safeDirectorPosition
     ]);
 
@@ -115,12 +112,12 @@ router.put('/', async (req, res) => {
       const [insertResult] = await pool.execute(`
         INSERT INTO requisites (
           company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-          phone, email, website, bank_name, bank_account, correspondent_account,
+          phone, email, bank_name, bank_account, correspondent_account,
           bik, director_name, director_position, created_at, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
       `, [
         safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
-        safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+        safePhone, safeEmail, safeBankName, safeBankAccount, safeCorrespondentAccount,
         safeBik, safeDirectorName, safeDirectorPosition
       ]);
       
@@ -148,7 +145,7 @@ router.put('/:id', async (req, res) => {
 
     const {
       company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-      phone, email, website, bank_name, bank_account, correspondent_account,
+      phone, email, bank_name, bank_account, correspondent_account,
       bik, director_name, director_position
     } = req.body;
 
@@ -162,7 +159,6 @@ router.put('/:id', async (req, res) => {
     const safeActualAddress = actual_address !== undefined ? actual_address : null;
     const safePhone = phone !== undefined ? phone : null;
     const safeEmail = email !== undefined ? email : null;
-    const safeWebsite = website !== undefined ? website : null;
     const safeBankName = bank_name !== undefined ? bank_name : null;
     const safeBankAccount = bank_account !== undefined ? bank_account : null;
     const safeCorrespondentAccount = correspondent_account !== undefined ? correspondent_account : null;
@@ -174,9 +170,9 @@ router.put('/:id', async (req, res) => {
     const [result] = await pool.execute(`
       INSERT INTO requisites (
         id, company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address,
-        phone, email, website, bank_name, bank_account, correspondent_account,
+        phone, email, bank_name, bank_account, correspondent_account,
         bik, director_name, director_position, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
       ON DUPLICATE KEY UPDATE
         company_name = VALUES(company_name),
         legal_name = VALUES(legal_name),
@@ -187,7 +183,6 @@ router.put('/:id', async (req, res) => {
         actual_address = VALUES(actual_address),
         phone = VALUES(phone),
         email = VALUES(email),
-        website = VALUES(website),
         bank_name = VALUES(bank_name),
         bank_account = VALUES(bank_account),
         correspondent_account = VALUES(correspondent_account),
@@ -197,7 +192,7 @@ router.put('/:id', async (req, res) => {
         updated_at = NOW()
     `, [
       requisitesId, safeCompanyName, safeLegalName, safeInn, safeKpp, safeOgrn, safeLegalAddress, safeActualAddress,
-      safePhone, safeEmail, safeWebsite, safeBankName, safeBankAccount, safeCorrespondentAccount,
+      safePhone, safeEmail, safeBankName, safeBankAccount, safeCorrespondentAccount,
       safeBik, safeDirectorName, safeDirectorPosition
     ]);
 

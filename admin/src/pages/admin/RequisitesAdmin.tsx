@@ -336,13 +336,6 @@ const RequisitesAdmin: React.FC = () => {
             placeholder="example@company.ru"
           />
 
-          <InputField
-            label="Сайт"
-            value={localRequisites.website}
-            onChange={(value) => handleChange('website', value)}
-            type="url"
-            placeholder="https://example.com"
-          />
         </div>
 
         {/* Банковские реквизиты */}

@@ -249,24 +249,6 @@ const Requisites: React.FC = () => {
                         </span>
                       </div>
                     )}
-                    {requisites?.website && (
-                      <div>
-                        <span 
-                          className="text-gray-400"
-                          style={{ fontFamily: 'Inter' }}
-                        >
-                          Сайт:
-                        </span>
-                        <span 
-                          className="ml-2 text-white"
-                          style={{ fontFamily: 'Inter' }}
-                        >
-                          <a href={requisites.website} target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-500">
-                            {requisites.website}
-                          </a>
-                        </span>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

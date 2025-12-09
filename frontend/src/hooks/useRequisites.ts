@@ -11,7 +11,6 @@ interface RequisitesData {
   actual_address: string | null;
   phone: string | null;
   email: string | null;
-  website: string | null;
   bank_name: string | null;
   bank_account: string | null;
   correspondent_account: string | null;
