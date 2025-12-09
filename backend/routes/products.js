@@ -353,10 +353,15 @@ router.post('/:id/images', async (req, res) => {
     const { id } = req.params;
     const { image_url, alt_text, sort_order } = req.body;
     
+    // Преобразуем undefined в null для MySQL
+    const safeImageUrl = image_url !== undefined ? image_url : null;
+    const safeAltText = alt_text !== undefined ? alt_text : null;
+    const safeSortOrder = sort_order !== undefined ? sort_order : 1;
+    
     const [result] = await pool.execute(`
       INSERT INTO product_images (product_id, image_url, alt_text, sort_order)
       VALUES (?, ?, ?, ?)
-    `, [id, image_url, alt_text, sort_order || 1]);
+    `, [id, safeImageUrl, safeAltText, safeSortOrder]);
     
     res.status(201).json({
       success: true,
@@ -379,10 +384,18 @@ router.post('/:id/documents', async (req, res) => {
     const { id } = req.params;
     const { name, description, file_url, file_type, file_size, sort_order } = req.body;
     
+    // Преобразуем undefined в null для MySQL
+    const safeName = name !== undefined ? name : null;
+    const safeDescription = description !== undefined ? description : null;
+    const safeFileUrl = file_url !== undefined ? file_url : null;
+    const safeFileType = file_type !== undefined ? file_type : null;
+    const safeFileSize = file_size !== undefined ? file_size : null;
+    const safeSortOrder = sort_order !== undefined ? sort_order : 1;
+    
     const [result] = await pool.execute(`
       INSERT INTO product_documents (product_id, name, description, file_url, file_type, file_size, sort_order)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [id, name, description, file_url, file_type, file_size, sort_order || 1]);
+    `, [id, safeName, safeDescription, safeFileUrl, safeFileType, safeFileSize, safeSortOrder]);
     
     res.status(201).json({
       success: true,

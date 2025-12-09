@@ -34,6 +34,15 @@ interface Product {
   updated_at: string;
 }
 
+interface ProductImage {
+  id: number;
+  product_id: number;
+  image_url: string;
+  alt_text: string | null;
+  sort_order: number;
+  is_active: boolean;
+}
+
 interface ProductDocument {
   id: number;
   name: string;
@@ -171,6 +180,7 @@ const ProductsAdmin: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [productDocuments, setProductDocuments] = useState<ProductDocument[]>([]);
   const [uploadingDocument, setUploadingDocument] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -232,18 +242,86 @@ const ProductsAdmin: React.FC = () => {
     return result.data.url;
   };
 
+  const fetchProductImages = async (productId: number) => {
+    try {
+      const response = await fetch(`/api/products/${productId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProductImages(data.data.images || []);
+      }
+    } catch (error) {
+      console.error('Error fetching product images:', error);
+    }
+  };
+
   const handleImageUpload = async (file: File) => {
-    if (!editingProduct) return;
+    if (!editingProduct || !editingProduct.id) return;
     
     setUploadingImage(true);
     try {
       const imageUrl = await uploadFile(file);
-      setEditingProduct({ ...editingProduct, image_url: imageUrl });
+      
+      // Добавляем изображение к продукту
+      const response = await fetch(`/api/products/${editingProduct.id}/images`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image_url: imageUrl,
+          alt_text: file.name,
+          sort_order: productImages.length + 1
+        }),
+      });
+      
+      if (response.ok) {
+        // Если это первое изображение, устанавливаем его как основное
+        const isFirstImage = productImages.length === 0;
+        await fetchProductImages(editingProduct.id);
+        
+        if (isFirstImage) {
+          setEditingProduct({ ...editingProduct, image_url: imageUrl });
+        }
+      } else {
+        throw new Error('Ошибка добавления изображения');
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
       alert('Ошибка загрузки изображения');
     } finally {
       setUploadingImage(false);
+    }
+  };
+
+  const handleDeleteImage = async (imageId: number) => {
+    if (!editingProduct || !editingProduct.id) return;
+    
+    try {
+      const response = await fetch(`/api/products/${editingProduct.id}/images/${imageId}`, {
+        method: 'DELETE',
+      });
+      
+      if (response.ok) {
+        // Обновляем список изображений
+        await fetchProductImages(editingProduct.id);
+        
+        // Если удалили основное изображение, загружаем полный продукт для получения актуальных данных
+        const deletedImage = productImages.find(img => img.id === imageId);
+        if (deletedImage && deletedImage.image_url === editingProduct.image_url) {
+          const productResponse = await fetch(`/api/products/${editingProduct.id}`);
+          if (productResponse.ok) {
+            const productData = await productResponse.json();
+            if (productData.success && productData.data) {
+              setEditingProduct(productData.data);
+            }
+          }
+        }
+      } else {
+        throw new Error('Ошибка удаления изображения');
+      }
+    } catch (error) {
+      console.error('Error deleting image:', error);
+      alert('Ошибка удаления изображения');
     }
   };
 
@@ -261,7 +339,7 @@ const ProductsAdmin: React.FC = () => {
   };
 
   const handleDocumentUpload = async (file: File) => {
-    if (!editingProduct) return;
+    if (!editingProduct || !editingProduct.id) return;
     
     setUploadingDocument(true);
     try {
@@ -299,7 +377,7 @@ const ProductsAdmin: React.FC = () => {
   };
 
   const handleDeleteDocument = async (documentId: number) => {
-    if (!editingProduct) return;
+    if (!editingProduct || !editingProduct.id) return;
     
     try {
       const response = await fetch(`/api/products/${editingProduct.id}/documents/${documentId}`, {
@@ -321,6 +399,7 @@ const ProductsAdmin: React.FC = () => {
     setEditingProduct({ ...product });
     setIsCreating(false);
     setIsNewCategory(false);
+    fetchProductImages(product.id);
     fetchProductDocuments(product.id);
   };
 
@@ -339,6 +418,8 @@ const ProductsAdmin: React.FC = () => {
     });
     setIsCreating(true);
     setIsNewCategory(false);
+    setProductImages([]);
+    setProductDocuments([]);
   };
 
   const handleSave = async () => {
@@ -407,16 +488,38 @@ const ProductsAdmin: React.FC = () => {
   
       if (isCreating) {
         setProducts([...products, result.data]);
+        // Обновляем editingProduct с новым id, чтобы можно было добавлять изображения и документы
+        setEditingProduct(result.data);
+        setIsCreating(false);
+        // Загружаем изображения и документы (если они есть)
+        if (result.data.id) {
+          try {
+            await fetchProductImages(result.data.id);
+            await fetchProductDocuments(result.data.id);
+          } catch (fetchError) {
+            console.error('Error fetching images/documents after creation:', fetchError);
+            // Не критично, продолжаем работу
+          }
+        }
+        alert('Продукт успешно создан. Теперь вы можете добавить изображения и документы.');
       } else {
         setProducts(products.map(p => p.id === editingProduct.id ? result.data : p));
+        // Обновляем editingProduct с обновленными данными
+        setEditingProduct(result.data);
+        // Загружаем изображения и документы
+        if (result.data.id) {
+          try {
+            await fetchProductImages(result.data.id);
+            await fetchProductDocuments(result.data.id);
+          } catch (fetchError) {
+            console.error('Error fetching images/documents after update:', fetchError);
+            // Не критично, продолжаем работу
+          }
+        }
+        alert('Продукт успешно обновлён');
       }
   
-      // Сбрасываем состояние формы
-      setEditingProduct(null);
-      setIsCreating(false);
       setIsNewCategory(false);
-  
-      alert('Продукт успешно сохранён');
     } catch (error) {
       console.error('Ошибка в handleSave:', error);
       alert('Произошла ошибка при сохранении продукта');
@@ -684,28 +787,72 @@ const ProductsAdmin: React.FC = () => {
                   className="block text-sm font-medium mb-2"
                   style={{ color: '#B8B8B8' }}
                 >
-                  Изображение (обычное)
+                  Изображения продукта
                 </label>
                 <FileUpload
                   onFileSelect={handleImageUpload}
                   accept="image/*"
                   maxSize={5}
-                  disabled={uploadingImage}
+                  disabled={uploadingImage || !editingProduct.id}
                 />
-                {editingProduct.image_url && (
-                  <div className="mt-2">
-                    <img 
-                      src={`${editingProduct.image_url}`} 
-                      alt="Preview" 
-                      className="w-20 h-20 object-cover rounded"
-                    />
-                    <input
-                      type="text"
-                      value={editingProduct.image_url}
-                      onChange={(e) => setEditingProduct({...editingProduct, image_url: e.target.value})}
-                      className="admin-input mt-2"
-                      placeholder="Или введите URL вручную"
-                    />
+                {!editingProduct.id && (
+                  <p className="text-sm text-gray-400 mt-1">
+                    Сохраните продукт, чтобы добавить изображения
+                  </p>
+                )}
+                
+                {/* Основное изображение (для обратной совместимости) */}
+                <div className="mt-4">
+                  <label 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: '#B8B8B8' }}
+                  >
+                    Основное изображение (URL)
+                  </label>
+                  <input
+                    type="text"
+                    value={editingProduct.image_url || ''}
+                    onChange={(e) => setEditingProduct({...editingProduct, image_url: e.target.value})}
+                    className="admin-input"
+                    placeholder="URL основного изображения"
+                  />
+                </div>
+
+                {/* Список изображений */}
+                {productImages.length > 0 && (
+                  <div className="mt-4 space-y-2">
+                    <label 
+                      className="block text-sm font-medium mb-2"
+                      style={{ color: '#B8B8B8' }}
+                    >
+                      Дополнительные изображения
+                    </label>
+                    {productImages.map((img) => (
+                      <div 
+                        key={img.id}
+                        className="flex items-center justify-between p-3 bg-gray-800 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3">
+                          <img 
+                            src={img.image_url} 
+                            alt={img.alt_text || 'Product image'} 
+                            className="w-16 h-16 object-cover rounded"
+                          />
+                          <div>
+                            <div className="text-white text-sm">{img.alt_text || 'Изображение'}</div>
+                            <div className="text-gray-400 text-xs">Порядок: {img.sort_order}</div>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteImage(img.id)}
+                          className="text-red-400 hover:text-red-300 p-1"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
@@ -732,8 +879,8 @@ const ProductsAdmin: React.FC = () => {
             </div>
 
             {/* Секция документов */}
-            {isCreating || editingProduct && (
-              <div>
+            {(isCreating || editingProduct) && (
+              <div className="mt-6">
                 <label 
                   className="block text-sm font-medium mb-2"
                   style={{ color: '#B8B8B8' }}
@@ -745,8 +892,13 @@ const ProductsAdmin: React.FC = () => {
                   onFileSelect={handleDocumentUpload}
                   accept=".pdf,.doc,.docx,.xls,.xlsx,.txt"
                   maxSize={10}
-                  disabled={uploadingDocument}
+                  disabled={uploadingDocument || !editingProduct.id}
                 />
+                {!editingProduct.id && (
+                  <p className="text-sm text-gray-400 mt-1">
+                    Сохраните продукт, чтобы добавить документы
+                  </p>
+                )}
                 
                 {productDocuments.length > 0 && (
                   <div className="mt-4 space-y-2">

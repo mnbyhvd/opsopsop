@@ -19,7 +19,7 @@ const Requisites: React.FC = () => {
     );
   }
 
-  if (error) {
+  if (error || !requisites) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
         <div className="text-center">
@@ -105,7 +105,7 @@ const Requisites: React.FC = () => {
                     color: '#F2F0F0'
                   }}
                 >
-                  {requisites.legal_name || 'ООО «Элемент»'}
+                  {requisites?.legal_name || requisites?.company_name || ''}
                 </p>
 
               </div>
@@ -123,45 +123,54 @@ const Requisites: React.FC = () => {
                     Основные реквизиты
                   </h3>
                   <div className="space-y-3">
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        ИНН: 7743296992
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        КПП: 774301001
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        ОГРН: 1197746225412
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
+                    {requisites?.inn && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          ИНН:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.inn}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.kpp && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          КПП:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.kpp}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.ogrn && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          ОГРН:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.ogrn}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -176,46 +185,88 @@ const Requisites: React.FC = () => {
                     Контактная информация
                   </h3>
                   <div className="space-y-3">
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter'
-                        }}
-                      >
-                        Адрес: 249038, г. Обнинск, Самсоновский проезд, д.10
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        Телефон: +7 (484) 394-1717
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
-                    <div>
-                      <span 
-                        className="text-gray-400"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                        Email: office@h-t-s.ru
-                      </span>
-                      <span 
-                        className="ml-2 text-white"
-                        style={{ fontFamily: 'Inter' }}
-                      >
-                      </span>
-                    </div>
+                    {requisites?.actual_address && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          Адрес:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.actual_address}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.legal_address && requisites.legal_address !== requisites.actual_address && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          Юридический адрес:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.legal_address}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.phone && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          Телефон:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.phone}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.email && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          Email:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          {requisites.email}
+                        </span>
+                      </div>
+                    )}
+                    {requisites?.website && (
+                      <div>
+                        <span 
+                          className="text-gray-400"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          Сайт:
+                        </span>
+                        <span 
+                          className="ml-2 text-white"
+                          style={{ fontFamily: 'Inter' }}
+                        >
+                          <a href={requisites.website} target="_blank" rel="noopener noreferrer" className="text-red-400 hover:text-red-500">
+                            {requisites.website}
+                          </a>
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -232,58 +283,70 @@ const Requisites: React.FC = () => {
                   Банковские реквизиты
                 </h3>
                 <div className="space-y-3">
-                  <div>
-                    <span 
-                      className="text-gray-400"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                      Банк: АО "АЛЬФА-БАНК" Г. МОСКВА
-                    </span>
-                    <span 
-                      className="ml-2 text-white"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                    </span>
-                  </div>
-                  <div>
-                    <span 
-                      className="text-gray-400"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                      БИК: 044525593
-                    </span>
-                    <span 
-                      className="ml-2 text-white"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                    </span>
-                  </div>
-                  <div>
-                    <span 
-                      className="text-gray-400"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                      Расчетный счет: 40702810202870002536
-                    </span>
-                    <span 
-                      className="ml-2 text-white"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                    </span>
-                  </div>
-                  <div>
-                    <span 
-                      className="text-gray-400"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                      Корреспондентский счет: 30101810200000000593
-                    </span>
-                    <span 
-                      className="ml-2 text-white"
-                      style={{ fontFamily: 'Inter' }}
-                    >
-                    </span>
-                  </div>
+                  {requisites?.bank_name && (
+                    <div>
+                      <span 
+                        className="text-gray-400"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        Банк:
+                      </span>
+                      <span 
+                        className="ml-2 text-white"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        {requisites.bank_name}
+                      </span>
+                    </div>
+                  )}
+                  {requisites?.bik && (
+                    <div>
+                      <span 
+                        className="text-gray-400"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        БИК:
+                      </span>
+                      <span 
+                        className="ml-2 text-white"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        {requisites.bik}
+                      </span>
+                    </div>
+                  )}
+                  {requisites?.bank_account && (
+                    <div>
+                      <span 
+                        className="text-gray-400"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        Расчетный счет:
+                      </span>
+                      <span 
+                        className="ml-2 text-white"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        {requisites.bank_account}
+                      </span>
+                    </div>
+                  )}
+                  {requisites?.correspondent_account && (
+                    <div>
+                      <span 
+                        className="text-gray-400"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        Корреспондентский счет:
+                      </span>
+                      <span 
+                        className="ml-2 text-white"
+                        style={{ fontFamily: 'Inter' }}
+                      >
+                        {requisites.correspondent_account}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>

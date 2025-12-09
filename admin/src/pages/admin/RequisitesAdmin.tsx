@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useRequisites } from '../../hooks/useRequisites';
 
 const RequisitesAdmin: React.FC = () => {
@@ -6,10 +6,11 @@ const RequisitesAdmin: React.FC = () => {
   const [localRequisites, setLocalRequisites] = useState(requisites);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const isEditingRef = useRef(false);
 
-  // Синхронизация с данными из хука
+  // Синхронизация с данными из хука (только если не редактируем)
   useEffect(() => {
-    if (requisites) {
+    if (requisites && !isEditingRef.current) {
       setLocalRequisites(requisites);
     }
   }, [requisites]);
@@ -55,12 +56,16 @@ const RequisitesAdmin: React.FC = () => {
       {rows > 1 ? (
         <textarea
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            isEditingRef.current = true;
+            onChange(e.target.value);
+          }}
           rows={rows}
           placeholder={placeholder}
           className="w-full p-3 rounded-xl transition-all duration-200 focus:outline-none resize-none"
           style={inputStyles}
           onFocus={(e) => {
+            isEditingRef.current = true;
             e.target.style.borderColor = '#D71920';
             e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
             e.target.style.boxShadow = '0 0 0 2px rgba(215, 25, 32, 0.2)';
@@ -75,11 +80,15 @@ const RequisitesAdmin: React.FC = () => {
         <input
           type={type}
           value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={(e) => {
+            isEditingRef.current = true;
+            onChange(e.target.value);
+          }}
           placeholder={placeholder}
           className="w-full p-3 rounded-xl transition-all duration-200 focus:outline-none"
           style={inputStyles}
           onFocus={(e) => {
+            isEditingRef.current = true;
             e.target.style.borderColor = '#D71920';
             e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
             e.target.style.boxShadow = '0 0 0 2px rgba(215, 25, 32, 0.2)';
@@ -106,6 +115,7 @@ const RequisitesAdmin: React.FC = () => {
       const result = await updateRequisites(localRequisites);
       
       if (result.success && result.data) {
+        isEditingRef.current = false;
         setLocalRequisites(result.data);
         setMessage({ type: 'success', text: 'Реквизиты успешно сохранены' });
         setTimeout(() => setMessage(null), 3000);
@@ -121,15 +131,17 @@ const RequisitesAdmin: React.FC = () => {
   };
 
   // Обработка изменений в полях
-  const handleChange = (field: keyof any, value: string) => {
-    if (localRequisites) {
-      setLocalRequisites({
-        ...localRequisites,
+  const handleChange = useCallback((field: keyof any, value: string) => {
+    isEditingRef.current = true;
+    setLocalRequisites(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
         [field]: value || '',
         updated_at: new Date().toISOString()
-      });
-    }
-  };
+      };
+    });
+  }, []);
 
   if (loading) {
     return (

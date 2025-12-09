@@ -3,22 +3,22 @@ import API_ENDPOINTS from '../config/api';
 
 export interface RequisitesData {
   id: number;
-  company_name: string;
-  legal_name: string;
-  inn: string;
-  kpp: string;
-  ogrn: string;
-  legal_address: string;
-  actual_address: string;
-  phone: string;
-  email: string;
-  website: string;
-  bank_name: string;
-  bank_account: string;
-  correspondent_account: string;
-  bik: string;
-  director_name: string;
-  director_position: string;
+  company_name: string | null;
+  legal_name: string | null;
+  inn: string | null;
+  kpp: string | null;
+  ogrn: string | null;
+  legal_address: string | null;
+  actual_address: string | null;
+  phone: string | null;
+  email: string | null;
+  website: string | null;
+  bank_name: string | null;
+  bank_account: string | null;
+  correspondent_account: string | null;
+  bik: string | null;
+  director_name: string | null;
+  director_position: string | null;
   created_at: string;
   updated_at: string;
 }

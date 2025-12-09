@@ -14,8 +14,8 @@ export const useProducts = (params?: UseProductsParams): UseProductsReturn => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
+      try {
+        setLoading(true);
       
       // Строим URL с параметрами
       const url = new URL('/api/products', window.location.origin);
@@ -25,24 +25,24 @@ export const useProducts = (params?: UseProductsParams): UseProductsReturn => {
       if (params?.offset) url.searchParams.append('offset', params.offset.toString());
       
       const response = await fetch(url.toString());
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success && data.data) {
-          setProducts(data.data);
-          setError(null);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data) {
+            setProducts(data.data);
+            setError(null);
+          } else {
+            throw new Error('Failed to fetch products');
+          }
         } else {
           throw new Error('Failed to fetch products');
         }
-      } else {
-        throw new Error('Failed to fetch products');
-      }
-    } catch (err) {
-      setError('Failed to fetch products');
-      console.error('Error fetching products:', err);
+      } catch (err) {
+        setError('Failed to fetch products');
+        console.error('Error fetching products:', err);
       setProducts([]);
-    } finally {
-      setLoading(false);
-    }
+      } finally {
+        setLoading(false);
+      }
   }, [params?.categoryId, params?.search, params?.limit, params?.offset]);
 
   useEffect(() => {
