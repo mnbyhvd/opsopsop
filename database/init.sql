@@ -279,8 +279,7 @@ CREATE TABLE IF NOT EXISTS requisites (
 
 -- Insert sample navigation data
 INSERT IGNORE INTO navigation_menu (title, url, sort_order, parent_id, is_active) VALUES
-('Главная', '/', 1, NULL, true),
-('Продукция', '/products', 2, NULL, true),
+('Продукция', '/products', 1, NULL, true),
 ('Видео-презентации', '/videos', 3, NULL, true),
 ('Реквизиты', '/requisites', 4, NULL, true);
 
@@ -335,9 +334,8 @@ INSERT IGNORE INTO documents (title, url, type, sort_order, is_active) VALUES
 -- Insert sample footer data
 INSERT IGNORE INTO footer_data (section_type, title, content, url, icon, sort_order, is_active) VALUES
 -- Navigation section
-('navigation', 'Главная', NULL, '/', NULL, 1, true),
-('navigation', 'О системе', NULL, '/about', NULL, 2, true),
-('navigation', 'Продукция', NULL, '/products', NULL, 3, true),
+('navigation', 'О системе', NULL, '/about', NULL, 1, true),
+('navigation', 'Продукция', NULL, '/products', NULL, 2, true),
 ('navigation', 'Сертификаты', NULL, '/certificates', NULL, 4, true),
 ('navigation', 'Документация', NULL, '/docs', NULL, 5, true),
 ('navigation', 'Видео', NULL, '/videos', NULL, 6, true),

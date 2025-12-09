@@ -25,21 +25,11 @@ export interface FooterData {
 const fallbackData: FooterData = {
   navigation: [
     {
-      id: 1,
-      section_type: 'navigation',
-      title: 'Главная',
-      url: '/',
-      sort_order: 1,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    },
-    {
       id: 2,
       section_type: 'navigation',
       title: 'О системе',
       url: '/about',
-      sort_order: 2,
+      sort_order: 1,
       is_active: true,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()

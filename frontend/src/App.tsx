@@ -4,6 +4,7 @@ import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import ApiErrorBoundary from './components/ApiErrorBoundary';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import About from './pages/About';
 import Products from './pages/Products';
@@ -34,6 +35,7 @@ const App: React.FC = () => {
   return (
     <ApiErrorBoundary>
       <Router>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#0D0D0D' }}>
           <Navigation />
           <main className="flex-grow" style={{ backgroundColor: '#0D0D0D' }}>

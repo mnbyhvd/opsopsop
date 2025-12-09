@@ -15,19 +15,10 @@ export interface NavigationItem {
 // Fallback данные
 const fallbackData: NavigationItem[] = [
   {
-    id: 1,
-    title: 'Главная',
-    url: '/',
-    sort_order: 1,
-    is_active: true,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  },
-  {
     id: 2,
     title: 'Продукция',
     url: '/products',
-    sort_order: 2,
+    sort_order: 1,
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -36,7 +27,7 @@ const fallbackData: NavigationItem[] = [
     id: 3,
     title: 'Видео-презентации',
     url: '/videos',
-    sort_order: 3,
+    sort_order: 2,
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()
@@ -45,7 +36,7 @@ const fallbackData: NavigationItem[] = [
     id: 4,
     title: 'Реквизиты',
     url: '/requisites',
-    sort_order: 4,
+    sort_order: 3,
     is_active: true,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString()

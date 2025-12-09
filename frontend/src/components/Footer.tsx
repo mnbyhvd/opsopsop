@@ -365,7 +365,6 @@ const Footer: React.FC = () => {
                   </h4>
                   <nav className="space-y-3">
                     {[
-                      { name: 'Главная', href: '/' },
                       { name: 'Продукция', href: '/products' },
                       { name: 'Видео-презентации', href: '/videos' },
                       { name: 'Реквизиты', href: '/requisites' }
