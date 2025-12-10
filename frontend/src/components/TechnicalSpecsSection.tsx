@@ -98,8 +98,8 @@ const TechnicalSpecsSection: React.FC = () => {
       ref={sectionRef}
       className="py-20 relative"
     >
-      {/* Background images */}
-      <div className="absolute inset-0 pointer-events-none">
+      {/* Background images - скрыты на мобильных */}
+      <div className="absolute inset-0 pointer-events-none hidden md:block">
         {/* Left bottom image */}
         <div 
           className="absolute opacity-20"
@@ -147,7 +147,7 @@ const TechnicalSpecsSection: React.FC = () => {
         >
             {/* Заголовок внутри блока */}
             <div className="mb-12">
-              <div className="mb-4">
+              <div className="mb-4 hidden md:block">
                 <div className="about-title-block">
                   <div className="about-title-dot"></div>
                   <h2 
@@ -159,14 +159,8 @@ const TechnicalSpecsSection: React.FC = () => {
                 </div>
               </div>
               <h2 
-                className="uppercase text-left"
+                className="uppercase text-left text-3xl md:text-4xl lg:text-6xl mb-8 md:mb-0"
                 style={{
-                  fontFamily: 'Roboto Flex',
-                  fontWeight: 478,
-                  fontSize: '48px',
-                  lineHeight: '100%',
-                  letterSpacing: '-2px',
-                  fontVariationSettings: '"wdth" 10, "YTUC" 850, "YTAS" 900',
                   color: '#F2F0F0'
                 }}
               >
@@ -174,8 +168,8 @@ const TechnicalSpecsSection: React.FC = () => {
               </h2>
             </div>
 
-            {/* Сетка характеристик */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+            {/* Сетка характеристик - скрыта на мобильных */}
+            <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-12">
               {technicalSpecs.map((spec, index) => (
                 <div key={spec.id} className="text-left">
                   <div 
@@ -198,6 +192,50 @@ const TechnicalSpecsSection: React.FC = () => {
                   </p>
                 </div>
               ))}
+            </div>
+            
+            {/* Мобильная версия - две колонки: цифры слева, тексты справа */}
+            <div className="md:hidden grid grid-cols-2 gap-4">
+              {/* Колонка с цифрами */}
+              <div className="space-y-8 flex flex-col">
+                {technicalSpecs.map((spec, index) => (
+                  <div 
+                    key={`number-${spec.id}`}
+                    className="text-left"
+                  >
+                    <div 
+                      className="text-5xl font-bold"
+                      style={{
+                        color: '#D71920',
+                        lineHeight: '1'
+                      }}
+                    >
+                      {animatedValues[index] !== undefined ? animatedValues[index] : 0}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Колонка с текстами */}
+              <div className="space-y-8 flex flex-col">
+                {technicalSpecs.map((spec, index) => (
+                  <div 
+                    key={`text-${spec.id}`}
+                    className="text-left flex items-start"
+                  >
+                    <p 
+                      className="text-base leading-relaxed"
+                      style={{
+                        fontFamily: 'Inter',
+                        fontWeight: 400,
+                        color: '#F2F0F0'
+                      }}
+                    >
+                      {spec.title}
+                    </p>
+                  </div>
+                ))}
+              </div>
             </div>
         </div>
       </PageContainer>

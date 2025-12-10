@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import PageContainer from './PageContainer';
 import { useFooterSettings } from '../hooks/useFooterSettings';
@@ -14,6 +14,17 @@ const Footer: React.FC = () => {
 
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -73,7 +84,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="relative">
       {/* Фоновый блок для формы связи и футера (вне колончатой системы) */}
-      <div className="relative" style={{ marginLeft: '40px', marginRight: '40px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px' }}>
+      <div className="relative" style={{ marginLeft: isMobile ? '0' : '40px', marginRight: isMobile ? '0' : '40px', borderTopLeftRadius: '30px', borderTopRightRadius: '30px' }}>
         {/* Фоновое изображение */}
         <div 
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -86,10 +97,10 @@ const Footer: React.FC = () => {
         />
         
         {/* Форма связи */}
-        <section className="py-20 relative z-10" >
+        <section className="py-12 md:py-20 relative z-10" >
           <PageContainer>
-            {/* Левая часть - заголовок и текст (колонки 1-6) */}
-            <div className="col-start-1 col-end-7" style={{ paddingLeft: '40px' }}>
+            {/* Левая часть - заголовок и текст (колонки 1-6 на десктопе, 1-13 на мобильных) */}
+            <div className="col-start-1 col-end-13 md:col-end-7" style={{ paddingLeft: isMobile ? '16px' : '40px', paddingRight: isMobile ? '16px' : '0' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -97,29 +108,30 @@ const Footer: React.FC = () => {
                   viewport={{ once: true }}
                 >
                   <h2 
-                    className="text-4xl font-bold mb-6"
+                    className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 text-left md:text-left"
                     style={{ 
                       fontFamily: 'Bebas Neue',
-                      color: '#F2F0F0'
+                      color: '#F2F0F0',
+                      textTransform: 'uppercase'
                     }}
                   >
-                    {settings.form_title || 'Свяжитесь с нами'}
+                    {settings.form_title || 'СВЯЖИТЕСЬ С НАМИ'}
                   </h2>
                   
                   <p 
-                    className="text-lg leading-relaxed"
+                    className="text-base md:text-lg leading-relaxed text-left md:text-left mb-8 md:mb-0"
                     style={{
                       fontFamily: 'Inter',
                       color: '#F2F0F0'
                     }}
                   >
-                    {settings.form_description || 'Оставьте заявку и мы свяжемся с вами в ближайшее время'}
+                    {settings.form_description || 'Оставьте заявку и получите спецификацию и коммерческое предложение, подобранные именно под ваши задачи.'}
                   </p>
                 </motion.div>
             </div>
 
-            {/* Правая часть - форма (колонки 7-12) */}
-            <div className="col-start-7 col-end-13" style={{ paddingRight: '40px' }}>
+            {/* Правая часть - форма (колонки 7-12 на десктопе, 1-13 на мобильных) */}
+            <div className="col-start-1 md:col-start-7 col-end-13" style={{ paddingLeft: isMobile ? '16px' : '0', paddingRight: isMobile ? '16px' : '40px', marginTop: isMobile ? '24px' : '0' }}>
                 <motion.form 
                   id="contact-form"
                   onSubmit={handleSubmit} 
@@ -137,13 +149,14 @@ const Footer: React.FC = () => {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: isMobile ? '#272727' : 'transparent',
                         color: '#F2F0F0',
                         fontFamily: 'Inter',
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                        borderTop: 'none'
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        borderTop: 'none',
+                        fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                     />
@@ -151,8 +164,8 @@ const Footer: React.FC = () => {
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
                         fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.3)',
-                        backgroundColor: 'transparent'
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: isMobile ? '#272727' : 'transparent'
                       }}
                     >
                       Имя
@@ -167,13 +180,14 @@ const Footer: React.FC = () => {
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: isMobile ? '#272727' : 'transparent',
                         color: '#F2F0F0',
                         fontFamily: 'Inter',
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                        borderTop: 'none'
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        borderTop: 'none',
+                        fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                     />
@@ -181,8 +195,8 @@ const Footer: React.FC = () => {
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
                         fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.3)',
-                        backgroundColor: 'transparent'
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: isMobile ? '#272727' : 'transparent'
                       }}
                     >
                       Телефон
@@ -197,13 +211,14 @@ const Footer: React.FC = () => {
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-200"
+                      className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: isMobile ? '#272727' : 'transparent',
                         color: '#F2F0F0',
                         fontFamily: 'Inter',
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                        borderTop: 'none'
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        borderTop: 'none',
+                        fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                     />
@@ -211,8 +226,8 @@ const Footer: React.FC = () => {
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
                         fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.3)',
-                        backgroundColor: 'transparent'
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: isMobile ? '#272727' : 'transparent'
                       }}
                     >
                       Email
@@ -225,14 +240,15 @@ const Footer: React.FC = () => {
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-200 resize-none"
+                      rows={isMobile ? 5 : 4}
+                      className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200 resize-none"
                       style={{
-                        backgroundColor: 'transparent',
+                        backgroundColor: isMobile ? '#272727' : 'transparent',
                         color: '#F2F0F0',
                         fontFamily: 'Inter',
-                        borderColor: 'rgba(255, 255, 255, 0.3)',
-                        borderTop: 'none'
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        borderTop: 'none',
+                        fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                     />
@@ -240,8 +256,8 @@ const Footer: React.FC = () => {
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
                         fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.3)',
-                        backgroundColor: 'transparent'
+                        color: 'rgba(255, 255, 255, 0.5)',
+                        backgroundColor: isMobile ? '#272727' : 'transparent'
                       }}
                     >
                       Сообщение
@@ -255,17 +271,19 @@ const Footer: React.FC = () => {
                       id="agreement"
                       checked={agreed}
                       onChange={(e) => setAgreed(e.target.checked)}
-                      className="mt-1 w-4 h-4 rounded border-2 border-gray-300 focus:ring-red-500"
+                      className="mt-1 w-4 h-4 md:w-4 md:h-4 rounded border-2 border-gray-300 focus:ring-red-500 flex-shrink-0"
                       style={{
-                        accentColor: '#D71920'
+                        accentColor: '#D71920',
+                        marginTop: isMobile ? '4px' : '4px'
                       }}
                     />
                     <label 
                       htmlFor="agreement"
-                      className="text-sm"
+                      className="text-sm md:text-sm"
                       style={{
                         fontFamily: 'Inter',
-                        color: '#F2F0F0'
+                        color: '#F2F0F0',
+                        lineHeight: '1.5'
                       }}
                     >
                       Согласен на{' '}
@@ -285,7 +303,7 @@ const Footer: React.FC = () => {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full inline-flex items-center justify-center px-10 py-4 font-medium text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
                       backgroundColor: isSubmitting ? '#666' : '#E0DADA',
                       color: isSubmitting ? '#F2F0F0' : '#0D0D0D',
@@ -293,12 +311,12 @@ const Footer: React.FC = () => {
                       fontFamily: 'Inter',
                       borderRadius: '30px'
                     }}
-                    onMouseEnter={!isSubmitting ? (e) => {
+                    onMouseEnter={!isSubmitting && !isMobile ? (e) => {
                       (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
                       (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
                       (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
                     } : undefined}
-                    onMouseLeave={!isSubmitting ? (e) => {
+                    onMouseLeave={!isSubmitting && !isMobile ? (e) => {
                       (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
                       (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
                       (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';

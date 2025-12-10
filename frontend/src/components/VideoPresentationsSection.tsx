@@ -30,6 +30,9 @@ const VideoPresentationsSection: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
 
   // Создаем массив элементов для слайдера (дублируем для бесконечности)
   const sliderItems = React.useMemo(() => {
@@ -122,6 +125,33 @@ const VideoPresentationsSection: React.FC = () => {
     });
   };
 
+  // Обработчики для свайпов
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartX.current || !touchEndX.current) return;
+    
+    const distance = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50; // Минимальное расстояние для свайпа
+    
+    if (distance > minSwipeDistance) {
+      // Свайп влево - следующий слайд
+      nextSlide();
+    } else if (distance < -minSwipeDistance) {
+      // Свайп вправо - предыдущий слайд
+      prevSlide();
+    }
+    
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   const handleVideoClick = (video: VideoPresentation) => {
     setSelectedVideo(video);
     setShowModal(true);
@@ -180,12 +210,11 @@ const VideoPresentationsSection: React.FC = () => {
     >
       <PageContainer>
         {/* Заголовок и подзаголовок */}
-        <div className="col-start-1 col-end-13 text-center mb-16 px-16">
+        <div className="col-start-1 col-end-13 mb-16 px-4 md:px-16">
           <h2 
-            className="mb-6"
+            className="mb-6 text-left md:text-center text-4xl md:text-6xl"
             style={{
               fontFamily: 'Bebas Neue',
-              fontSize: '64px',
               fontWeight: 400,
               color: '#F2F0F0',
               textTransform: 'uppercase'
@@ -194,12 +223,13 @@ const VideoPresentationsSection: React.FC = () => {
             {settings?.title || 'ВИДЕОПРЕЗЕНТАЦИИ'}
           </h2>
           <p 
-            className="text-lg"
+            className="text-lg text-left md:text-center md:mx-auto"
             style={{
-              fontFamily: 'Inter',
+              fontFamily: 'Bebas Neue',
               color: '#F2F0F0',
               maxWidth: '600px',
-              margin: '0 auto'
+              marginLeft: '0',
+              marginRight: 'auto'
             }}
           >
             {settings?.subtitle || 'Главные особенности и преимущества в коротких видео-роликах'}
@@ -242,10 +272,14 @@ const VideoPresentationsSection: React.FC = () => {
             {/* Контейнер для видео с анимацией */}
             <div className="col-start-2 col-end-12 relative overflow-hidden">
               <div 
+                ref={sliderRef}
                 className="flex transition-transform duration-500 ease-in-out"
                 style={{
                   transform: getTransformValue()
                 }}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
               >
                 {/* Рендерим все элементы слайдера */}
                 {sliderItems.map((video, index) => (

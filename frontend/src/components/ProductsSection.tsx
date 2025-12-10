@@ -341,35 +341,54 @@ const ProductsSection: React.FC = () => {
       <PageContainer>
         {/* Заголовок и подзаголовок */}
         <div 
-          className="col-start-1 col-end-13 text-left px-16 relative z-10"
+          className="col-start-1 col-end-13 text-left px-4 md:px-16 relative z-10"
           style={{
             transform: 'translateY(130px)'
           }}
         >
-          <h2 
-            className="mb-6"
-            style={{
-              fontFamily: 'Bebas Neue',
-              fontSize: '64px',
-              fontWeight: 400,
-              color: '#F2F0F0',
-              textTransform: 'uppercase',
-              textAlign: 'center'
-            }}
-          >
-            {settings?.title || 'ПРОДУКЦИЯ'}
-          </h2>
-          <p 
-            className="text-lg"
-            style={{
-              fontFamily: 'Inter',
-              color: '#F2F0F0',
-              maxWidth: '600px',
-              margin: 0
-            }}
-          >
-            {settings?.subtitle || 'Технологии, которые не подведут. Изучите ассортимент оборудования.'}
-          </p>
+          <div className="flex items-start gap-4 md:gap-0 md:block">
+            <div className="flex-1 md:flex-none">
+              <h2 
+                className="mb-6 text-left md:text-center text-4xl md:text-6xl"
+                style={{
+                  fontFamily: 'Bebas Neue',
+                  fontWeight: 400,
+                  color: '#F2F0F0',
+                  textTransform: 'uppercase'
+                }}
+              >
+                {settings?.title || 'ПРОДУКЦИЯ'}
+              </h2>
+              <p 
+                className="text-lg text-left md:text-center"
+                style={{
+                  fontFamily: 'Bebas Neue',
+                  color: '#F2F0F0',
+                  maxWidth: '600px',
+                  margin: 0
+                }}
+              >
+                {settings?.subtitle || 'Технологии, которые не подведут. Изучите ассортимент оборудования.'}
+              </p>
+            </div>
+            {/* Иконка для мобильной версии - справа от текстовых блоков */}
+            <motion.img
+              src="/ico1.png"
+              alt=""
+              className="md:hidden w-12 flex-shrink-0 mt-2"
+              style={{
+                height: 'auto'
+              }}
+              animate={{
+                x: [0, 6, 0, -6, 0]
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            />
+          </div>
         </div>
 
         {/* Интерактивная картинка - только заглушка */}
@@ -392,7 +411,7 @@ const ProductsSection: React.FC = () => {
             right: '50%',
             marginLeft: '-50vw',
             marginRight: '-50vw',
-            marginTop: '0',
+            marginTop: '7vh',
             marginBottom: '0'
           }}
           onClick={handleImageClick}

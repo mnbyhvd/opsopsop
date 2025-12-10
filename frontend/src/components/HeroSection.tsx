@@ -59,48 +59,92 @@ const HeroSection: React.FC = () => {
     <section 
       className="h-[100vh] flex items-center justify-center relative overflow-hidden"
     >
-      {/* Background images with exact positioning */}
+      {/* Background images with exact positioning (Figma specs) */}
       <div className="absolute inset-0 pointer-events-none">
+        {/* Top-left (hero1.png) */}
         <div 
-          className="absolute opacity-25"
+          className="hero-image-top-left"
           style={{ 
-            backgroundImage: 'url(/1.png)', 
+            position: 'absolute',
+            backgroundImage: 'url(/hero1.png)', 
             backgroundSize: 'contain', 
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            width: '572.67px',
-            height: '482.76px',
-            left: '3%',
-            top: '50%',
-            transform: 'translateY(-50%) rotate(-15.47deg)',
-            animation: 'floatLeft 14s ease-in-out infinite'
+            width: '19%',
+            height: '20%',
+            left: '2%',
+            top: '5%',
+            transform: 'rotate(352)',
+            transformOrigin: 'center center',
+            willChange: 'transform'
           }}
         />
+
+        {/* Top-right (hero4.png) */}
         <div 
-          className="absolute opacity-25"
+          className="hero-image-top-right"
           style={{ 
-            backgroundImage: 'url(/2.png)', 
+            position: 'absolute',
+            backgroundImage: 'url(/hero4.png)', 
             backgroundSize: 'contain', 
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            width: '594.04px',
-            height: '500.78px',
-            right: '3%',
-            top: '50%',
-            transform: 'translateY(-50%) rotate(12.06deg)',
-            animation: 'floatRight 16s ease-in-out infinite'
+            width: '10%',
+            height: '12%',
+            left: '88%',
+            top: '5%',
+            transform: 'rotate(25)',
+            transformOrigin: 'center center',
+            willChange: 'transform'
+          }}
+        />
+
+        {/* Bottom-left (hero3.png) */}
+        <div 
+          className="hero-image-bottom-left"
+          style={{ 
+            position: 'absolute',
+            backgroundImage: 'url(/hero3.png)', 
+            backgroundSize: 'contain', 
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            width: '12%',
+            height: '17%',
+            left: '2%',
+            top: '75%',
+            transform: 'rotate(18)',
+            transformOrigin: 'center center',
+            willChange: 'transform'
+          }}
+        />
+
+        {/* Bottom-right (hero2.png) */}
+        <div 
+          className="hero-image-bottom-right"
+          style={{ 
+            position: 'absolute',
+            backgroundImage: 'url(/hero2.png)', 
+            backgroundSize: 'contain', 
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            width: '17%',
+            height: '30%',
+            left: '83%',
+            top: '65%',
+            transform: 'rotate(347)',
+            transformOrigin: 'center center',
+            willChange: 'transform'
           }}
         />
       </div>
 
       {/* Main content */}
-      <div className="container mx-auto px-4 text-center relative z-10 flex flex-col items-center justify-center h-full">
+      <div className="container mx-auto px-4 relative z-10 flex flex-col items-start md:items-center justify-start md:justify-center h-full pt-[45vh] md:pt-0">
         <h1 
-          className="mb-4 uppercase text-center"
+          className="mb-4 uppercase text-left md:text-center text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl w-full md:w-auto"
           style={{
             fontFamily: 'Inter',
             fontWeight: 700,
-            fontSize: '64px',
             lineHeight: '100%',
             letterSpacing: '0%'
           }}
@@ -111,11 +155,10 @@ const HeroSection: React.FC = () => {
         
         {heroData?.subtitle && (
           <h2 
-            className="mb-6 text-center"
+            className="mb-6 text-left md:text-center text-lg sm:text-xl md:text-2xl lg:text-3xl w-full md:w-auto"
             style={{
               fontFamily: 'Inter',
               fontWeight: 500,
-              fontSize: '32px',
               lineHeight: '120%',
               letterSpacing: '0%',
               color: '#666'
@@ -126,11 +169,10 @@ const HeroSection: React.FC = () => {
         )}
         
         <p 
-          className="mb-10 max-w-3xl mx-auto text-center"
+          className="mb-10 max-w-3xl w-full md:w-auto mx-0 md:mx-auto text-left md:text-center px-0 md:px-4 text-sm sm:text-base md:text-lg lg:text-xl"
           style={{
             fontFamily: 'Inter',
             fontWeight: 400,
-            fontSize: '20px',
             lineHeight: '140%',
             letterSpacing: '0%'
           }}
@@ -140,7 +182,7 @@ const HeroSection: React.FC = () => {
         
         <button 
           onClick={scrollToContactForm}
-          className="inline-flex items-center px-10 py-4 rounded-xl font-medium text-xl transition-all"
+          className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-xl font-medium text-base sm:text-lg md:text-xl transition-all self-start md:self-center"
           style={{ 
             backgroundColor: '#E0DADA', 
             color: '#0D0D0D',

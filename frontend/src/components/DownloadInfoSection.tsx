@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import JSZip from 'jszip';
 import PageContainer from './PageContainer';
@@ -25,6 +25,17 @@ const DownloadInfoSection: React.FC = () => {
     documents: true,
     certificates: false
   });
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Mobile detection
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
 
   const toggleSection = (section: 'documents' | 'certificates') => {
     setExpandedSections(prev => ({
@@ -154,12 +165,11 @@ const DownloadInfoSection: React.FC = () => {
     >
       <PageContainer>
         {/* Заголовок */}
-        <div className="col-start-1 col-end-13 text-center mb-16 px-16">
+        <div className="col-start-1 col-end-13 text-left md:text-center mb-8 md:mb-16 px-4 md:px-16">
           <h2 
-            className="mb-6"
+            className="mb-6 text-4xl md:text-6xl"
             style={{
               fontFamily: 'Bebas Neue',
-              fontSize: '64px',
               fontWeight: 400,
               color: '#F2F0F0',
               textTransform: 'uppercase'
@@ -170,7 +180,7 @@ const DownloadInfoSection: React.FC = () => {
         </div>
 
         {/* Контент - колонки 2-11 */}
-        <div className="col-start-2 col-end-12 px-16">
+        <div className="col-start-1 md:col-start-2 col-end-13 md:col-end-12 px-4 md:px-16">
           <div className="space-y-6">
             {/* Секция Документы */}
             <div 
@@ -183,7 +193,7 @@ const DownloadInfoSection: React.FC = () => {
               {/* Заголовок секции */}
               <button
                 onClick={() => toggleSection('documents')}
-                className="w-full p-6 flex items-center justify-between transition-all duration-200"
+                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200"
                 style={{ 
                   backgroundColor: 'rgba(255, 255, 255, 0)',
                   borderRadius: '30px 30px 0 0'
@@ -194,7 +204,7 @@ const DownloadInfoSection: React.FC = () => {
                   style={{
                     fontFamily: 'Bebas Neue',
                     color: '#F2F0F0',
-                    fontSize: '36px',
+                    fontSize: isMobile ? '24px' : '36px',
                     textTransform: 'uppercase',
                     transform: 'translateY(3px)'
                   }}
@@ -206,8 +216,8 @@ const DownloadInfoSection: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <svg 
-                    width="24" 
-                    height="24" 
+                    width={isMobile ? "20" : "24"} 
+                    height={isMobile ? "20" : "24"} 
                     viewBox="0 0 24 24" 
                     fill="none" 
                     className="text-white"
@@ -233,12 +243,12 @@ const DownloadInfoSection: React.FC = () => {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-6 pt-4 space-y-4">
+                    <div className="p-4 md:p-6 pt-4 space-y-3 md:space-y-4">
                       {documents.map((doc) => (
                         <button
                           key={doc.id}
                           onClick={() => downloadFile(doc.url, doc.title)}
-                          className="w-full p-4 flex items-center justify-between transition-all duration-200 group"
+                          className="w-full p-3 md:p-4 flex items-center justify-between transition-all duration-200 group"
                           style={{ 
                             backgroundColor: '#F2F0F0',
                             color: '#191516',
@@ -247,14 +257,18 @@ const DownloadInfoSection: React.FC = () => {
                             boxSizing: 'border-box'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = '#F2F0F0';
-                            e.currentTarget.style.border = '1px solid #F2F0F0';
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.color = '#F2F0F0';
+                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                            }
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#F2F0F0';
-                            e.currentTarget.style.color = '#191516';
-                            e.currentTarget.style.border = '1px solid #F2F0F0';
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = '#F2F0F0';
+                              e.currentTarget.style.color = '#191516';
+                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                            }
                           }}
                         >
                           <span 
@@ -262,7 +276,7 @@ const DownloadInfoSection: React.FC = () => {
                             style={{
                               fontFamily: 'Inter',
                               fontWeight: 500,
-                              fontSize: '16px',
+                              fontSize: isMobile ? '14px' : '16px',
                               lineHeight: '100%',
                               letterSpacing: '0%'
                             }}
@@ -270,8 +284,8 @@ const DownloadInfoSection: React.FC = () => {
                             {doc.title}
                           </span>
                           <svg 
-                            width="20" 
-                            height="20" 
+                            width={isMobile ? "18" : "20"} 
+                            height={isMobile ? "18" : "20"} 
                             viewBox="0 0 24 24" 
                             fill="none" 
                             className="text-gray-400 group-hover:rotate-45 transition-transform duration-200"
@@ -303,7 +317,7 @@ const DownloadInfoSection: React.FC = () => {
               {/* Заголовок секции */}
               <button
                 onClick={() => toggleSection('certificates')}
-                className="w-full p-6 flex items-center justify-between transition-all duration-200"
+                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200"
                 style={{ 
                   backgroundColor: 'rgba(255, 255, 255, 0)',
                   borderRadius: '30px 30px 0 0'
@@ -314,7 +328,7 @@ const DownloadInfoSection: React.FC = () => {
                   style={{
                     fontFamily: 'Bebas Neue',
                     color: '#F2F0F0',
-                    fontSize: '36px',
+                    fontSize: isMobile ? '24px' : '36px',
                     textTransform: 'uppercase',
                     transform: 'translateY(3px)'
                   }}
@@ -326,8 +340,8 @@ const DownloadInfoSection: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <svg 
-                    width="24" 
-                    height="24" 
+                    width={isMobile ? "20" : "24"} 
+                    height={isMobile ? "20" : "24"} 
                     viewBox="0 0 24 24" 
                     fill="none" 
                     className="text-white"
@@ -353,12 +367,12 @@ const DownloadInfoSection: React.FC = () => {
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-6 pt-4 space-y-4">
+                    <div className="p-4 md:p-6 pt-4 space-y-3 md:space-y-4">
                       {certificates.map((cert) => (
                         <button
                           key={cert.id}
                           onClick={() => downloadFile(cert.url, cert.title)}
-                          className="w-full p-4 flex items-center justify-between transition-all duration-200 group"
+                          className="w-full p-3 md:p-4 flex items-center justify-between transition-all duration-200 group"
                           style={{ 
                             backgroundColor: '#F2F0F0',
                             color: '#191516',
@@ -367,14 +381,18 @@ const DownloadInfoSection: React.FC = () => {
                             boxSizing: 'border-box'
                           }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.backgroundColor = 'transparent';
-                            e.currentTarget.style.color = '#F2F0F0';
-                            e.currentTarget.style.border = '1px solid #F2F0F0';
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.color = '#F2F0F0';
+                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                            }
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.backgroundColor = '#F2F0F0';
-                            e.currentTarget.style.color = '#191516';
-                            e.currentTarget.style.border = '1px solid #F2F0F0';
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = '#F2F0F0';
+                              e.currentTarget.style.color = '#191516';
+                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                            }
                           }}
                         >
                           <span 
@@ -382,7 +400,7 @@ const DownloadInfoSection: React.FC = () => {
                             style={{
                               fontFamily: 'Inter',
                               fontWeight: 500,
-                              fontSize: '16px',
+                              fontSize: isMobile ? '14px' : '16px',
                               lineHeight: '100%',
                               letterSpacing: '0%'
                             }}
@@ -390,8 +408,8 @@ const DownloadInfoSection: React.FC = () => {
                             {cert.title}
                           </span>
                           <svg 
-                            width="20" 
-                            height="20" 
+                            width={isMobile ? "18" : "20"} 
+                            height={isMobile ? "18" : "20"} 
                             viewBox="0 0 24 24" 
                             fill="none" 
                             className="text-gray-400 group-hover:rotate-45 transition-transform duration-200"
@@ -414,27 +432,31 @@ const DownloadInfoSection: React.FC = () => {
           </div>
 
           {/* Кнопка "Скачать все ZIP" - по центру */}
-          <div className="flex justify-center mt-12">
+          <div className="flex justify-center mt-8 md:mt-12">
             <button
               onClick={downloadAll}
-              className="inline-flex items-center px-10 py-4 font-medium text-xl transition-all"
+              className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto"
               style={{ 
                 backgroundColor: '#E0DADA', 
                 color: '#0D0D0D',
                 border: '1px solid #E0DADA',
                 fontFamily: 'Inter',
-                borderRadius: '30px'
-
+                borderRadius: '30px',
+                justifyContent: 'center'
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
-                (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                if (!isMobile) {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                }
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
-                (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                if (!isMobile) {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                }
               }}
             >
               Скачать все ZIP

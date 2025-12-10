@@ -5,6 +5,19 @@ import PageContainer from './PageContainer';
 
 const AboutSection: React.FC = () => {
   const { aboutItems, loading } = useAbout();
+  const [isMobile, setIsMobile] = useState(false);
+  
+  // Определяем мобильное устройство
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
   
   // Отладочная информация
   useEffect(() => {
@@ -28,8 +41,10 @@ const AboutSection: React.FC = () => {
 
   const colors = ['#D71920', '#4ecdc4', '#45b7d1', '#96ceb4'];
 
-  // Основной обработчик скролла
+  // Основной обработчик скролла (только для десктопа)
   useEffect(() => {
+    if (isMobile) return; // Пропускаем анимации на мобильных
+    
     const handleScroll = () => {
       if (!sectionRef.current) return;
 
@@ -167,7 +182,7 @@ const AboutSection: React.FC = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [activeIndex, aboutItems.length, isTextFixed, isLastTextUnfixed]);
+  }, [activeIndex, aboutItems.length, isTextFixed, isLastTextUnfixed, isMobile]);
 
   // Условные возвраты после всех хуков
   if (loading) {
@@ -188,6 +203,59 @@ const AboutSection: React.FC = () => {
 
   const activeItem = aboutItems[activeIndex] || aboutItems[0];
 
+  // Мобильная версия - простая структура без анимаций
+  if (isMobile) {
+    return (
+      <section 
+        ref={sectionRef}
+        className="about-section relative pt-8 pb-16"
+      >
+        <PageContainer>
+          <div className="col-start-1 col-end-13">
+            {/* Простая структура: текст -> картинка -> текст -> картинка */}
+            <div className="space-y-12">
+              {aboutItems.map((item, index) => (
+                <div key={item.id} className="space-y-6">
+                  {/* Текст */}
+                  <div>
+                    <h3 className="text-2xl mb-4" style={{ color: '#F2F0F0' }}>
+                      {item.title}
+                    </h3>
+                    <p className="text-lg leading-relaxed" style={{ color: '#F2F0F0' }}>
+                      {item.description}
+                    </p>
+                  </div>
+                  
+                  {/* Картинка */}
+                  <div className="w-full h-64 flex items-center justify-center">
+                    {item.image_url ? (
+                      <img 
+                        src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
+                        alt={item.title}
+                        className="max-w-full max-h-full object-contain rounded-lg"
+                        onError={(e) => {
+                          console.error('Ошибка загрузки изображения:', item.image_url);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div 
+                        className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100 rounded-lg"
+                      >
+                        <span className="text-lg">Изображение {index + 1}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+    );
+  }
+
+  // Десктоп версия - с анимациями
   return (
     <section 
       ref={sectionRef}

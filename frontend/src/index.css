@@ -235,6 +235,47 @@ p {
   }
 }
 
+/* Navigation mobile styles */
+@media (max-width: 1024px) {
+  header {
+    background: color-mix(in srgb, white 5%, transparent) !important;
+    backdrop-filter: blur(var(--blur-glass)) !important;
+    -webkit-backdrop-filter: blur(var(--blur-glass)) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+  }
+}
+
+/* Hero section mobile adjustments */
+@media (max-width: 768px) {
+  .hero-image-top-left {
+    width: 60% !important;
+    height: 35% !important;
+    left: 5% !important;
+    top: -10% !important;
+  }
+
+  .hero-image-top-right {
+    width: 40% !important;
+    height: 25% !important;
+    left: 55% !important;
+    top: 5% !important;
+  }
+
+  .hero-image-bottom-left {
+    width: 60% !important;
+    height: 35% !important;
+    left: 2% !important;
+    top: 8% !important;
+  }
+
+  .hero-image-bottom-right {
+    width: 55% !important;
+    height: 40% !important;
+    left: 50% !important;
+    top: 15% !important;
+  }
+}
+
 /* Скрытие скроллбара для горизонтального скролла */
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */

@@ -32,8 +32,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 px-16 ${className}`} style={{ background: 'transparent' }}>
-      <div className="container">
+    <header className={`fixed top-0 left-0 right-0 z-50 ${className}`} style={{ background: 'transparent' }}>
+      <div className="container mx-auto px-4 lg:px-16">
         <div className="flex items-center justify-between py-4">
           {/* Left capsule: logo + navigation */}
           <div className="hidden lg:flex items-center gap-8 glass px-6 h-10" style={{ border: 'none', width: 'fit-content' }}>
@@ -55,8 +55,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
             </nav>
           </div>
 
-          {/* Mobile: logo + бургер */}
-          <div className="flex lg:hidden items-center gap-3">
+          {/* Mobile: logo */}
+          <div className="flex lg:hidden items-center">
             <Link to="/" className="shrink-0">
               <img src={logoSrc} alt="МАСТЕР" className="h-6 w-auto select-none" draggable={false} />
             </Link>
@@ -92,11 +92,11 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           <div className="lg:hidden">
             <button
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center rounded-lg px-3 py-2 text-gray-100"
-              style={{ border: '1px solid var(--glass-border)', background: 'color-mix(in srgb, white 5%, transparent)', backdropFilter: 'blur(var(--blur-glass))' }}
+              className="inline-flex items-center justify-center p-2 text-white"
+              style={{ background: 'transparent' }}
               aria-label="Открыть меню"
             >
-              {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
