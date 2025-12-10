@@ -331,49 +331,35 @@ const Footer: React.FC = () => {
         </section>
 
         {/* Футер */}
-        <section className="py-16 relative z-10" style={{ 
+        <section className="py-8 md:py-16 relative z-10" style={{ 
           backgroundColor: 'rgba(98, 98, 98, 0.3)', 
-          marginLeft: '50px', 
-          marginRight: '50px', 
+          marginLeft: isMobile ? '0' : '50px', 
+          marginRight: isMobile ? '0' : '50px', 
           borderTopLeftRadius: '30px', 
           borderTopRightRadius: '30px',
           backdropFilter: 'blur(38.400001525878906px)'
         }}>
           <PageContainer>
-            {/* Логотипы (колонки 1-3) */}
-            <div className="col-start-1 col-end-4" style={{ paddingLeft: '50px' }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  viewport={{ once: true }}
-                >
-                  <div className="flex flex-col space-y-3 mb-6">
-                    
-                    {/* "Элемент" логотип */}
-                    <img 
-                      src="/logo2.png" 
-                      alt="Логотип 2" 
-                      style={{ 
-                        width: '151px',
-                        height: '39px',
-                        objectFit: 'contain'
-                      }}
-                    />
-                  </div>
-                </motion.div>
-            </div>
+            {/* Мобильная версия */}
+            {isMobile ? (
+              <div className="col-start-1 col-end-13 px-4 space-y-8">
+                {/* Логотип "Элемент" */}
+                <div>
+                  <img 
+                    src="/logo2.png" 
+                    alt="Элемент" 
+                    style={{ 
+                      width: '120px',
+                      height: 'auto',
+                      objectFit: 'contain'
+                    }}
+                  />
+                </div>
 
-            {/* Навигация "Основное" (колонки 4-7) */}
-            <div className="col-start-4 col-end-8" style={{ paddingLeft: '15px' }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.1 }}
-                  viewport={{ once: true }}
-                >
+                {/* Навигация "Основное" */}
+                <div>
                   <h4 
-                    className="text-xl font-semibold mb-6"
+                    className="text-lg font-semibold mb-4"
                     style={{ 
                       fontFamily: 'Inter',
                       color: '#F2F0F0'
@@ -381,7 +367,7 @@ const Footer: React.FC = () => {
                   >
                     Основное
                   </h4>
-                  <nav className="space-y-3">
+                  <nav className="space-y-2">
                     {[
                       { name: 'Продукция', href: '/products' },
                       { name: 'Видео-презентации', href: '/videos' },
@@ -390,7 +376,7 @@ const Footer: React.FC = () => {
                       <a
                         key={link.name}
                         href={link.href}
-                        className="block text-base hover:text-red-500 transition-colors duration-200"
+                        className="block text-sm"
                         style={{
                           fontFamily: 'Inter',
                           color: '#F2F0F0'
@@ -400,19 +386,12 @@ const Footer: React.FC = () => {
                       </a>
                     ))}
                   </nav>
-                </motion.div>
-            </div>
+                </div>
 
-            {/* Контакты (колонки 8-11) */}
-            <div className="col-start-8 col-end-12" style={{ paddingLeft: '15px' }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  viewport={{ once: true }}
-                >
+                {/* Контакты */}
+                <div>
                   <h4 
-                    className="text-xl font-semibold mb-6"
+                    className="text-lg font-semibold mb-4"
                     style={{ 
                       fontFamily: 'Inter',
                       color: '#F2F0F0'
@@ -420,9 +399,9 @@ const Footer: React.FC = () => {
                   >
                     Контакты
                   </h4>
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <p 
-                      className="text-base"
+                      className="text-sm"
                       style={{
                         fontFamily: 'Inter',
                         color: '#F2F0F0'
@@ -431,7 +410,7 @@ const Footer: React.FC = () => {
                       {settings.contact_phone || '+7 (495) 123-45-67'}
                     </p>
                     <p 
-                      className="text-base"
+                      className="text-sm"
                       style={{
                         fontFamily: 'Inter',
                         color: '#F2F0F0'
@@ -440,7 +419,7 @@ const Footer: React.FC = () => {
                       {settings.contact_email || 'info@example.com'}
                     </p>
                     <p 
-                      className="text-base"
+                      className="text-sm"
                       style={{
                         fontFamily: 'Inter',
                         color: '#F2F0F0'
@@ -449,7 +428,7 @@ const Footer: React.FC = () => {
                        {settings.contact_address || 'г. Обнинск, проезд Самсоновский, д. 10'}
                     </p>
                     <p 
-                      className="text-base"
+                      className="text-sm"
                       style={{
                         fontFamily: 'Inter',
                         color: '#F2F0F0'
@@ -458,66 +437,222 @@ const Footer: React.FC = () => {
                       {settings.working_hours || 'Пн-Пт 10:00-18:00'}
                     </p>
                   </div>
-                </motion.div>
-            </div>
+                </div>
 
-            {/* Кнопка "Наверх" (колонка 12) */}
-            <div className="col-start-12 col-end-13" style={{ paddingRight: '50px' }}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  viewport={{ once: true }}
-                  className="flex justify-end"
-                >
-                </motion.div>
-            </div>
+                {/* Разделительная линия */}
+                <div 
+                  className="border-t"
+                  style={{ 
+                    borderColor: 'rgba(255, 255, 255, 0.2)'
+                  }}
+                />
 
-            {/* Нижняя часть футера */}
-            <div className="col-start-1 col-end-13">
-              <motion.div 
-                className="mt-16 pt-10 border-t flex flex-col md:flex-row justify-between items-center"
-                style={{ 
-                  borderColor: 'rgba(255, 255, 255, 0.2)'
-                }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                viewport={{ once: true }}
-              >
-              <p 
-                className="text-base mb-3 md:mb-0"
-                style={{
-                  fontFamily: 'Inter',
-                  color: '#F2F0F0'
-                }}
-              >
-                © 2025 ООО "Элемент". Все права защищены
-              </p>
-              <div className="flex items-center space-x-8">
-                <a 
-                  href="#privacy" 
-                  className="text-base hover:text-red-500 transition-colors duration-200"
-                  style={{
-                    fontFamily: 'Inter',
-                    color: '#F2F0F0'
-                  }}
-                >
-                  Политика конфиденциальности
-                </a>
-                <a 
-                  href="#developer" 
-                  className="text-base hover:text-red-500 transition-colors duration-200"
-                  style={{
-                    fontFamily: 'Inter',
-                    color: '#F2F0F0'
-                  }}
-                >
-                  Разработчик ...
-                </a>
+                {/* Нижняя часть */}
+                <div className="space-y-3">
+                  <a 
+                    href="#privacy" 
+                    className="block text-sm"
+                    style={{
+                      fontFamily: 'Inter',
+                      color: '#F2F0F0'
+                    }}
+                  >
+                    Политика конфиденциальности
+                  </a>
+                  <p 
+                    className="text-sm"
+                    style={{
+                      fontFamily: 'Inter',
+                      color: '#F2F0F0'
+                    }}
+                  >
+                    © 2025 ООО "Элемент". Все права защищены
+                  </p>
+                </div>
               </div>
-              </motion.div>
-            </div>
+            ) : (
+              <>
+                {/* Десктопная версия - без изменений */}
+                {/* Логотипы (колонки 1-3) */}
+                <div className="col-start-1 col-end-4" style={{ paddingLeft: '50px' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6 }}
+                      viewport={{ once: true }}
+                    >
+                      <div className="flex flex-col space-y-3 mb-6">
+                        
+                        {/* "Элемент" логотип */}
+                        <img 
+                          src="/logo2.png" 
+                          alt="Логотип 2" 
+                          style={{ 
+                            width: '151px',
+                            height: '39px',
+                            objectFit: 'contain'
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                </div>
+
+                {/* Навигация "Основное" (колонки 4-7) */}
+                <div className="col-start-4 col-end-8" style={{ paddingLeft: '15px' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.1 }}
+                      viewport={{ once: true }}
+                    >
+                      <h4 
+                        className="text-xl font-semibold mb-6"
+                        style={{ 
+                          fontFamily: 'Inter',
+                          color: '#F2F0F0'
+                        }}
+                      >
+                        Основное
+                      </h4>
+                      <nav className="space-y-3">
+                        {[
+                          { name: 'Продукция', href: '/products' },
+                          { name: 'Видео-презентации', href: '/videos' },
+                          { name: 'Реквизиты', href: '/requisites' }
+                        ].map((link) => (
+                          <a
+                            key={link.name}
+                            href={link.href}
+                            className="block text-base hover:text-red-500 transition-colors duration-200"
+                            style={{
+                              fontFamily: 'Inter',
+                              color: '#F2F0F0'
+                            }}
+                          >
+                            {link.name}
+                          </a>
+                        ))}
+                      </nav>
+                    </motion.div>
+                </div>
+
+                {/* Контакты (колонки 8-11) */}
+                <div className="col-start-8 col-end-12" style={{ paddingLeft: '15px' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.2 }}
+                      viewport={{ once: true }}
+                    >
+                      <h4 
+                        className="text-xl font-semibold mb-6"
+                        style={{ 
+                          fontFamily: 'Inter',
+                          color: '#F2F0F0'
+                        }}
+                      >
+                        Контакты
+                      </h4>
+                      <div className="space-y-3">
+                        <p 
+                          className="text-base"
+                          style={{
+                            fontFamily: 'Inter',
+                            color: '#F2F0F0'
+                          }}
+                        >
+                          {settings.contact_phone || '+7 (495) 123-45-67'}
+                        </p>
+                        <p 
+                          className="text-base"
+                          style={{
+                            fontFamily: 'Inter',
+                            color: '#F2F0F0'
+                          }}
+                        >
+                          {settings.contact_email || 'info@example.com'}
+                        </p>
+                        <p 
+                          className="text-base"
+                          style={{
+                            fontFamily: 'Inter',
+                            color: '#F2F0F0'
+                          }}
+                        >
+                           {settings.contact_address || 'г. Обнинск, проезд Самсоновский, д. 10'}
+                        </p>
+                        <p 
+                          className="text-base"
+                          style={{
+                            fontFamily: 'Inter',
+                            color: '#F2F0F0'
+                          }}
+                        >
+                          {settings.working_hours || 'Пн-Пт 10:00-18:00'}
+                        </p>
+                      </div>
+                    </motion.div>
+                </div>
+
+                {/* Кнопка "Наверх" (колонка 12) */}
+                <div className="col-start-12 col-end-13" style={{ paddingRight: '50px' }}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.6, delay: 0.3 }}
+                      viewport={{ once: true }}
+                      className="flex justify-end"
+                    >
+                    </motion.div>
+                </div>
+
+                {/* Нижняя часть футера */}
+                <div className="col-start-1 col-end-13">
+                  <motion.div 
+                    className="mt-16 pt-10 border-t flex flex-col md:flex-row justify-between items-center"
+                    style={{ 
+                      borderColor: 'rgba(255, 255, 255, 0.2)'
+                    }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                    viewport={{ once: true }}
+                  >
+                  <p 
+                    className="text-base mb-3 md:mb-0"
+                    style={{
+                      fontFamily: 'Inter',
+                      color: '#F2F0F0'
+                    }}
+                  >
+                    © 2025 ООО "Элемент". Все права защищены
+                  </p>
+                  <div className="flex items-center space-x-8">
+                    <a 
+                      href="#privacy" 
+                      className="text-base hover:text-red-500 transition-colors duration-200"
+                      style={{
+                        fontFamily: 'Inter',
+                        color: '#F2F0F0'
+                      }}
+                    >
+                      Политика конфиденциальности
+                    </a>
+                    <a 
+                      href="#developer" 
+                      className="text-base hover:text-red-500 transition-colors duration-200"
+                      style={{
+                        fontFamily: 'Inter',
+                        color: '#F2F0F0'
+                      }}
+                    >
+                      Разработчик ...
+                    </a>
+                  </div>
+                  </motion.div>
+                </div>
+              </>
+            )}
           </PageContainer>
         </section>
       </div>
