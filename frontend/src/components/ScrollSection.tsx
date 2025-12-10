@@ -72,6 +72,17 @@ const ScrollSection: React.FC = () => {
   const [isLastTextUnfixed, setIsLastTextUnfixed] = useState(false);
   const [fixedPosition, setFixedPosition] = useState({ left: 'auto', width: 'auto' });
   const [lastTextTopOffset, setLastTextTopOffset] = useState(0);
+  const [relativePosition, setRelativePosition] = useState({ top: 0, left: 0, width: 0 });
+  const [isMobile, setIsMobile] = useState(false);
+  const [textOpacities, setTextOpacities] = useState<number[]>([]);
+  const [isMobileFixed, setIsMobileFixed] = useState(false);
+  const [isMobileUnfixed, setIsMobileUnfixed] = useState(false);
+  const [mobileFixedPosition, setMobileFixedPosition] = useState({ top: 0, left: 0, width: 0 });
+  const [mobileUnfixedOffset, setMobileUnfixedOffset] = useState(0);
+  const [viewportHeight, setViewportHeight] = useState(0);
+  const [fixedStartScroll, setFixedStartScroll] = useState(0);
+  const [fixedEndScroll, setFixedEndScroll] = useState(0);
+  const mobileContentContainerRef = useRef<HTMLDivElement>(null);
   // Мемоизированные стили для оптимизации
   const videoStyles = useMemo(() => ({
     width: '100%',
@@ -118,6 +129,26 @@ const ScrollSection: React.FC = () => {
     fetchData();
   }, [fetchData]);
 
+  // Определение мобильного устройства и viewport
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsMobile(window.innerWidth < 768); // md breakpoint
+      setViewportHeight(window.innerHeight);
+    };
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    return () => window.removeEventListener('resize', checkScreenSize);
+  }, []);
+
+  // Инициализация прозрачности текстов для мобильной версии
+  useEffect(() => {
+    if (data && isMobile) {
+      const initialOpacities = new Array(data.text_blocks.length).fill(0);
+      initialOpacities[0] = 1; // Первый текст видим сразу
+      setTextOpacities(initialOpacities);
+    }
+  }, [data, isMobile]);
+
   // Оптимизированная функция обновления видео
   const updateVideoTime = useCallback(() => {
     const video = videoRef.current;
@@ -148,8 +179,167 @@ const ScrollSection: React.FC = () => {
     animationFrameRef.current = requestAnimationFrame(scrollPlay);
   }, [updateVideoTime]);
 
+  // Мобильная версия: обработка скролла для текстов и видео
+  const handleMobileScroll = useCallback(() => {
+    const section = sectionRef.current;
+    const video = videoRef.current;
+    const contentContainer = mobileContentContainerRef.current;
+    
+    if (!section || !video || !data || !contentContainer) return;
+
+    const sectionRect = section.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    const viewportTop = window.scrollY;
+    const sectionTop = section.offsetTop;
+    
+    // Получаем размеры контента (текст + видео)
+    const contentRect = contentContainer.getBoundingClientRect();
+    const contentHeight = contentRect.height;
+    
+    // ОПТИМАЛЬНЫЙ АЛГОРИТМ: Две точки на основе позиции скролла
+    // Вычисляем точки фиксации и разфиксации на основе позиции секции
+    
+    // ТОЧКА ФИКСАЦИИ: Когда верхняя граница секции достигла верха viewport
+    // Вычисляем scrollY позицию, когда это происходит
+    const fixPoint = sectionTop - viewportHeight / 2 + contentHeight / 2;
+    
+    // ТОЧКА РАЗФИКСАЦИИ: Когда нижняя граница секции появляется во viewport
+    // Вычисляем scrollY позицию, когда это происходит
+    const sectionHeight = sectionRect.height;
+    const unfixPoint = sectionTop + sectionHeight - viewportHeight;
+    
+    // ЛОГИКА: В зависимости от позиции скролла меняем позиционирование
+    
+    // 1. ФИКСАЦИЯ: Когда дошли до точки фиксации
+    if (viewportTop >= fixPoint && !isMobileFixed) {
+      setIsMobileFixed(true);
+      setIsMobileUnfixed(false);
+      
+      // Сохраняем позицию для fixed позиционирования (фиксируем на середине viewport)
+      const top = viewportHeight / 2 - contentHeight / 2; // Центрируем на середине viewport
+      const left = contentRect.left;
+      const width = contentRect.width;
+      
+      setMobileFixedPosition({ top, left, width });
+      
+      // Сохраняем момент начала фиксации
+      setFixedStartScroll(viewportTop);
+      
+      // Вычисляем момент окончания фиксации
+      const scrollRangePerText = viewportHeight * 0.8;
+      const totalScrollRange = data.text_blocks.length * scrollRangePerText;
+      setFixedEndScroll(viewportTop + totalScrollRange);
+    }
+    // 2. РАЗФИКСАЦИЯ ВНИЗ: Когда дошли до точки разфиксации
+    else if (viewportTop >= unfixPoint && isMobileFixed && !isMobileUnfixed) {
+      // Разфиксируем и ставим блок внизу секции
+      setIsMobileUnfixed(true);
+      
+      // Вычисляем offset так, чтобы блок был внизу секции
+      // Позиция контента внизу секции = высота секции - высота контента
+      const offset = sectionHeight - contentHeight;
+      setMobileUnfixedOffset(offset);
+    }
+    // 3. РАЗФИКСАЦИЯ ПРИ СКРОЛЛЕ ВВЕРХ: Когда вернулись выше точки разфиксации
+    else if (viewportTop < unfixPoint && isMobileFixed && isMobileUnfixed) {
+      // Убираем offset, возвращаемся к обычной relative позиции
+      setIsMobileUnfixed(false);
+      setMobileUnfixedOffset(0);
+    }
+    // 4. СБРОС ФИКСАЦИИ: Когда вернулись выше точки фиксации
+    else if (viewportTop < fixPoint && isMobileFixed) {
+      // Полностью сбрасываем фиксацию, возвращаемся в исходное положение
+      setIsMobileFixed(false);
+      setIsMobileUnfixed(false);
+      setMobileUnfixedOffset(0);
+    }
+    
+    // 3. ВЫЧИСЛЕНИЕ ПРОГРЕССА СКРОЛЛА для видео и текстов
+    let scrollProgress = 0;
+    
+    if (isMobileFixed && !isMobileUnfixed) {
+      // В зоне фиксации - прогресс от момента фиксации до разфиксации
+      scrollProgress = Math.max(0, Math.min(1, 
+        (viewportTop - fixedStartScroll) / (fixedEndScroll - fixedStartScroll)
+      ));
+    } else if (!isMobileFixed) {
+      // До фиксации - минимальный прогресс
+      scrollProgress = 0;
+    } else {
+      // После разфиксации - прогресс = 1 (видео доигрывает до конца)
+      scrollProgress = 1;
+    }
+
+    // Обновляем время видео на основе прогресса скролла
+    if (video.readyState >= 2 && video.duration && !isNaN(video.duration) && isFinite(video.duration)) {
+      const videoTime = video.duration * scrollProgress;
+      // Проверяем, что новое время отличается от текущего, чтобы избежать лишних обновлений
+      if (Math.abs(video.currentTime - videoTime) > 0.1) {
+        video.currentTime = videoTime;
+      }
+    }
+
+    // Вычисляем прозрачность для каждого текста (fade in/fade out)
+    const textCount = data.text_blocks.length;
+    const newOpacities = data.text_blocks.map((_, index) => {
+      const isFirst = index === 0;
+      const isLast = index === textCount - 1;
+      const textStart = index / textCount;
+      const textEnd = (index + 1) / textCount;
+      
+      if (scrollProgress < textStart) {
+        // До появления текста - первый текст видим сразу, остальные невидимы
+        return isFirst ? 1 : 0;
+      } else if (scrollProgress > textEnd && !isLast) {
+        // Текст уже ушел (кроме последнего)
+        return 0;
+      } else if (isFirst && scrollProgress >= textStart) {
+        // Первый текст - виден сразу, только fade out
+        const textProgressLocal = (scrollProgress - textStart) / (textEnd - textStart);
+        if (textProgressLocal > 0.7) {
+          return Math.pow((1 - textProgressLocal) / 0.3, 2); // Только fade out (1-0)
+        } else {
+          return 1; // Полная видимость без fade in
+        }
+      } else if (isLast && scrollProgress >= textStart) {
+        // Последний текст - остается видимым после появления
+        const textProgressLocal = (scrollProgress - textStart) / (textEnd - textStart);
+        if (textProgressLocal < 0.3) {
+          return Math.pow(textProgressLocal / 0.3, 2); // Fade in
+        } else {
+          return 1; // Остается видимым
+        }
+      } else {
+        // Текст в зоне видимости - вычисляем плавную прозрачность
+        const textProgressLocal = (scrollProgress - textStart) / (textEnd - textStart);
+        // Плавное появление и исчезновение (fade in/fade out)
+        if (textProgressLocal < 0.3) {
+          return Math.pow(textProgressLocal / 0.3, 2); // Fade in с квадратичной кривой (0-1)
+        } else if (textProgressLocal > 0.7) {
+          return Math.pow((1 - textProgressLocal) / 0.3, 2); // Fade out с квадратичной кривой (1-0)
+        } else {
+          return 1; // Полная видимость
+        }
+      }
+    });
+    
+    setTextOpacities(newOpacities);
+  }, [data, isMobileFixed, isMobileUnfixed, fixedStartScroll, fixedEndScroll]);
+  
+  // Мобильная версия: оптимизированная функция анимации через requestAnimationFrame
+  const mobileScrollPlay = useCallback(() => {
+    handleMobileScroll();
+    animationFrameRef.current = requestAnimationFrame(mobileScrollPlay);
+  }, [handleMobileScroll]);
+
   // Оптимизированная функция обработки скролла (как в AboutSection)
   const handleScroll = useCallback(() => {
+    // Для мобильной версии используем отдельную логику
+    if (isMobile) {
+      handleMobileScroll();
+      return;
+    }
+
     const section = sectionRef.current;
     const videoContainer = videoContainerRef.current;
     const textBlocks = textBlocksRef.current;
@@ -178,7 +368,7 @@ const ScrollSection: React.FC = () => {
         setFixedPosition({ left: `${left}px`, width: `${width}px` });
         console.log('Video fixed at position:', { left, width });
       }
-      // Разфиксация когда центр первого текста ниже центра
+      // Разфиксация когда центр первого текста ниже центра (только если не в режиме lastTextUnfixed)
       else if (firstTextCenter > viewportCenter && isVideoFixed && !isLastTextUnfixed) {
         setIsVideoFixed(false);
       }
@@ -190,39 +380,69 @@ const ScrollSection: React.FC = () => {
       const lastTextRect = lastTextBlock.getBoundingClientRect();
       const lastTextCenter = lastTextRect.top + lastTextRect.height / 2;
       
-      // Разфиксация: когда центр последнего текста выше центра видимой области
-      if (lastTextCenter < viewportCenter && !isLastTextUnfixed) {
+      // Разфиксация: делаем переход когда центр последнего текста проходит центр viewport
+      // Это обеспечит плавный переход без скачков
+      if (lastTextCenter < viewportCenter && !isLastTextUnfixed && isVideoFixed) {
         setIsLastTextUnfixed(true);
         
-        // Вычисляем отступ так, чтобы видео располагалось на том же уровне
-        const textContainer = section.querySelector('[data-text-container]');
-        if (textContainer) {
-          const textContainerRect = textContainer.getBoundingClientRect();
-          const lastTextTopInContainer = lastTextRect.top - textContainerRect.top;
+        // Вычисляем отступ так, чтобы расстояние от нижнего края секции до центра видео было 50vh
+        if (videoContainer) {
+          const videoRect = videoContainer.getBoundingClientRect();
+          const videoHeight = videoRect.height;
+          const viewportHeightPx = window.innerHeight;
+          const targetDistance = viewportHeightPx * 0.5; // 50vh в пикселях
           
-          // Вычисляем высоту: (количество текстов - 1) × (высота текста + отступ)
-          const textCount = textBlocks.length;
-          const textHeight = lastTextRect.height;
-          const gapBetweenTexts = 0; // У нас нет отступов между текстами
+          // Получаем высоту секции из minHeight стиля
+          // Высота секции уже рассчитана с учетом видео: textBlocks * 80vh + 50vh + videoHeight/2
+          if (!data) return;
           
-          const totalHeight = (textCount - 1) * (textHeight + gapBetweenTexts);
-          const totalOffset = totalHeight;
+          // Вычисляем высоту секции на основе minHeight (в vh единицах)
+          const videoHeightVh = 80;
+          const targetDistanceVh = 50;
+          const sectionHeightVh = data.text_blocks.length * 80 + targetDistanceVh + videoHeightVh / 2;
+          const sectionHeight = sectionHeightVh * viewportHeightPx / 100; // Конвертируем vh в пиксели
           
-          setLastTextTopOffset(totalOffset);
+          // Вычисляем offset так, чтобы:
+          // В relative позиции: top = offset означает позицию верха элемента от начала секции
+          // Центр видео = offset + videoHeight / 2
+          // Расстояние от нижнего края до центра = sectionHeight - (offset + videoHeight / 2)
+          // Нужно: sectionHeight - (offset + videoHeight / 2) = 50vh
+          // offset = sectionHeight - 50vh - videoHeight / 2
+          const offset = sectionHeight - targetDistance - videoHeight / 2;
+          
+          // Убеждаемся, что offset не отрицательный и видео не выходит за верхнюю границу
+          const safeOffset = Math.max(0, offset);
+          
+          // Сохраняем позицию для плавного возврата
+          const textContainer = section.querySelector('[data-text-container]');
+          if (textContainer) {
+            const textContainerRect = textContainer.getBoundingClientRect();
+            setRelativePosition({
+              top: safeOffset,
+              left: textContainerRect.left - sectionRect.left,
+              width: textContainerRect.width
+            });
+          }
+          
+          setLastTextTopOffset(safeOffset);
         }
       }
-      // Фиксация: когда центр последнего текста ниже центра видимой области
+      // Возврат в fixed: когда центр последнего текста выше центра viewport
+      // Нужно плавно вернуться в fixed состояние
       else if (lastTextCenter >= viewportCenter && isLastTextUnfixed) {
-        setIsLastTextUnfixed(false);
+        // Сбрасываем разфиксацию только если видео еще в fixed состоянии
+        if (isVideoFixed) {
+          setIsLastTextUnfixed(false);
+        }
       }
     }
 
     // 3. ЛОГИКА СМЕНЫ АКТИВНОГО ТЕКСТА - убрана, теперь обычный скролл
-  }, [isVideoFixed, isLastTextUnfixed]);
+  }, [isVideoFixed, isLastTextUnfixed, isMobile]);
 
   // Основной useEffect с оптимизациями
   useEffect(() => {
-    if (!data || !videoRef.current || textBlocksRef.current.length === 0) return;
+    if (!data || !videoRef.current) return;
 
     const video = videoRef.current;
     const section = sectionRef.current;
@@ -232,12 +452,12 @@ const ScrollSection: React.FC = () => {
     // Устанавливаем начальное состояние видео
     video.currentTime = 0;
     video.muted = true;
+    video.playsInline = true;
 
     // Обработчик загрузки метаданных видео
     const handleVideoLoad = () => {
       const videoDuration = video.duration;
       console.log('ScrollSection: Video duration:', videoDuration);
-      // Убираем динамическую установку высоты, чтобы избежать лишнего скролла
     };
 
     // Если метаданные уже загружены
@@ -247,10 +467,19 @@ const ScrollSection: React.FC = () => {
       video.addEventListener('loadedmetadata', handleVideoLoad);
     }
 
-    // Запускаем анимацию
-    animationFrameRef.current = requestAnimationFrame(scrollPlay);
+    // Для мобильной версии используем requestAnimationFrame для плавной анимации
+    if (isMobile) {
+      // Запускаем анимацию через requestAnimationFrame для мобильной версии
+      animationFrameRef.current = requestAnimationFrame(mobileScrollPlay);
+    } else {
+      // Для десктопа используем scrollPlay
+      if (textBlocksRef.current.length > 0) {
+        animationFrameRef.current = requestAnimationFrame(scrollPlay);
+      }
+    }
 
-    // Добавляем обработчик скролла
+    // Добавляем обработчик скролла (throttled через requestAnimationFrame)
+    // Используем passive: true для лучшей производительности
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Первоначальная проверка
 
@@ -262,7 +491,7 @@ const ScrollSection: React.FC = () => {
       window.removeEventListener('scroll', handleScroll);
       video.removeEventListener('loadedmetadata', handleVideoLoad);
     };
-  }, [data, scrollPlay, handleScroll]);
+  }, [data, scrollPlay, handleScroll, isMobile, mobileScrollPlay]);
 
   // Мемоизированные компоненты для оптимизации рендеринга
   const LoadingComponent = useMemo(() => (
@@ -292,21 +521,173 @@ const ScrollSection: React.FC = () => {
   if (loading) return LoadingComponent;
   if (error || !data) return ErrorComponent;
 
+  // Мобильная версия рендера
+  if (isMobile && data) {
+    return (
+      <section 
+        ref={sectionRef}
+        className="scroll-section relative"
+        style={{ 
+          backgroundColor: '#0D0D0D',
+          // Высота секции: заголовок + общий блок (текст + видео) + высота для прокрутки всех текстов
+          minHeight: `calc(20vh + 90vh + ${data.text_blocks.length * 100}vh)`
+        }}
+      >
+        <PageContainer>
+          {/* Заголовок и подзаголовок */}
+          <div className="col-start-1 col-end-13 text-left md:text-center mb-0 px-4 md:px-16">
+            <h2 
+              className="mb-0 text-4xl md:text-6xl"
+              style={{
+                fontFamily: 'Bebas Neue',
+                fontWeight: 400,
+                color: '#F2F0F0',
+                textTransform: 'uppercase'
+              }}
+            >
+              {data.section_title}
+            </h2>
+            <p 
+              className="text-sm md:text-lg"
+              style={{
+                fontFamily: 'Inter',
+                color: '#F2F0F0',
+                maxWidth: '600px',
+                margin: '0'
+              }}
+            >
+              {data.section_subtitle}
+            </p>
+          </div>
+
+          {/* Общий контейнер для текстов и видео - фиксируется вместе */}
+          <div 
+            ref={mobileContentContainerRef}
+            className="col-start-1 col-end-13 px-4"
+            style={{
+              position: isMobileUnfixed ? 'relative' : (isMobileFixed ? 'fixed' : 'relative'),
+              top: isMobileUnfixed ? `${mobileUnfixedOffset}px` : (isMobileFixed ? `${mobileFixedPosition.top}px` : 'auto'),
+              left: isMobileUnfixed ? 'auto' : (isMobileFixed ? `${mobileFixedPosition.left}px` : 'auto'),
+              width: isMobileUnfixed ? '100%' : (isMobileFixed ? `${mobileFixedPosition.width}px` : '100%'),
+              willChange: isMobileFixed ? 'transform, opacity' : 'auto'
+            }}
+          >
+            {/* Текстовые блоки - сверху */}
+            <div 
+              data-mobile-text-container
+              className="z-20 mb-4"
+              style={{ 
+                height: '40vh', 
+                minHeight: '300px',
+                position: 'relative'
+              }}
+            >
+              <div className="relative h-full">
+                {data.text_blocks.map((block, index) => (
+                  <div
+                    key={block.id}
+                    ref={(el) => {
+                      if (el) textBlocksRef.current[index] = el;
+                    }}
+                    className="absolute inset-0 flex flex-col justify-center transition-opacity duration-500"
+                    style={{ 
+                      opacity: textOpacities[index] || 0,
+                      pointerEvents: textOpacities[index] > 0.5 ? 'auto' : 'none'
+                    }}
+                  >
+                    <h3 
+                      className="text-2xl md:text-3xl font-bold mb-4"
+                      style={{ 
+                        fontFamily: 'Bebas Neue',
+                        color: '#D71920'
+                      }}
+                    >
+                      {block.title}
+                    </h3>
+                    <p 
+                      className="text-sm md:text-lg"
+                      style={{ 
+                        fontFamily: 'Inter',
+                        color: '#F2F0F0'
+                      }}
+                    >
+                      {block.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Видео - снизу, обрезается на 25% сверху и снизу (только по высоте) */}
+            <div 
+              ref={videoContainerRef}
+              className="z-10"
+              style={{ 
+                height: '50vh', // Видимая высота: 25% сверху + 25% снизу = 50% видимой части
+                minHeight: '300px',
+                overflow: 'hidden', // Скрываем обрезанные части
+                position: 'relative',
+                width: '100%' // Полная ширина без обрезки
+              }}
+            >
+              <div 
+                className="w-full flex items-center justify-center"
+                style={{
+                  height: '200%', // Увеличиваем высоту в 2 раза для обрезки
+                  transform: 'translateY(-25%)', // Сдвигаем вверх на 25%, чтобы показать среднюю часть
+                  transformOrigin: 'center center',
+                  willChange: 'transform',
+                  width: '100%' // Полная ширина без обрезки
+                }}
+              >
+                <video
+                  ref={videoRef}
+                  className="rounded-2xl"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover', // Покрывает всю область, сохраняя пропорции
+                    objectPosition: 'center',
+                    display: 'block'
+                  }}
+                  preload="metadata"
+                  muted
+                  playsInline
+                >
+                  <source src={data.video_url} type="video/mp4" />
+                  Ваш браузер не поддерживает видео.
+                </video>
+              </div>
+            </div>
+          </div>
+        </PageContainer>
+      </section>
+    );
+  }
+
+  // Десктопная версия (без изменений)
+  // Вычисляем минимальную высоту секции с учетом видео в relative позиции
+  const videoHeightVh = 80; // Высота видео в vh
+  const targetDistanceVh = 50; // Расстояние от низа до центра видео в vh
+  // Высота = текстовые блоки + пространство для видео (50vh от низа + половина высоты видео)
+  const minSectionHeight = data ? (data.text_blocks.length * 80 + targetDistanceVh + videoHeightVh / 2) : 0;
+  
   return (
     <section 
       ref={sectionRef}
-      className="scroll-section relative pb-16"
+      className="scroll-section relative"
       style={{ 
         backgroundColor: '#0D0D0D',
         overflow: 'hidden',
-        minHeight: `${data.text_blocks.length * 80}vh`
+        // Высота секции: высота для всех текстовых блоков + пространство для видео в relative
+        minHeight: `${minSectionHeight}vh`
       }}
     >
       <PageContainer>
         {/* Заголовок и подзаголовок */}
-        <div className="col-start-1 col-end-13 text-center mb-16 px-16">
+        <div className="col-start-1 col-end-13 text-center mb-0 px-16">
           <h2 
-            className="mb-12"
+            className="mb-0"
             style={{
               fontFamily: 'Bebas Neue',
               fontSize: '64px',
@@ -391,7 +772,9 @@ const ScrollSection: React.FC = () => {
             transform: (isVideoFixed && !isLastTextUnfixed) ? 'translateY(-50%)' : 'none',
             left: isLastTextUnfixed ? 'auto' : (isVideoFixed ? fixedPosition.left : 'auto'),
             width: isLastTextUnfixed ? 'auto' : (isVideoFixed ? fixedPosition.width : 'auto'),
-            top: isLastTextUnfixed ? `${lastTextTopOffset}px` : (isVideoFixed ? '50%' : 'auto')
+            top: isLastTextUnfixed ? `${lastTextTopOffset}px` : (isVideoFixed ? '50%' : 'auto'),
+            position: isLastTextUnfixed ? 'relative' : undefined,
+            transition: 'none' // Отключаем transition для избежания скачков
           }}
         >
           <div className="w-full h-full">

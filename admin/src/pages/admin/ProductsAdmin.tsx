@@ -180,6 +180,7 @@ const ProductsAdmin: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingMainImage, setUploadingMainImage] = useState(false);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
   const [productDocuments, setProductDocuments] = useState<ProductDocument[]>([]);
   const [uploadingDocument, setUploadingDocument] = useState(false);
@@ -251,6 +252,21 @@ const ProductsAdmin: React.FC = () => {
       }
     } catch (error) {
       console.error('Error fetching product images:', error);
+    }
+  };
+
+  const handleMainImageUpload = async (file: File) => {
+    if (!editingProduct) return;
+    
+    setUploadingMainImage(true);
+    try {
+      const imageUrl = await uploadFile(file);
+      setEditingProduct({ ...editingProduct, image_url: imageUrl });
+    } catch (error) {
+      console.error('Error uploading main image:', error);
+      alert('Ошибка загрузки основного изображения');
+    } finally {
+      setUploadingMainImage(false);
     }
   };
 
@@ -427,6 +443,11 @@ const ProductsAdmin: React.FC = () => {
   
     try {
       let productData = { ...editingProduct };
+      
+      // Нормализуем image_url: пустая строка становится null
+      if (productData.image_url === '') {
+        productData.image_url = null;
+      }
   
       // Если создается новая категория
       if (isNewCategory) {
@@ -787,7 +808,43 @@ const ProductsAdmin: React.FC = () => {
                   className="block text-sm font-medium mb-2"
                   style={{ color: '#B8B8B8' }}
                 >
-                  Изображения продукта
+                  Основное изображение
+                </label>
+                <FileUpload
+                  onFileSelect={handleMainImageUpload}
+                  accept="image/*"
+                  maxSize={5}
+                  disabled={uploadingMainImage}
+                  showPreview={true}
+                />
+                {editingProduct.image_url && editingProduct.image_url.trim() !== '' && (
+                  <div className="mt-4">
+                    <img 
+                      src={editingProduct.image_url.startsWith('http') ? editingProduct.image_url : editingProduct.image_url.startsWith('/uploads') ? editingProduct.image_url : `/api${editingProduct.image_url}`} 
+                      alt="Preview" 
+                      className="w-32 h-20 object-contain rounded"
+                      onError={(e) => {
+                        // Если изображение не загрузилось, скрываем его
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                    <input
+                      type="text"
+                      value={editingProduct.image_url}
+                      onChange={(e) => setEditingProduct({...editingProduct, image_url: e.target.value})}
+                      className="admin-input mt-2"
+                      placeholder="Или введите URL вручную"
+                    />
+                  </div>
+                )}
+              </div>
+              
+              <div>
+                <label 
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: '#B8B8B8' }}
+                >
+                  Дополнительные изображения продукта
                 </label>
                 <FileUpload
                   onFileSelect={handleImageUpload}
@@ -800,23 +857,6 @@ const ProductsAdmin: React.FC = () => {
                     Сохраните продукт, чтобы добавить изображения
                   </p>
                 )}
-                
-                {/* Основное изображение (для обратной совместимости) */}
-                <div className="mt-4">
-                  <label 
-                    className="block text-sm font-medium mb-2"
-                    style={{ color: '#B8B8B8' }}
-                  >
-                    Основное изображение (URL)
-                  </label>
-                  <input
-                    type="text"
-                    value={editingProduct.image_url || ''}
-                    onChange={(e) => setEditingProduct({...editingProduct, image_url: e.target.value})}
-                    className="admin-input"
-                    placeholder="URL основного изображения"
-                  />
-                </div>
 
                 {/* Список изображений */}
                 {productImages.length > 0 && (
