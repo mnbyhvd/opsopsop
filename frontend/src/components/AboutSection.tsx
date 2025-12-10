@@ -221,7 +221,7 @@ const AboutSection: React.FC = () => {
                     <h3 className="text-2xl mb-4" style={{ color: '#F2F0F0' }}>
                       {item.title}
                     </h3>
-                    <p className="text-lg leading-relaxed" style={{ color: '#F2F0F0' }}>
+                    <p className="text-sm md:text-lg leading-relaxed" style={{ color: '#F2F0F0', fontFamily: 'Inter' }}>
                       {item.description}
                     </p>
                   </div>

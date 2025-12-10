@@ -165,7 +165,7 @@ const Footer: React.FC = () => {
                       style={{ 
                         fontFamily: 'Inter',
                         color: 'rgba(255, 255, 255, 0.5)',
-                        backgroundColor: isMobile ? '#272727' : 'transparent'
+                        backgroundColor: 'transparent'
                       }}
                     >
                       Имя
@@ -196,7 +196,7 @@ const Footer: React.FC = () => {
                       style={{ 
                         fontFamily: 'Inter',
                         color: 'rgba(255, 255, 255, 0.5)',
-                        backgroundColor: isMobile ? '#272727' : 'transparent'
+                        backgroundColor: 'transparent'
                       }}
                     >
                       Телефон
@@ -227,7 +227,7 @@ const Footer: React.FC = () => {
                       style={{ 
                         fontFamily: 'Inter',
                         color: 'rgba(255, 255, 255, 0.5)',
-                        backgroundColor: isMobile ? '#272727' : 'transparent'
+                        backgroundColor: 'transparent'
                       }}
                     >
                       Email
@@ -257,7 +257,7 @@ const Footer: React.FC = () => {
                       style={{ 
                         fontFamily: 'Inter',
                         color: 'rgba(255, 255, 255, 0.5)',
-                        backgroundColor: isMobile ? '#272727' : 'transparent'
+                        backgroundColor: 'transparent'
                       }}
                     >
                       Сообщение
