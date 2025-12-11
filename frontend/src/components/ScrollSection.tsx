@@ -758,10 +758,9 @@ const ScrollSection: React.FC = () => {
         <div 
           className="col-start-2 col-end-7 h-full z-10"
           data-text-container
-          style={{ alignItems: 'flex-start' }}
         >
           
-          <div className="space-y-0" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
+          <div className="space-y-0">
             {data.text_blocks.map((block, index) => (
               <div
                 key={block.id}
@@ -775,7 +774,7 @@ const ScrollSection: React.FC = () => {
               >
                 <div className="w-full text-left">
                   <div className="relative h-full">
-                    <div className="absolute inset-0 flex flex-col justify-between">
+                    <div className="absolute inset-0 flex flex-col justify-start">
                       <h3 
                         className="text-3xl font-bold"
                         style={{ 
