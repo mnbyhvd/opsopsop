@@ -758,9 +758,10 @@ const ScrollSection: React.FC = () => {
         <div 
           className="col-start-2 col-end-7 h-full z-10"
           data-text-container
+          style={{ alignItems: 'flex-start' }}
         >
           
-          <div className="space-y-0">
+          <div className="space-y-0" style={{ alignItems: 'flex-start', display: 'flex', flexDirection: 'column' }}>
             {data.text_blocks.map((block, index) => (
               <div
                 key={block.id}

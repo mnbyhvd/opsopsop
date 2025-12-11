@@ -408,7 +408,7 @@ const ProductsSection: React.FC = () => {
 
         {/* Картинка полностью вне всех контейнеров - во всю ширину экрана */}
         <div 
-          className={`relative ${maskLoaded ? 'cursor-pointer' : 'cursor-default'} overflow-x-auto overflow-y-hidden hide-scrollbar`}
+          className={`relative ${maskLoaded ? 'cursor-pointer' : 'cursor-default'} overflow-x-auto overflow-y-hidden hide-scrollbar lg:flex lg:justify-center`}
           style={{
             width: '100vw',
             position: 'relative',
@@ -417,9 +417,7 @@ const ProductsSection: React.FC = () => {
             marginLeft: '-50vw',
             marginRight: '-50vw',
             marginTop: '7vh',
-            marginBottom: '0',
-            display: 'flex',
-            justifyContent: 'center'
+            marginBottom: '0'
           }}
           onClick={handleImageClick}
           onMouseMove={handleImageHover}
