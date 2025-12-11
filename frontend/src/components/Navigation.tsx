@@ -62,8 +62,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
             </Link>
           </div>
 
-          {/* Right: Buy button - скрыт на мобильных */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* Right: Buy button - только на десктопе (lg и выше) */}
+          <div className="hidden lg:flex items-center gap-4">
             <button
               onClick={scrollToContactForm}
               className="inline-flex items-center gap-2 rounded-xl border px-5 py-2 font-medium shadow-sm transition-all"

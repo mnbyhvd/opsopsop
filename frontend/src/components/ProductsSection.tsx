@@ -349,12 +349,14 @@ const ProductsSection: React.FC = () => {
           <div className="flex items-start gap-4 md:gap-0 md:block">
             <div className="flex-1 md:flex-none">
               <h2 
-                className="mb-6 text-left md:text-center text-4xl md:text-6xl"
+                className="text-left md:text-center text-4xl md:text-6xl"
                 style={{
                   fontFamily: 'Bebas Neue',
                   fontWeight: 400,
                   color: '#F2F0F0',
-                  textTransform: 'uppercase'
+                  textTransform: 'uppercase',
+                  margin: 0,
+                  marginBottom: 0
                 }}
               >
                 {settings?.title || 'ПРОДУКЦИЯ'}
@@ -364,8 +366,11 @@ const ProductsSection: React.FC = () => {
                 style={{
                   fontFamily: 'Bebas Neue',
                   color: '#F2F0F0',
-                  maxWidth: '600px',
-                  margin: 0
+                  margin: 0,
+                  marginTop: 0,
+                  paddingTop: 0,
+                  width: '100%',
+                  display: 'inline-block'
                 }}
               >
                 {settings?.subtitle || 'Технологии, которые не подведут. Изучите ассортимент оборудования.'}
@@ -412,65 +417,70 @@ const ProductsSection: React.FC = () => {
             marginLeft: '-50vw',
             marginRight: '-50vw',
             marginTop: '7vh',
-            marginBottom: '0'
+            marginBottom: '0',
+            display: 'flex',
+            justifyContent: 'center'
           }}
           onClick={handleImageClick}
           onMouseMove={handleImageHover}
           onMouseLeave={handleImageLeave}
         >
-        {/* Основное изображение - исходные размеры */}
-        <img
-          src="/images/products/main-product.png"
-          alt="Продукция"
-          style={{
-            width: 'auto',
-            height: 'auto',
-            display: 'block',
-            maxWidth: 'none'
-          }}
-        />
+        {/* Контейнер для всех изображений - центрируется на десктопе */}
+        <div className="relative inline-block md:translate-y-4">
+          {/* Основное изображение - исходные размеры */}
+          <img
+            src="/images/products/main-product.png"
+            alt="Продукция"
+            style={{
+              width: 'auto',
+              height: 'auto',
+              display: 'block',
+              maxWidth: 'none'
+            }}
+          />
 
-        {/* Hover изображение (тотально привязано к основной картинке) */}
-        <AnimatePresence>
-          {hoverImage && (
-            <motion.img
-              key={hoverImage}
-              src={hoverImage}
-              alt="Продукция hover"
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: 'auto',
-                height: 'auto',
-                display: 'block',
-                maxWidth: 'none',
-                zIndex: 1
-              }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            />
-          )}
-        </AnimatePresence>
+          {/* Hover изображение (тотально привязано к основной картинке) */}
+          <AnimatePresence>
+            {hoverImage && (
+              <motion.img
+                key={hoverImage}
+                src={hoverImage}
+                alt="Продукция hover"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: 'auto',
+                  height: 'auto',
+                  display: 'block',
+                  maxWidth: 'none',
+                  zIndex: 1
+                }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+              />
+            )}
+          </AnimatePresence>
 
-        {/* Скрытый canvas для определения областей (тотально привязан к основной картинке) */}
-        <canvas
-          ref={canvasRef}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: 'auto',
-            height: 'auto',
-            display: 'block',
-            maxWidth: 'none',
-            pointerEvents: 'none',
-            opacity: 0,
-            zIndex: -1
-          }}
-        />
+          {/* Скрытый canvas для определения областей (тотально привязан к основной картинке) */}
+          <canvas
+            ref={canvasRef}
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: 'auto',
+              height: 'auto',
+              display: 'block',
+              maxWidth: 'none',
+              pointerEvents: 'none',
+              opacity: 0,
+              zIndex: -1
+            }}
+          />
+        </div>
       </div>
 
       {/* Эллипс под картинкой */}

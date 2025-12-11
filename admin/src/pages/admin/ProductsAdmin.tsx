@@ -840,12 +840,12 @@ const ProductsAdmin: React.FC = () => {
               </div>
               
               <div>
-                <label 
-                  className="block text-sm font-medium mb-2"
-                  style={{ color: '#B8B8B8' }}
-                >
+                  <label 
+                    className="block text-sm font-medium mb-2"
+                    style={{ color: '#B8B8B8' }}
+                  >
                   Дополнительные изображения продукта
-                </label>
+                  </label>
                 <FileUpload
                   onFileSelect={handleImageUpload}
                   accept="image/*"

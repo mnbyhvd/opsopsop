@@ -83,6 +83,7 @@ const ScrollSection: React.FC = () => {
   const [fixedStartScroll, setFixedStartScroll] = useState(0);
   const [fixedEndScroll, setFixedEndScroll] = useState(0);
   const mobileContentContainerRef = useRef<HTMLDivElement>(null);
+  const mobileHeaderRef = useRef<HTMLDivElement>(null);
   // Мемоизированные стили для оптимизации
   const videoStyles = useMemo(() => ({
     width: '100%',
@@ -149,6 +150,24 @@ const ScrollSection: React.FC = () => {
     }
   }, [data, isMobile]);
 
+  // ЛОГИ ДЛЯ ОТЛАДКИ при рендере мобильной версии
+  useEffect(() => {
+    if (isMobile && data && sectionRef.current) {
+      const section = sectionRef.current;
+      setTimeout(() => {
+        const sectionHeight = section.offsetHeight;
+        const viewportHeight = window.innerHeight;
+        console.log('=== MOBILE SECTION RENDER DEBUG ===');
+        console.log('minHeight from style:', section.style.minHeight);
+        console.log('actual sectionHeight:', sectionHeight, 'px');
+        console.log('actual sectionHeight vh:', (sectionHeight / viewportHeight * 100).toFixed(2), 'vh');
+        console.log('text_blocks count:', data.text_blocks.length);
+        console.log('calculated minHeight:', `calc(20vh + 100vh + ${data.text_blocks.length * 80}vh)`);
+        console.log('====================================');
+      }, 100);
+    }
+  }, [isMobile, data]);
+
   // Оптимизированная функция обновления видео
   const updateVideoTime = useCallback(() => {
     const video = videoRef.current;
@@ -184,8 +203,9 @@ const ScrollSection: React.FC = () => {
     const section = sectionRef.current;
     const video = videoRef.current;
     const contentContainer = mobileContentContainerRef.current;
+    const headerContainer = mobileHeaderRef.current;
     
-    if (!section || !video || !data || !contentContainer) return;
+    if (!section || !video || !data || !contentContainer || !headerContainer) return;
 
     const sectionRect = section.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
@@ -196,12 +216,17 @@ const ScrollSection: React.FC = () => {
     const contentRect = contentContainer.getBoundingClientRect();
     const contentHeight = contentRect.height;
     
+    // Получаем нижнюю границу блока заголовка/подзаголовка
+    const headerRect = headerContainer.getBoundingClientRect();
+    const headerBottom = headerRect.bottom;
+    
     // ОПТИМАЛЬНЫЙ АЛГОРИТМ: Две точки на основе позиции скролла
     // Вычисляем точки фиксации и разфиксации на основе позиции секции
     
-    // ТОЧКА ФИКСАЦИИ: Когда верхняя граница секции достигла верха viewport
+    // ТОЧКА ФИКСАЦИИ: Когда нижняя граница заголовка/подзаголовка достигает верха viewport
     // Вычисляем scrollY позицию, когда это происходит
-    const fixPoint = sectionTop - viewportHeight / 2 + contentHeight / 2;
+    const headerBottomScrollY = viewportTop + headerBottom;
+    const fixPoint = headerBottomScrollY;
     
     // ТОЧКА РАЗФИКСАЦИИ: Когда нижняя граница секции появляется во viewport
     // Вычисляем scrollY позицию, когда это происходит
@@ -214,6 +239,14 @@ const ScrollSection: React.FC = () => {
     if (viewportTop >= fixPoint && !isMobileFixed) {
       setIsMobileFixed(true);
       setIsMobileUnfixed(false);
+      
+      // ЛОГИ ДЛЯ ОТЛАДКИ фиксации
+      console.log('=== MOBILE FIX DEBUG ===');
+      console.log('headerBottom (relative to viewport):', headerRect.bottom, 'px');
+      console.log('fixPoint:', fixPoint, 'px');
+      console.log('viewportTop:', viewportTop, 'px');
+      console.log('contentHeight:', contentHeight, 'px');
+      console.log('========================');
       
       // Сохраняем позицию для fixed позиционирования (фиксируем на середине viewport)
       const top = viewportHeight / 2 - contentHeight / 2; // Центрируем на середине viewport
@@ -236,9 +269,46 @@ const ScrollSection: React.FC = () => {
       setIsMobileUnfixed(true);
       
       // Вычисляем offset так, чтобы блок был внизу секции
-      // Позиция контента внизу секции = высота секции - высота контента
-      const offset = sectionHeight - contentHeight;
-      setMobileUnfixedOffset(offset);
+      // Формула: top = sectionHeight - headerHeight - 100vh
+      // Где 100vh - это высота блока текста и видео (50vh + 50vh)
+      
+      // Получаем высоту заголовка
+      const headerRect = headerContainer.getBoundingClientRect();
+      const headerHeight = headerRect.height;
+      
+      // Высота блока текста и видео: 100vh
+      const contentBlockHeightVh = 100;
+      const contentBlockHeightPx = (contentBlockHeightVh / 100) * viewportHeight;
+      
+      // Вычисляем top: sectionHeight - headerHeight - 100vh
+      const calculatedOffset = sectionHeight - headerHeight - contentBlockHeightPx;
+      
+      // Проверяем, что offset не отрицательный
+      const offset = Math.max(0, calculatedOffset);
+      
+      // ЛОГИ ДЛЯ ОТЛАДКИ
+      console.log('=== MOBILE UNFIX DEBUG ===');
+      console.log('sectionHeight:', sectionHeight, 'px');
+      console.log('sectionHeight vh:', (sectionHeight / viewportHeight * 100).toFixed(2), 'vh');
+      console.log('headerHeight:', headerHeight, 'px');
+      console.log('headerHeight vh:', (headerHeight / viewportHeight * 100).toFixed(2), 'vh');
+      console.log('contentBlockHeightPx:', contentBlockHeightPx, 'px');
+      console.log('contentBlockHeight vh:', contentBlockHeightVh, 'vh');
+      console.log('calculatedOffset:', calculatedOffset, 'px');
+      console.log('calculatedOffset vh:', (calculatedOffset / viewportHeight * 100).toFixed(2), 'vh');
+      console.log('final offset:', offset, 'px');
+      console.log('final offset vh:', (offset / viewportHeight * 100).toFixed(2), 'vh');
+      console.log('formula: sectionHeight - headerHeight - 100vh');
+      console.log('section minHeight from style:', section.style.minHeight);
+      console.log('section offsetHeight:', section.offsetHeight, 'px');
+      console.log('section scrollHeight:', section.scrollHeight, 'px');
+      console.log('viewportHeight:', viewportHeight);
+      console.log('unfixPoint:', unfixPoint, 'px');
+      console.log('viewportTop:', viewportTop, 'px');
+      console.log('text_blocks count:', data.text_blocks.length);
+      console.log('==========================');
+      
+      setMobileUnfixedOffset(Math.max(0, offset));
     }
     // 3. РАЗФИКСАЦИЯ ПРИ СКРОЛЛЕ ВВЕРХ: Когда вернулись выше точки разфиксации
     else if (viewportTop < unfixPoint && isMobileFixed && isMobileUnfixed) {
@@ -346,7 +416,6 @@ const ScrollSection: React.FC = () => {
     
     if (!section || !videoContainer || textBlocks.length === 0) return;
 
-    const sectionRect = section.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
     const viewportCenter = viewportHeight / 2;
 
@@ -380,65 +449,35 @@ const ScrollSection: React.FC = () => {
       const lastTextRect = lastTextBlock.getBoundingClientRect();
       const lastTextCenter = lastTextRect.top + lastTextRect.height / 2;
       
-      // Разфиксация: делаем переход когда центр последнего текста проходит центр viewport
-      // Это обеспечит плавный переход без скачков
-      if (lastTextCenter < viewportCenter && !isLastTextUnfixed && isVideoFixed) {
+      // Разфиксация: когда центр последнего текста выше центра видимой области
+      if (lastTextCenter < viewportCenter && !isLastTextUnfixed) {
         setIsLastTextUnfixed(true);
         
-        // Вычисляем отступ так, чтобы расстояние от нижнего края секции до центра видео было 50vh
-        if (videoContainer) {
-          const videoRect = videoContainer.getBoundingClientRect();
-          const videoHeight = videoRect.height;
-          const viewportHeightPx = window.innerHeight;
-          const targetDistance = viewportHeightPx * 0.5; // 50vh в пикселях
+        // Вычисляем отступ так, чтобы видео располагалось на том же уровне
+        const textContainer = section.querySelector('[data-text-container]');
+        if (textContainer) {
+          const textContainerRect = textContainer.getBoundingClientRect();
+          const lastTextTopInContainer = lastTextRect.top - textContainerRect.top;
           
-          // Получаем высоту секции из minHeight стиля
-          // Высота секции уже рассчитана с учетом видео: textBlocks * 80vh + 50vh + videoHeight/2
-          if (!data) return;
+          // Вычисляем высоту: (количество текстов - 1) × (высота текста + отступ)
+          const textCount = textBlocks.length;
+          const textHeight = lastTextRect.height;
+          const gapBetweenTexts = 0; // У нас нет отступов между текстами
           
-          // Вычисляем высоту секции на основе minHeight (в vh единицах)
-          const videoHeightVh = 80;
-          const targetDistanceVh = 50;
-          const sectionHeightVh = data.text_blocks.length * 80 + targetDistanceVh + videoHeightVh / 2;
-          const sectionHeight = sectionHeightVh * viewportHeightPx / 100; // Конвертируем vh в пиксели
+          const totalHeight = (textCount - 1) * (textHeight + gapBetweenTexts);
+          const totalOffset = totalHeight;
           
-          // Вычисляем offset так, чтобы:
-          // В relative позиции: top = offset означает позицию верха элемента от начала секции
-          // Центр видео = offset + videoHeight / 2
-          // Расстояние от нижнего края до центра = sectionHeight - (offset + videoHeight / 2)
-          // Нужно: sectionHeight - (offset + videoHeight / 2) = 50vh
-          // offset = sectionHeight - 50vh - videoHeight / 2
-          const offset = sectionHeight - targetDistance - videoHeight / 2;
-          
-          // Убеждаемся, что offset не отрицательный и видео не выходит за верхнюю границу
-          const safeOffset = Math.max(0, offset);
-          
-          // Сохраняем позицию для плавного возврата
-          const textContainer = section.querySelector('[data-text-container]');
-          if (textContainer) {
-            const textContainerRect = textContainer.getBoundingClientRect();
-            setRelativePosition({
-              top: safeOffset,
-              left: textContainerRect.left - sectionRect.left,
-              width: textContainerRect.width
-            });
-          }
-          
-          setLastTextTopOffset(safeOffset);
+          setLastTextTopOffset(totalOffset);
         }
       }
-      // Возврат в fixed: когда центр последнего текста выше центра viewport
-      // Нужно плавно вернуться в fixed состояние
+      // Фиксация: когда центр последнего текста ниже центра видимой области
       else if (lastTextCenter >= viewportCenter && isLastTextUnfixed) {
-        // Сбрасываем разфиксацию только если видео еще в fixed состоянии
-        if (isVideoFixed) {
-          setIsLastTextUnfixed(false);
-        }
+        setIsLastTextUnfixed(false);
       }
     }
 
     // 3. ЛОГИКА СМЕНЫ АКТИВНОГО ТЕКСТА - убрана, теперь обычный скролл
-  }, [isVideoFixed, isLastTextUnfixed, isMobile]);
+  }, [isVideoFixed, isLastTextUnfixed, isMobile, handleMobileScroll]);
 
   // Основной useEffect с оптимизациями
   useEffect(() => {
@@ -529,13 +568,17 @@ const ScrollSection: React.FC = () => {
         className="scroll-section relative"
         style={{ 
           backgroundColor: '#0D0D0D',
-          // Высота секции: заголовок + общий блок (текст + видео) + высота для прокрутки всех текстов
-          minHeight: `calc(20vh + 90vh + ${data.text_blocks.length * 100}vh)`
+          // Высота секции: заголовок + общий блок (текст 50vh + видео 50vh = 100vh) + высота для прокрутки всех текстов
+          // Уменьшаем множитель для текстовых блоков, чтобы убрать лишний скролл
+          minHeight: `calc(20vh + 100vh + ${data.text_blocks.length * 80}vh)`
         }}
       >
         <PageContainer>
           {/* Заголовок и подзаголовок */}
-          <div className="col-start-1 col-end-13 text-left md:text-center mb-0 px-4 md:px-16">
+          <div 
+            ref={mobileHeaderRef}
+            className="col-start-1 col-end-13 text-left md:text-center mb-0 px-4 md:px-16"
+          >
             <h2 
               className="mb-0 text-4xl md:text-6xl"
               style={{
@@ -575,11 +618,12 @@ const ScrollSection: React.FC = () => {
             {/* Текстовые блоки - сверху */}
             <div 
               data-mobile-text-container
-              className="z-20 mb-4"
+              className="z-20"
               style={{ 
-                height: '40vh', 
-                minHeight: '300px',
-                position: 'relative'
+                height: '50vh', 
+                minHeight: '50vh',
+                position: 'relative',
+                marginBottom: '0'
               }}
             >
               <div className="relative h-full">
@@ -618,16 +662,17 @@ const ScrollSection: React.FC = () => {
               </div>
             </div>
 
-            {/* Видео - снизу, обрезается на 25% сверху и снизу (только по высоте) */}
+            {/* Видео - снизу, обрезается по высоте на 25% сверху и снизу */}
             <div 
               ref={videoContainerRef}
               className="z-10"
               style={{ 
-                height: '50vh', // Видимая высота: 25% сверху + 25% снизу = 50% видимой части
-                minHeight: '300px',
+                height: '50vh', 
+                minHeight: '50vh',
                 overflow: 'hidden', // Скрываем обрезанные части
                 position: 'relative',
-                width: '100%' // Полная ширина без обрезки
+                width: '100%',
+                marginTop: '0'
               }}
             >
               <div 
@@ -637,7 +682,7 @@ const ScrollSection: React.FC = () => {
                   transform: 'translateY(-25%)', // Сдвигаем вверх на 25%, чтобы показать среднюю часть
                   transformOrigin: 'center center',
                   willChange: 'transform',
-                  width: '100%' // Полная ширина без обрезки
+                  width: '100%'
                 }}
               >
                 <video
@@ -646,7 +691,7 @@ const ScrollSection: React.FC = () => {
                   style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover', // Покрывает всю область, сохраняя пропорции
+                    objectFit: 'cover', // Растягиваем по ширине, обрезаем по высоте
                     objectPosition: 'center',
                     display: 'block'
                   }}
@@ -665,12 +710,10 @@ const ScrollSection: React.FC = () => {
     );
   }
 
-  // Десктопная версия (без изменений)
-  // Вычисляем минимальную высоту секции с учетом видео в relative позиции
-  const videoHeightVh = 80; // Высота видео в vh
-  const targetDistanceVh = 50; // Расстояние от низа до центра видео в vh
-  // Высота = текстовые блоки + пространство для видео (50vh от низа + половина высоты видео)
-  const minSectionHeight = data ? (data.text_blocks.length * 80 + targetDistanceVh + videoHeightVh / 2) : 0;
+  // Десктопная версия
+  // Вычисляем минимальную высоту секции: только текстовые блоки (каждый 80vh)
+  // Видео в relative позиции будет внутри этой высоты, поэтому не добавляем лишнего
+  const minSectionHeight = data ? (data.text_blocks.length * 80) : 0;
   
   return (
     <section 
@@ -685,9 +728,9 @@ const ScrollSection: React.FC = () => {
     >
       <PageContainer>
         {/* Заголовок и подзаголовок */}
-        <div className="col-start-1 col-end-13 text-center mb-0 px-16">
+        <div className="col-start-1 col-end-13 text-center mb-6 px-16">
           <h2 
-            className="mb-0"
+            className="mb-4"
             style={{
               fontFamily: 'Bebas Neue',
               fontSize: '64px',
@@ -745,7 +788,8 @@ const ScrollSection: React.FC = () => {
                         className="text-lg"
                         style={{ 
                           fontFamily: 'Inter',
-                          color: '#F2F0F0'
+                          color: '#F2F0F0',
+                          paddingLeft: '1rem' // Небольшой отступ слева для отделения от заголовка
                         }}
                       >
                         {block.description}
@@ -777,10 +821,16 @@ const ScrollSection: React.FC = () => {
             transition: 'none' // Отключаем transition для избежания скачков
           }}
         >
-          <div className="w-full h-full">
+          <div className="w-full h-full" style={{ overflow: 'hidden', borderRadius: '16px' }}>
             <div 
               className="w-full h-full flex items-center justify-center"
-              style={{ maxWidth: '100%', maxHeight: '100%' }}
+              style={{
+                height: '200%', // Увеличиваем высоту в 2 раза для обрезки
+                transform: 'translateY(-25%)', // Сдвигаем вверх на 25%, чтобы показать среднюю часть
+                transformOrigin: 'center center',
+                willChange: 'transform',
+                maxWidth: '100%'
+              }}
             >
               <video
                 ref={videoRef}
