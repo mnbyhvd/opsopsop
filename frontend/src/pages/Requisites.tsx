@@ -38,7 +38,7 @@ const Requisites: React.FC = () => {
     <div className="min-h-screen" style={{ backgroundColor: '#0D0D0D' }}>
       
       {/* Hero секция */}
-      <section className="py-20 relative">
+      <section className="pt-20 pb-0 relative">
         <PageContainer>
           <div className="col-start-1 col-end-13 text-center">
             <motion.div
