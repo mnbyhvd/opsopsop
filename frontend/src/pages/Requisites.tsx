@@ -90,7 +90,7 @@ const Requisites: React.FC = () => {
               {/* Название компании */}
               <div className="mb-8">
                 <h2 
-                  className="text-3xl font-bold mb-4"
+                  className="text-3xl font-bold mb-2"
                   style={{ 
                     fontFamily: 'Bebas Neue',
                     color: '#D71920'
@@ -114,7 +114,7 @@ const Requisites: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div>
                   <h3 
-                    className="text-xl font-bold mb-4"
+                    className="text-xl font-bold mb-2"
                     style={{ 
                       fontFamily: 'Bebas Neue',
                       color: '#D71920'
@@ -176,7 +176,7 @@ const Requisites: React.FC = () => {
 
                 <div>
                   <h3 
-                    className="text-xl font-bold mb-4"
+                    className="text-xl font-bold mb-2"
                     style={{ 
                       fontFamily: 'Bebas Neue',
                       color: '#D71920'
@@ -256,7 +256,7 @@ const Requisites: React.FC = () => {
               {/* Банковские реквизиты */}
               <div>
                 <h3 
-                  className="text-xl font-bold mb-4"
+                  className="text-xl font-bold mb-2"
                   style={{ 
                     fontFamily: 'Bebas Neue',
                     color: '#D71920'

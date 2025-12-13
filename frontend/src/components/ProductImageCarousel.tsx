@@ -97,28 +97,6 @@ const ProductImageCarousel: React.FC<ProductImageCarouselProps> = ({
         )}
       </div>
 
-      {/* Миниатюры */}
-      {allImages.length > 1 && (
-        <div className="flex space-x-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-700/60">
-          {allImages.map((image, index) => (
-            <button
-              key={image.id}
-              onClick={() => goToImage(index)}
-              className={`flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden transition-all duration-200 ${
-                index === currentIndex 
-                  ? 'ring-2 ring-red-500 opacity-100' 
-                  : 'opacity-70 hover:opacity-100'
-              }`}
-            >
-              <img
-                src={image.image_url}
-                alt={image.alt_text || productName}
-                className="w-full h-full object-cover"
-              />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
   );
 };

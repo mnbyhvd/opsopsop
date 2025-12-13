@@ -59,7 +59,7 @@ const ProductDetail: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             onClick={() => navigate('/products')}
-            className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200"
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors duration-200 whitespace-nowrap"
             style={{ fontFamily: 'Inter' }}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -79,6 +79,7 @@ const ProductDetail: React.FC = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             className="col-start-1 col-end-13 lg:col-start-1 lg:col-end-7"
+            style={{ marginBottom: '2rem', marginRight: '2rem' }}
           >
             <ProductImageCarousel
               images={product.images || []}

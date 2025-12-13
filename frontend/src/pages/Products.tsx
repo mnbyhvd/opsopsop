@@ -146,7 +146,7 @@ const Products: React.FC = () => {
                   </div>
                   <div className="flex-1 w-full">
                     <h3 
-                      className="text-3xl font-bold mb-4"
+                      className="text-3xl font-bold mb-2"
                       style={{ 
                         fontFamily: 'Bebas Neue',
                         color: '#F2F0F0'
@@ -155,7 +155,7 @@ const Products: React.FC = () => {
                       {product.name}
                     </h3>
                     <p 
-                      className="text-gray-300 mb-6 text-lg"
+                      className="text-gray-300 mb-3 text-lg"
                       style={{ fontFamily: 'Inter' }}
                     >
                       {product.description}
