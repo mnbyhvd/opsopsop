@@ -184,19 +184,17 @@ const DownloadInfoSection: React.FC = () => {
           <div className="space-y-6">
             {/* Секция Документы */}
             <div 
-              className="overflow-hidden w-full"
+              className="overflow-hidden w-full rounded-xl"
               style={{ 
-                backgroundColor: '#272727',
-                borderRadius: '30px'
+                backgroundColor: '#272727'
               }}
             >
               {/* Заголовок секции */}
               <button
                 onClick={() => toggleSection('documents')}
-                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200"
+                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200 rounded-t-xl"
                 style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  borderRadius: '30px 30px 0 0'
+                  backgroundColor: 'rgba(255, 255, 255, 0)'
                 }}
               >
                 <h3 
@@ -308,19 +306,17 @@ const DownloadInfoSection: React.FC = () => {
 
             {/* Секция Сертификаты */}
             <div 
-              className="overflow-hidden w-full"
+              className="overflow-hidden w-full rounded-xl"
               style={{ 
-                backgroundColor: '#272727',
-                borderRadius: '30px'
+                backgroundColor: '#272727'
               }}
             >
               {/* Заголовок секции */}
               <button
                 onClick={() => toggleSection('certificates')}
-                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200"
+                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200 rounded-t-xl"
                 style={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0)',
-                  borderRadius: '30px 30px 0 0'
+                  backgroundColor: 'rgba(255, 255, 255, 0)'
                 }}
               >
                 <h3 
@@ -435,13 +431,12 @@ const DownloadInfoSection: React.FC = () => {
           <div className="flex justify-center mt-8 md:mt-12">
             <button
               onClick={downloadAll}
-              className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto"
+              className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto rounded-xl"
               style={{ 
                 backgroundColor: '#E0DADA', 
                 color: '#0D0D0D',
                 border: '1px solid #E0DADA',
                 fontFamily: 'Inter',
-                borderRadius: '30px',
                 justifyContent: 'center'
               }}
               onMouseEnter={(e) => {

@@ -41,8 +41,9 @@ app.options('*', (req, res) => {
   res.sendStatus(200);
 });
 app.use(morgan('combined'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Увеличиваем лимиты для JSON и URL-encoded данных (для больших запросов)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Database connection
 const mysql = require('mysql2/promise');

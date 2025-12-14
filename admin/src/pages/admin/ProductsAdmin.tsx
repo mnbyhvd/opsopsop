@@ -233,13 +233,27 @@ const ProductsAdmin: React.FC = () => {
     const response = await fetch('/api/upload', {
       method: 'POST',
       body: formData,
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache'
+      }
     });
     
     if (!response.ok) {
-      throw new Error('Ошибка загрузки файла');
+      // Если статус 304, это ошибка - POST запросы не должны возвращать 304
+      if (response.status === 304) {
+        throw new Error('Ошибка кэширования. Попробуйте перезагрузить страницу и повторить загрузку.');
+      }
+      
+      const errorData = await response.json().catch(() => ({ error: 'Неизвестная ошибка' }));
+      const errorMessage = errorData.error || errorData.message || `Ошибка загрузки файла (${response.status})`;
+      throw new Error(errorMessage);
     }
     
     const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.error || 'Ошибка загрузки файла');
+    }
     return result.data.url;
   };
 
@@ -264,7 +278,8 @@ const ProductsAdmin: React.FC = () => {
       setEditingProduct({ ...editingProduct, image_url: imageUrl });
     } catch (error) {
       console.error('Error uploading main image:', error);
-      alert('Ошибка загрузки основного изображения');
+      const errorMessage = error instanceof Error ? error.message : 'Ошибка загрузки основного изображения';
+      alert(`Ошибка загрузки основного изображения: ${errorMessage}`);
     } finally {
       setUploadingMainImage(false);
     }
@@ -363,6 +378,20 @@ const ProductsAdmin: React.FC = () => {
       const fileType = file.type || 'application/octet-stream';
       const fileSize = file.size;
       
+      // Обрезаем имя файла до 255 символов, сохраняя расширение
+      let fileName = file.name;
+      if (fileName.length > 255) {
+        const lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex > 0) {
+          const extension = fileName.substring(lastDotIndex);
+          const nameWithoutExt = fileName.substring(0, lastDotIndex);
+          const maxNameLength = 255 - extension.length;
+          fileName = nameWithoutExt.substring(0, maxNameLength) + extension;
+        } else {
+          fileName = fileName.substring(0, 255);
+        }
+      }
+      
       // Добавляем документ к продукту
       const response = await fetch(`/api/products/${editingProduct.id}/documents`, {
         method: 'POST',
@@ -370,7 +399,7 @@ const ProductsAdmin: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: file.name,
+          name: fileName,
           description: '',
           file_url: fileUrl,
           file_type: fileType,
@@ -813,7 +842,7 @@ const ProductsAdmin: React.FC = () => {
                 <FileUpload
                   onFileSelect={handleMainImageUpload}
                   accept="image/*"
-                  maxSize={5}
+                  maxSize={50}
                   disabled={uploadingMainImage}
                   showPreview={true}
                 />

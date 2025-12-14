@@ -75,35 +75,97 @@ const upload = multer({
 });
 
 // POST /api/upload - загрузка файла
-router.post('/', upload.single('file'), (req, res) => {
-  try {
-    if (!req.file) {
+router.post('/', (req, res) => {
+  // Отключаем кэширование для POST запросов
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      console.error('Error uploading file:', {
+        error: err,
+        message: err.message,
+        code: err.code,
+        field: err.field,
+        name: err.name
+      });
+      
+      // Обработка ошибок multer
+      if (err instanceof multer.MulterError) {
+        if (err.code === 'LIMIT_FILE_SIZE') {
+          return res.status(400).json({
+            success: false,
+            error: 'Файл слишком большой. Максимальный размер: 50MB'
+          });
+        } else if (err.code === 'LIMIT_FILE_COUNT') {
+          return res.status(400).json({
+            success: false,
+            error: 'Слишком много файлов'
+          });
+        } else if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+          return res.status(400).json({
+            success: false,
+            error: 'Неожиданное поле файла'
+          });
+        } else {
+          return res.status(400).json({
+            success: false,
+            error: `Ошибка загрузки файла: ${err.message} (код: ${err.code})`
+          });
+        }
+      }
+      
+      // Обработка других ошибок (например, неподдерживаемый тип файла)
       return res.status(400).json({
         success: false,
-        error: 'Файл не был загружен'
+        error: err.message || 'Ошибка при загрузке файла'
       });
     }
-
-    // Формируем URL для доступа к файлу
-    const fileUrl = `/uploads/${req.file.path.split('uploads/')[1]}`;
     
-    res.json({
-      success: true,
-      data: {
+    try {
+      if (!req.file) {
+        console.error('No file in request:', {
+          body: req.body,
+          files: req.files
+        });
+        return res.status(400).json({
+          success: false,
+          error: 'Файл не был загружен'
+        });
+      }
+
+      console.log('File uploaded successfully:', {
         filename: req.file.filename,
         originalName: req.file.originalname,
         mimetype: req.file.mimetype,
         size: req.file.size,
-        url: fileUrl
-      }
-    });
-  } catch (error) {
-    console.error('Error uploading file:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Ошибка при загрузке файла'
-    });
-  }
+        path: req.file.path
+      });
+
+      // Формируем URL для доступа к файлу
+      const fileUrl = `/uploads/${req.file.path.split('uploads/')[1]}`;
+      
+      res.json({
+        success: true,
+        data: {
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          mimetype: req.file.mimetype,
+          size: req.file.size,
+          url: fileUrl
+        }
+      });
+    } catch (error) {
+      console.error('Error processing uploaded file:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Ошибка при обработке файла'
+      });
+    }
+  });
 });
 
 // POST /api/upload/multiple - загрузка нескольких файлов

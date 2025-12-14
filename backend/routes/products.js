@@ -382,7 +382,20 @@ router.post('/:id/images', async (req, res) => {
 router.post('/:id/documents', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, file_url, file_type, file_size, sort_order } = req.body;
+    let { name, description, file_url, file_type, file_size, sort_order } = req.body;
+    
+    // Обрезаем имя файла до 255 символов, сохраняя расширение
+    if (name && name.length > 255) {
+      const lastDotIndex = name.lastIndexOf('.');
+      if (lastDotIndex > 0) {
+        const extension = name.substring(lastDotIndex);
+        const nameWithoutExt = name.substring(0, lastDotIndex);
+        const maxNameLength = 255 - extension.length;
+        name = nameWithoutExt.substring(0, maxNameLength) + extension;
+      } else {
+        name = name.substring(0, 255);
+      }
+    }
     
     // Преобразуем undefined в null для MySQL
     const safeName = name !== undefined ? name : null;
@@ -404,6 +417,16 @@ router.post('/:id/documents', async (req, res) => {
     });
   } catch (error) {
     console.error('Error adding product document:', error);
+    
+    // Проверяем, является ли ошибка ошибкой длины строки
+    if (error.code === 'ER_DATA_TOO_LONG' || error.message.includes('Data too long')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Имя файла слишком длинное. Максимальная длина: 255 символов',
+        error: error.message
+      });
+    }
+    
     res.status(500).json({
       success: false,
       message: 'Ошибка при добавлении документа',

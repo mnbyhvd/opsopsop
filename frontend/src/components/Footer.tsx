@@ -349,13 +349,12 @@ const Footer: React.FC = () => {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
                     style={{
                       backgroundColor: isSubmitting ? '#666' : '#E0DADA',
                       color: isSubmitting ? '#F2F0F0' : '#0D0D0D',
                       border: isSubmitting ? '1px solid #666' : '1px solid #E0DADA',
-                      fontFamily: 'Inter',
-                      borderRadius: '30px'
+                      fontFamily: 'Inter'
                     }}
                     onMouseEnter={!isSubmitting && !isMobile ? (e) => {
                       (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
