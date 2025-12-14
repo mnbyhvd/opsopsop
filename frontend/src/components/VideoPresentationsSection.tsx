@@ -223,13 +223,11 @@ const VideoPresentationsSection: React.FC = () => {
             {settings?.title || 'ВИДЕОПРЕЗЕНТАЦИИ'}
           </h2>
           <p 
-            className="text-lg text-left md:text-center md:mx-auto"
+            className="text-lg text-left lg:text-center lg:mx-auto"
             style={{
               fontFamily: 'Bebas Neue',
               color: '#F2F0F0',
-              maxWidth: '600px',
-              marginLeft: '0',
-              marginRight: 'auto'
+              maxWidth: '600px'
             }}
           >
             {settings?.subtitle || 'Главные особенности и преимущества в коротких видео-роликах'}

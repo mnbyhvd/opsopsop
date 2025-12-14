@@ -40,12 +40,10 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 relative"
+        className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-6 relative glass"
         style={{
-          backgroundColor: 'rgba(98, 98, 98, 0.3)',
-          backdropFilter: 'blur(38.400001525878906px)',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '30px'
+          border: '1px solid var(--glass-border)',
+          borderRadius: 'var(--radius-xl)'
         }}
       >
         {/* Поиск */}
@@ -70,8 +68,12 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
             placeholder="Поиск по названию и описанию..."
             value={searchValue}
             onChange={handleSearchChange}
-            className="w-full pl-12 pr-4 py-4 text-base md:text-lg rounded-2xl border-2 border-gray-600 bg-gray-800/50 text-white placeholder-gray-400 focus:outline-none focus:border-red-500 focus:bg-gray-800/70 transition-all duration-300"
-            style={{ fontFamily: 'Inter' }}
+            className="w-full pl-12 pr-4 py-4 text-base md:text-lg rounded-2xl border text-white placeholder-gray-400 focus:outline-none focus:border-red-500 transition-all duration-300 glass"
+            style={{ 
+              fontFamily: 'Inter',
+              borderColor: 'var(--glass-border)',
+              borderRadius: 'var(--radius-xl)'
+            }}
           />
         </div>
 
@@ -81,12 +83,16 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
           <div className="relative">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className={`flex items-center gap-2 px-6 py-4 rounded-xl border-2 transition-all duration-300 ${
+              className={`flex items-center gap-2 px-6 py-4 rounded-xl border transition-all duration-300 glass ${
                 selectedCategoryId
-                  ? 'border-red-500 bg-red-500/20 text-red-400'
-                  : 'border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gray-500 hover:bg-gray-800/70'
+                  ? 'border-red-500 text-red-400'
+                  : 'text-gray-300 hover:border-gray-500'
               }`}
-              style={{ fontFamily: 'Inter' }}
+              style={{ 
+                fontFamily: 'Inter',
+                borderColor: selectedCategoryId ? '#ef4444' : 'var(--glass-border)',
+                borderRadius: 'var(--radius-xl)'
+              }}
             >
               <svg
                 className="h-5 w-5"
@@ -131,7 +137,11 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                className="absolute top-full left-0 mt-2 w-64 max-h-80 overflow-auto bg-gray-800 border border-gray-600 rounded-xl shadow-xl z-40"
+                className="absolute top-full left-0 mt-2 w-64 max-h-80 overflow-auto rounded-xl shadow-xl z-40 glass"
+                style={{
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: 'var(--radius-xl)'
+                }}
               >
                 <div className="p-2">
                   <button
@@ -174,8 +184,12 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
-              className="flex items-center gap-2 px-6 py-4 rounded-xl border-2 border-gray-600 bg-gray-800/50 text-gray-300 hover:border-gray-500 hover:bg-gray-800/70 transition-all duration-300"
-              style={{ fontFamily: 'Inter' }}
+              className="flex items-center gap-2 px-6 py-4 rounded-xl border text-gray-300 hover:border-gray-500 transition-all duration-300 glass"
+              style={{ 
+                fontFamily: 'Inter',
+                borderColor: 'var(--glass-border)',
+                borderRadius: 'var(--radius-xl)'
+              }}
             >
               <svg
                 className="h-4 w-4"

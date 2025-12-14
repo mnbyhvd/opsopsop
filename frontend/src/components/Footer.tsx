@@ -70,6 +70,12 @@ const Footer: React.FC = () => {
           message: ''
         });
         setAgreed(false);
+        
+        // Сбрасываем фокус с активного поля
+        const activeElement = document.activeElement as HTMLElement;
+        if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA')) {
+          activeElement.blur();
+        }
       } else {
         throw new Error('Ошибка отправки заявки');
       }
@@ -159,6 +165,16 @@ const Footer: React.FC = () => {
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderWidth = '2px';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderWidth = '1px';
+                      }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
@@ -190,6 +206,16 @@ const Footer: React.FC = () => {
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderWidth = '2px';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderWidth = '1px';
+                      }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
@@ -221,6 +247,16 @@ const Footer: React.FC = () => {
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderWidth = '2px';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderWidth = '1px';
+                      }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
@@ -249,6 +285,16 @@ const Footer: React.FC = () => {
                         borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
                         borderTop: 'none',
                         fontSize: isMobile ? '16px' : 'inherit'
+                      }}
+                      onFocus={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderWidth = '2px';
+                      }}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderTop = 'none';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderWidth = '1px';
                       }}
                       placeholder=" "
                     />

@@ -112,8 +112,34 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
           <button
             onClick={handleDownloadAllZip}
             disabled={downloadingZip}
-            className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 disabled:bg-gray-600 text-white rounded-lg transition-colors duration-200"
-            style={{ fontFamily: 'Inter' }}
+            className="flex items-center gap-2 px-4 py-2 border font-medium shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
+            style={{ 
+              fontFamily: 'Inter',
+              borderColor: '#ffffff',
+              background: downloadingZip ? '#666666' : '#ffffff',
+              color: downloadingZip ? '#ffffff' : '#111827',
+              boxSizing: 'border-box',
+            }}
+            onMouseEnter={(e) => {
+              if (!downloadingZip) {
+                const target = e.currentTarget as HTMLButtonElement;
+                target.style.background = 'color-mix(in srgb, white 5%, transparent)';
+                target.style.backdropFilter = 'blur(var(--blur-glass))';
+                target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
+                target.style.color = '#ffffff';
+                target.style.border = '1px solid transparent';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!downloadingZip) {
+                const target = e.currentTarget as HTMLButtonElement;
+                target.style.background = '#ffffff';
+                target.style.backdropFilter = 'none';
+                target.style.setProperty('-webkit-backdrop-filter', 'none');
+                target.style.color = '#111827';
+                target.style.border = '1px solid #ffffff';
+              }
+            }}
           >
             {downloadingZip ? (
               <>
@@ -139,7 +165,10 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            className="flex items-center gap-4 p-4 rounded-xl border-2 border-gray-600 bg-gray-800/50 hover:border-red-500 hover:bg-gray-800/70 transition-all duration-300 group cursor-pointer"
+            className="flex items-center gap-4 p-4 rounded-xl border transition-all duration-300 group cursor-pointer glass"
+            style={{
+              borderColor: 'var(--glass-border)',
+            }}
             onClick={() => handleDownloadFile(document)}
           >
             <div className="flex-shrink-0">

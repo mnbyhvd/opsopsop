@@ -37,7 +37,16 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
         <div className="flex items-center justify-between py-4">
           {/* Left capsule: logo + navigation */}
           <div className="hidden lg:flex items-center gap-8 glass px-6 h-10" style={{ border: 'none', width: 'fit-content' }}>
-            <Link to="/" className="shrink-0">
+            <Link 
+              to="/" 
+              className="shrink-0"
+              onClick={(e) => {
+                if (location.pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            >
               <img src={logoSrc} alt="МАСТЕР" className="h-6 w-auto select-none" draggable={false} />
             </Link>
             <nav className="flex items-center gap-6">
@@ -57,7 +66,16 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
 
           {/* Mobile: logo */}
           <div className="flex lg:hidden items-center">
-            <Link to="/" className="shrink-0">
+            <Link 
+              to="/" 
+              className="shrink-0"
+              onClick={(e) => {
+                if (location.pathname === '/') {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
+            >
               <img src={logoSrc} alt="МАСТЕР" className="h-6 w-auto select-none" draggable={false} />
             </Link>
           </div>
@@ -66,21 +84,29 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
           <div className="hidden lg:flex items-center gap-4">
             <button
               onClick={scrollToContactForm}
-              className="inline-flex items-center gap-2 rounded-xl border px-5 py-2 font-medium shadow-sm transition-all"
+              className="inline-flex items-center gap-2 border px-5 h-10 font-medium shadow-sm transition-all"
               style={{
+                borderRadius: 'var(--radius-xl)',
                 borderColor: '#ffffff',
                 background: '#ffffff',
                 color: '#111827',
+                boxSizing: 'border-box',
               }}
               onMouseEnter={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg)';
-                (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                const target = e.currentTarget as HTMLButtonElement;
+                target.style.background = 'color-mix(in srgb, white 5%, transparent)';
+                target.style.backdropFilter = 'blur(var(--blur-glass))';
+                target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
+                target.style.color = '#ffffff';
+                target.style.border = '1px solid transparent';
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
-                (e.currentTarget as HTMLButtonElement).style.color = '#111827';
-                (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                const target = e.currentTarget as HTMLButtonElement;
+                target.style.background = '#ffffff';
+                target.style.backdropFilter = 'none';
+                target.style.setProperty('-webkit-backdrop-filter', 'none');
+                target.style.color = '#111827';
+                target.style.border = '1px solid #ffffff';
               }}
             >
               <ShoppingBag size={18} />
@@ -124,21 +150,28 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                   closeMobileMenu();
                   scrollToContactForm();
                 }}
-                className="w-full mt-3 inline-flex items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all"
+                className="w-full mt-3 inline-flex items-center justify-center gap-2 border px-4 py-2 text-sm font-medium transition-all"
                 style={{
+                  borderRadius: 'var(--radius-xl)',
                   borderColor: '#ffffff',
                   background: '#ffffff',
                   color: '#111827',
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg)';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                  const target = e.currentTarget as HTMLButtonElement;
+                  target.style.background = 'color-mix(in srgb, white 5%, transparent)';
+                  target.style.backdropFilter = 'blur(var(--blur-glass))';
+                  target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
+                  target.style.color = '#ffffff';
+                  target.style.border = 'none';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = '#ffffff';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#111827';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                  const target = e.currentTarget as HTMLButtonElement;
+                  target.style.background = '#ffffff';
+                  target.style.backdropFilter = 'none';
+                  target.style.setProperty('-webkit-backdrop-filter', 'none');
+                  target.style.color = '#111827';
+                  target.style.border = '1px solid #ffffff';
                 }}
               >
                 <ShoppingBag size={16} />

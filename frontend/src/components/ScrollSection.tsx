@@ -756,7 +756,7 @@ const ScrollSection: React.FC = () => {
 
         {/* Левая часть - текстовые блоки */}
         <div 
-          className="col-start-2 col-end-7 h-full z-10"
+          className="col-start-1 col-end-8 h-full z-10 lg:pl-14"
           data-text-container
         >
           
@@ -776,7 +776,7 @@ const ScrollSection: React.FC = () => {
                   <div className="relative h-full">
                     <div className="absolute inset-0 flex flex-col justify-start">
                       <h3 
-                        className="text-3xl font-bold"
+                        className="text-3xl font-bold mb-2"
                         style={{ 
                           fontFamily: 'Bebas Neue',
                           color: '#D71920'
@@ -788,8 +788,7 @@ const ScrollSection: React.FC = () => {
                         className="text-lg"
                         style={{ 
                           fontFamily: 'Inter',
-                          color: '#F2F0F0',
-                          paddingLeft: '1rem' // Небольшой отступ слева для отделения от заголовка
+                          color: '#F2F0F0'
                         }}
                       >
                         {block.description}
@@ -806,7 +805,7 @@ const ScrollSection: React.FC = () => {
         <div 
           ref={videoContainerRef}
           data-video-container
-          className={`col-start-7 col-end-12 flex items-center justify-center z-5 ${
+          className={`col-start-8 col-end-13 flex items-center justify-center z-5 ${
             isLastTextUnfixed ? 'relative' :
             isVideoFixed ? 'fixed' : 'relative'
           }`}

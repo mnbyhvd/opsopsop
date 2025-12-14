@@ -80,11 +80,10 @@ const Requisites: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
                 viewport={{ once: true }}
-                className="rounded-2xl p-8 backdrop-blur-sm border"
+                className="rounded-2xl p-8 border glass"
                 style={{
-                  backgroundColor: 'rgba(98, 98, 98, 0.3)',
-                  backdropFilter: 'blur(38.400001525878906px)',
-                  borderColor: 'rgba(255, 255, 255, 0.1)'
+                  border: '1px solid var(--glass-border)',
+                  borderRadius: 'var(--radius-xl)'
                 }}
               >
               {/* Название компании */}

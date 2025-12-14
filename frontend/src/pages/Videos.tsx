@@ -85,16 +85,14 @@ const Videos: React.FC = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
-                  className="rounded-2xl overflow-hidden group cursor-pointer flex flex-col md:flex-row items-center gap-8 p-6"
+                  className="rounded-2xl overflow-hidden group cursor-pointer flex flex-col md:flex-row items-center gap-8 p-6 glass"
                   onClick={() => {
                     setSelectedVideo(video);
                     setIsVideoModalOpen(true);
                   }}
                   style={{
-                    backgroundColor: 'rgba(98, 98, 98, 0.3)',
-                    backdropFilter: 'blur(38.400001525878906px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '30px'
+                    border: '1px solid var(--glass-border)',
+                    borderRadius: 'var(--radius-xl)'
                   }}
                 >
                   {/* Видео превью */}

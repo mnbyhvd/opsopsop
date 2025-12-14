@@ -186,6 +186,11 @@ const ProductsSection: React.FC = () => {
 
   // Обработка клика по изображению
   const handleImageClick = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
+    // Если модальные окна открыты, не обрабатываем клики
+    if (isModalOpen) {
+      return;
+    }
+    
     if (!maskLoaded) {
       console.log('Mask not loaded for click');
       return;
@@ -232,7 +237,7 @@ const ProductsSection: React.FC = () => {
         setHoverImage(area.hoverImage);
       }, 50);
     }
-  }, [getPixelColor, getAreaByColor, maskLoaded, modals]);
+  }, [getPixelColor, getAreaByColor, maskLoaded, modals, isModalOpen]);
 
   // Обработка наведения на изображение
   const handleImageHover = useCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -373,7 +378,7 @@ const ProductsSection: React.FC = () => {
                   display: 'inline-block'
                 }}
               >
-                {settings?.subtitle || 'Технологии, которые не подведут. Изучите ассортимент оборудования.'}
+                {settings?.subtitle || 'Технологии, которые не подведут. Постоянно расширяющийся ассортимент инновационных продуктов'}
               </p>
             </div>
             {/* Иконка для мобильной версии - справа от текстовых блоков */}
@@ -504,61 +509,24 @@ const ProductsSection: React.FC = () => {
           <AnimatePresence>
             {isModalOpen && activeArea && activeModals.length > 0 && (
               <div 
-                className="absolute z-50"
+                className="fixed inset-0 z-50 flex items-center justify-center"
                 style={{
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  pointerEvents: 'none'
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  pointerEvents: 'auto'
+                }}
+                onClick={(e) => {
+                  // Закрываем модальные окна при клике вне их
+                  if (e.target === e.currentTarget) {
+                    setIsModalOpen(false);
+                    setActiveArea(null);
+                    setActiveModals([]);
+                    setHoveredArea(null);
+                    setHoverImage(null);
+                  }
                 }}
               >
-                {activeModals.map((modal, index) => {
-                  // Автоматическое позиционирование модальных окон
-                  const getModalPosition = (index: number) => {
-                    const modalWidth = 320; // ширина модального окна
-                    const modalHeight = 200; // примерная высота модального окна
-                    const offset = 20; // отступ от края
-                    
-                    switch (index) {
-                      case 0: // Первое - справа снизу
-                        return {
-                          left: `calc(50% + ${offset}px)`,
-                          top: `calc(50% + ${offset}px)`,
-                          transform: 'translate(0, 0)'
-                        };
-                      case 1: // Второе - слева сверху
-                        return {
-                          left: `calc(50% - ${modalWidth + offset}px)`,
-                          top: `calc(50% - ${modalHeight + offset}px)`,
-                          transform: 'translate(0, 0)'
-                        };
-                      case 2: // Третье - справа сверху
-                        return {
-                          left: `calc(50% + ${offset}px)`,
-                          top: `calc(50% - ${modalHeight + offset}px)`,
-                          transform: 'translate(0, 0)'
-                        };
-                      case 3: // Четвертое - слева снизу
-                        return {
-                          left: `calc(50% - ${modalWidth + offset}px)`,
-                          top: `calc(50% + ${offset}px)`,
-                          transform: 'translate(0, 0)'
-                        };
-                      default: // Дополнительные - по кругу
-                        const angle = (index * 90) * (Math.PI / 180);
-                        const radius = 200;
-                        const x = Math.cos(angle) * radius;
-                        const y = Math.sin(angle) * radius;
-                        return {
-                          left: `calc(50% + ${x}px)`,
-                          top: `calc(50% + ${y}px)`,
-                          transform: 'translate(-50%, -50%)'
-                        };
-                    }
-                  };
-
-                  const position = getModalPosition(index);
+                <div className="flex flex-col items-center gap-4 px-4">
+                  {activeModals.map((modal, index) => {
 
                   return (
                     <motion.div
@@ -568,17 +536,18 @@ const ProductsSection: React.FC = () => {
                       animate={{ scale: 1, opacity: 1, y: 0 }}
                       exit={{ scale: 0.8, opacity: 0, y: 20 }}
                       transition={{ delay: index * 0.1 }}
-                      className="absolute p-6 rounded-2xl"
+                      className="p-6 rounded-2xl"
                       style={{
                         backdropFilter: 'blur(12px)',
                         backgroundColor: 'rgba(0, 0, 0, 0.2)',
                         border: '1px solid rgba(51, 51, 51, 0.2)',
                         width: '320px',
                         maxWidth: '90vw',
-                        left: position.left,
-                        top: position.top,
-                        transform: position.transform,
                         pointerEvents: 'auto'
+                      }}
+                      onClick={(e) => {
+                        // Предотвращаем закрытие при клике на само модальное окно
+                        e.stopPropagation();
                       }}
                     >
                       <h3 
@@ -641,6 +610,7 @@ const ProductsSection: React.FC = () => {
                     </motion.div>
                   );
                 })}
+                </div>
               </div>
             )}
           </AnimatePresence>

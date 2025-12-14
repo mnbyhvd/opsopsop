@@ -147,10 +147,34 @@ const ProductDetail: React.FC = () => {
             {/* Кнопка заказа */}
             <div className="pt-4 md:pt-6">
               <button
-                className="w-full py-4 px-6 md:px-8 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold text-lg transition-all duration-200 transform hover:scale-105"
-                style={{ fontFamily: 'Bebas Neue' }}
+                onClick={() => {
+                  const contactForm = document.getElementById('contact-form');
+                  if (contactForm) {
+                    contactForm.scrollIntoView({ 
+                      behavior: 'smooth',
+                      block: 'center'
+                    });
+                  }
+                }}
+                className="w-full py-4 px-6 md:px-8 rounded-xl font-medium text-lg transition-all duration-200"
+                style={{ 
+                  fontFamily: 'Inter',
+                  backgroundColor: '#E0DADA', 
+                  color: '#0D0D0D',
+                  border: '1px solid #E0DADA',
+                }}
+                onMouseEnter={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
+                  (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                }}
               >
-                ЗАКАЗАТЬ ПРОДУКТ
+                Оставить заявку
               </button>
             </div>
             </motion.div>

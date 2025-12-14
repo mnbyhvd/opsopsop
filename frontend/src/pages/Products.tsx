@@ -125,12 +125,10 @@ const Products: React.FC = () => {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   viewport={{ once: true }}
                     onClick={() => handleProductClick(product.id)}
-                    className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 cursor-pointer hover:scale-105 transition-all duration-300"
+                    className="rounded-2xl p-8 flex flex-col md:flex-row items-center gap-8 cursor-pointer hover:scale-105 transition-all duration-300 glass"
                   style={{
-                    backgroundColor: 'rgba(98, 98, 98, 0.3)',
-                    backdropFilter: 'blur(38.400001525878906px)',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    borderRadius: '30px'
+                    border: '1px solid var(--glass-border)',
+                    borderRadius: 'var(--radius-xl)'
                   }}
                 >
                   <div className="w-full md:w-64 h-48 rounded-lg flex items-center justify-center flex-shrink-0 overflow-hidden">
