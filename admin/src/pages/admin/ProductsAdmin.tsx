@@ -230,31 +230,82 @@ const ProductsAdmin: React.FC = () => {
     const formData = new FormData();
     formData.append('file', file);
     
-    const response = await fetch('/api/upload', {
-      method: 'POST',
-      body: formData,
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-cache'
-      }
+    console.log('Uploading file:', {
+      name: file.name,
+      size: file.size,
+      sizeMB: (file.size / 1024 / 1024).toFixed(2),
+      type: file.type
     });
     
-    if (!response.ok) {
-      // Если статус 304, это ошибка - POST запросы не должны возвращать 304
-      if (response.status === 304) {
-        throw new Error('Ошибка кэширования. Попробуйте перезагрузить страницу и повторить загрузку.');
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache'
+        }
+      });
+      
+      console.log('Upload response:', {
+        status: response.status,
+        statusText: response.statusText,
+        ok: response.ok,
+        contentType: response.headers.get('content-type')
+      });
+      
+      // Получаем текст ответа для диагностики
+      const responseText = await response.text();
+      console.log('Response text (first 500 chars):', responseText.substring(0, 500));
+      
+      if (!response.ok) {
+        // Если статус 304, это ошибка - POST запросы не должны возвращать 304
+        if (response.status === 304) {
+          throw new Error('Ошибка кэширования. Попробуйте перезагрузить страницу и повторить загрузку.');
+        }
+        
+        // Пытаемся распарсить как JSON
+        let errorData;
+        try {
+          errorData = JSON.parse(responseText);
+        } catch (e) {
+          // Если не JSON, используем текст ответа
+          console.error('Failed to parse error response as JSON:', e);
+          throw new Error(`Ошибка загрузки файла (${response.status}): ${responseText.substring(0, 200) || response.statusText}`);
+        }
+        
+        const errorMessage = errorData.error || errorData.message || `Ошибка загрузки файла (${response.status})`;
+        throw new Error(errorMessage);
       }
       
-      const errorData = await response.json().catch(() => ({ error: 'Неизвестная ошибка' }));
-      const errorMessage = errorData.error || errorData.message || `Ошибка загрузки файла (${response.status})`;
-      throw new Error(errorMessage);
+      // Пытаемся распарсить ответ как JSON
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse success response as JSON:', e);
+        throw new Error(`Сервер вернул неверный формат ответа: ${responseText.substring(0, 200)}`);
+      }
+      
+      if (!result.success) {
+        throw new Error(result.error || 'Ошибка загрузки файла');
+      }
+      
+      if (!result.data || !result.data.url) {
+        throw new Error('Сервер не вернул URL загруженного файла');
+      }
+      
+      console.log('File uploaded successfully:', result.data.url);
+      return result.data.url;
+    } catch (error) {
+      console.error('Upload error details:', error);
+      // Если это уже наша ошибка, просто пробрасываем её
+      if (error instanceof Error) {
+        throw error;
+      }
+      // Иначе создаём новую ошибку
+      throw new Error(`Ошибка загрузки файла: ${String(error)}`);
     }
-    
-    const result = await response.json();
-    if (!result.success) {
-      throw new Error(result.error || 'Ошибка загрузки файла');
-    }
-    return result.data.url;
   };
 
   const fetchProductImages = async (productId: number) => {
