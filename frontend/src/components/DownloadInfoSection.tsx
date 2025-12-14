@@ -175,7 +175,7 @@ const DownloadInfoSection: React.FC = () => {
               textTransform: 'uppercase'
             }}
           >
-          ИНФОРМАЦИЯ ДЛЯ СКАЧИВАНИЯ
+          ФАЙЛЫ ДЛЯ СКАЧИВАНИЯ
           </h2>
         </div>
 
