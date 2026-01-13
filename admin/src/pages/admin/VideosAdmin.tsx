@@ -349,16 +349,29 @@ const VideosAdmin: React.FC = () => {
       
       const method = isCreating ? 'POST' : 'PUT';
       
+      // Подготавливаем данные для отправки, убирая поля created_at и updated_at если они пустые
+      const videoData = {
+        title: editingVideo.title,
+        description: editingVideo.description,
+        video_url: editingVideo.video_url || null,
+        youtube_url: editingVideo.youtube_url || null,
+        thumbnail_url: editingVideo.thumbnail_url || null,
+        duration: editingVideo.duration || null,
+        sort_order: editingVideo.sort_order || 0,
+        is_active: editingVideo.is_active !== undefined ? editingVideo.is_active : true
+      };
+      
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(editingVideo),
+        body: JSON.stringify(videoData),
       });
 
-      if (response.ok) {
-        const result = await response.json();
+      const result = await response.json();
+
+      if (response.ok && result.success) {
         if (isCreating) {
           setVideos([...videos, result.data]);
         } else {
@@ -368,11 +381,16 @@ const VideosAdmin: React.FC = () => {
         }
         setEditingVideo(null);
         setIsCreating(false);
+        alert('Видео успешно сохранено!');
       } else {
-        console.error('Error saving video');
+        const errorMessage = result.error || result.message || 'Неизвестная ошибка при сохранении видео';
+        console.error('Error saving video:', errorMessage, result);
+        alert(`Ошибка при сохранении видео: ${errorMessage}`);
       }
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Неизвестная ошибка';
       console.error('Error saving video:', error);
+      alert(`Ошибка при сохранении видео: ${errorMessage}`);
     }
   };
 

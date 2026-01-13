@@ -77,10 +77,20 @@ router.post('/', async (req, res) => {
       is_active = true
     } = req.body;
     
+    // Преобразуем пустые строки в null для MySQL
+    const safeTitle = title || null;
+    const safeDescription = description || null;
+    const safeVideoUrl = video_url || null;
+    const safeYoutubeUrl = youtube_url || null;
+    const safeThumbnailUrl = thumbnail_url || null;
+    const safeDuration = duration || null;
+    const safeSortOrder = sort_order !== undefined ? sort_order : 0;
+    const safeIsActive = is_active !== undefined ? is_active : true;
+    
     const [result] = await pool.execute(`
       INSERT INTO videos (title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-    `, [title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active]);
+    `, [safeTitle, safeDescription, safeVideoUrl, safeYoutubeUrl, safeThumbnailUrl, safeDuration, safeSortOrder, safeIsActive]);
     
     // Получаем созданное видео
     const [rows] = await pool.execute('SELECT * FROM videos WHERE id = ?', [result.insertId]);
@@ -93,7 +103,8 @@ router.post('/', async (req, res) => {
     console.error('Error creating video:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to create video'
+      error: 'Failed to create video',
+      message: error.message
     });
   }
 });
@@ -113,12 +124,22 @@ router.put('/:id', async (req, res) => {
       is_active
     } = req.body;
     
+    // Преобразуем пустые строки в null для MySQL
+    const safeTitle = title || null;
+    const safeDescription = description || null;
+    const safeVideoUrl = video_url || null;
+    const safeYoutubeUrl = youtube_url || null;
+    const safeThumbnailUrl = thumbnail_url || null;
+    const safeDuration = duration || null;
+    const safeSortOrder = sort_order !== undefined ? sort_order : 0;
+    const safeIsActive = is_active !== undefined ? is_active : true;
+    
     const [result] = await pool.execute(`
       UPDATE videos 
       SET title = ?, description = ?, video_url = ?, youtube_url = ?, thumbnail_url = ?, 
           duration = ?, sort_order = ?, is_active = ?, updated_at = NOW()
       WHERE id = ?
-    `, [title, description, video_url, youtube_url, thumbnail_url, duration, sort_order, is_active, id]);
+    `, [safeTitle, safeDescription, safeVideoUrl, safeYoutubeUrl, safeThumbnailUrl, safeDuration, safeSortOrder, safeIsActive, id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({
@@ -138,7 +159,8 @@ router.put('/:id', async (req, res) => {
     console.error('Error updating video:', error);
     res.status(500).json({
       success: false,
-      error: 'Failed to update video'
+      error: 'Failed to update video',
+      message: error.message
     });
   }
 });
