@@ -16,12 +16,105 @@ const pool = mysql.createPool({
 // GET active site styles
 router.get('/', async (req, res) => {
   try {
-    const [rows] = await pool.execute(`
-      SELECT * FROM site_styles 
-      WHERE is_active = true
-      ORDER BY version DESC, updated_at DESC
-      LIMIT 1
-    `);
+    let rows;
+    try {
+      [rows] = await pool.execute(`
+        SELECT * FROM site_styles 
+        WHERE is_active = true
+        ORDER BY version DESC, updated_at DESC
+        LIMIT 1
+      `);
+    } catch (dbError) {
+      // Если таблица не существует (например, миграция не выполнена)
+      if (dbError.code === 'ER_NO_SUCH_TABLE' || dbError.message.includes("doesn't exist")) {
+        console.warn('Table site_styles does not exist yet. Returning default styles.');
+        // Возвращаем дефолтные значения
+        return res.json({
+        success: true,
+        data: {
+          colors: {
+            background: '#0D0D0D',
+            text: '#F5F5F5',
+            accent: '#D71920',
+            brand: '#ECC30B',
+            glassBorder: 'rgba(255,255,255,0.1)'
+          },
+          radius: {
+            xl: '16px',
+            lg: '12px'
+          },
+          blur: {
+            glass: '12px'
+          },
+          fonts: {
+            headings: 'Bebas Neue',
+            body: 'Inter',
+            headingsFallback: 'Arial Black, Arial, sans-serif',
+            bodyFallback: 'sans-serif',
+            headingsColor: '#F5F5F5',
+            bodyColor: '#F5F5F5',
+            headingsUrl: null,
+            bodyUrl: null
+          },
+          buttons: {
+            primary: {
+              bg: '#FFFFFF',
+              text: '#0D0D0D',
+              border: '#FFFFFF',
+              hoverBg: 'rgba(255, 255, 255, 0.1)',
+              hoverText: '#FFFFFF',
+              hoverBorder: 'transparent',
+              radius: '30px'
+            },
+            secondary: {
+              bg: 'transparent',
+              text: '#FFFFFF',
+              border: '#FFFFFF',
+              hoverBg: 'rgba(255, 255, 255, 0.1)',
+              hoverText: '#FFFFFF',
+              hoverBorder: '#FFFFFF',
+              radius: '30px'
+            }
+          },
+          inputs: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            focusBg: 'rgba(255, 255, 255, 0.08)',
+            focusText: '#F5F5F5',
+            focusBorder: 'rgba(255, 255, 255, 0.6)',
+            radius: '12px',
+            placeholder: 'rgba(255, 255, 255, 0.5)'
+          },
+          search: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            focusBg: 'rgba(255, 255, 255, 0.08)',
+            focusBorder: 'rgba(255, 255, 255, 0.6)',
+            radius: '12px'
+          },
+          navigation: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            linkHover: '#D71920',
+            border: 'rgba(255, 255, 255, 0.1)',
+            radius: '16px'
+          },
+          cards: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            radius: '16px',
+            hoverBg: 'rgba(255, 255, 255, 0.08)'
+          }
+        }
+      });
+      } else {
+        // Другая ошибка БД - пробрасываем дальше
+        throw dbError;
+      }
+    }
     
     if (rows.length === 0) {
       // Возвращаем дефолтные значения, если ничего не найдено
@@ -196,10 +289,103 @@ router.get('/', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching site styles:', error);
+    console.error('Error details:', {
+      message: error.message,
+      code: error.code,
+      sqlMessage: error.sqlMessage,
+      sqlState: error.sqlState
+    });
+    
+    // Если это ошибка БД, возвращаем дефолтные значения вместо ошибки
+    if (error.code && error.code.startsWith('ER_')) {
+      console.warn('Database error detected, returning default styles');
+      return res.json({
+        success: true,
+        data: {
+          colors: {
+            background: '#0D0D0D',
+            text: '#F5F5F5',
+            accent: '#D71920',
+            brand: '#ECC30B',
+            glassBorder: 'rgba(255,255,255,0.1)'
+          },
+          radius: {
+            xl: '16px',
+            lg: '12px'
+          },
+          blur: {
+            glass: '12px'
+          },
+          fonts: {
+            headings: 'Bebas Neue',
+            body: 'Inter',
+            headingsFallback: 'Arial Black, Arial, sans-serif',
+            bodyFallback: 'sans-serif',
+            headingsColor: '#F5F5F5',
+            bodyColor: '#F5F5F5',
+            headingsUrl: null,
+            bodyUrl: null
+          },
+          buttons: {
+            primary: {
+              bg: '#FFFFFF',
+              text: '#0D0D0D',
+              border: '#FFFFFF',
+              hoverBg: 'rgba(255, 255, 255, 0.1)',
+              hoverText: '#FFFFFF',
+              hoverBorder: 'transparent',
+              radius: '30px'
+            },
+            secondary: {
+              bg: 'transparent',
+              text: '#FFFFFF',
+              border: '#FFFFFF',
+              hoverBg: 'rgba(255, 255, 255, 0.1)',
+              hoverText: '#FFFFFF',
+              hoverBorder: '#FFFFFF',
+              radius: '30px'
+            }
+          },
+          inputs: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            focusBg: 'rgba(255, 255, 255, 0.08)',
+            focusText: '#F5F5F5',
+            focusBorder: 'rgba(255, 255, 255, 0.6)',
+            radius: '12px',
+            placeholder: 'rgba(255, 255, 255, 0.5)'
+          },
+          search: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            focusBg: 'rgba(255, 255, 255, 0.08)',
+            focusBorder: 'rgba(255, 255, 255, 0.6)',
+            radius: '12px'
+          },
+          navigation: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            linkHover: '#D71920',
+            border: 'rgba(255, 255, 255, 0.1)',
+            radius: '16px'
+          },
+          cards: {
+            bg: 'rgba(255, 255, 255, 0.05)',
+            text: '#F5F5F5',
+            border: 'rgba(255, 255, 255, 0.1)',
+            radius: '16px',
+            hoverBg: 'rgba(255, 255, 255, 0.08)'
+          }
+        }
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: 'Failed to fetch site styles',
-      message: error.message
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 });

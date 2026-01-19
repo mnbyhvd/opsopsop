@@ -27,10 +27,10 @@ CREATE TABLE IF NOT EXISTS site_styles (
     button_primary_border VARCHAR(7) DEFAULT '#FFFFFF',
     button_primary_hover_bg VARCHAR(50) DEFAULT 'rgba(255, 255, 255, 0.1)',
     button_primary_hover_text VARCHAR(7) DEFAULT '#FFFFFF',
-    button_primary_hover_border VARCHAR(7) DEFAULT 'transparent',
+    button_primary_hover_border VARCHAR(50) DEFAULT 'transparent',
     button_primary_radius VARCHAR(10) DEFAULT '30px',
     
-    button_secondary_bg VARCHAR(7) DEFAULT 'transparent',
+    button_secondary_bg VARCHAR(50) DEFAULT 'transparent',
     button_secondary_text VARCHAR(7) DEFAULT '#FFFFFF',
     button_secondary_border VARCHAR(7) DEFAULT '#FFFFFF',
     button_secondary_hover_bg VARCHAR(50) DEFAULT 'rgba(255, 255, 255, 0.1)',
