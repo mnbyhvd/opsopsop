@@ -88,6 +88,8 @@ services:
     volumes:
       - ./ssl:/etc/letsencrypt
       - certbot_webroot:/var/www/certbot
+    depends_on:
+      - nginx
     networks:
       - master_sps_network
     # Команда запускается только при явном вызове через docker compose run

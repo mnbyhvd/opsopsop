@@ -103,6 +103,7 @@ app.use('/api/upload', require('./routes/upload'));
 app.use('/api/export', require('./routes/export'));
 app.use('/api/leads', require('./routes/leads'));
 app.use('/api/product-modals', require('./routes/product_modals'));
+app.use('/api/styles', require('./routes/styles'));
 
 // Статические файлы для загрузок с CORS заголовками
 app.use('/uploads', (req, res, next) => {

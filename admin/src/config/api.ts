@@ -21,6 +21,7 @@ export const API_ENDPOINTS = {
   SCROLL_SECTION: `${API_BASE_URL}/api/scroll-section`,
   UPLOAD: `${API_BASE_URL}/api/upload`,
   EXPORT: `${API_BASE_URL}/api/export`,
+  STYLES: `${API_BASE_URL}/api/styles`,
 };
 
 export default API_ENDPOINTS;

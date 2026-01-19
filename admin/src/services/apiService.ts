@@ -285,6 +285,18 @@ class ApiService {
       method: 'GET',
     });
   }
+
+  // Styles
+  async getStyles() {
+    return this.request(API_ENDPOINTS.STYLES);
+  }
+
+  async updateStyles(stylesData: any) {
+    return this.request(API_ENDPOINTS.STYLES, {
+      method: 'PUT',
+      body: JSON.stringify(stylesData),
+    });
+  }
 }
 
 export const apiService = new ApiService();

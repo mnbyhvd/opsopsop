@@ -34,6 +34,84 @@ router.get('/', async (req, res) => {
   }
 });
 
+// GET /api/videos/settings - получить настройки секции (должен быть ПЕРЕД /:id)
+router.get('/settings', async (req, res) => {
+  try {
+    const [rows] = await pool.execute(`
+      SELECT * FROM video_presentations_settings 
+      ORDER BY id DESC 
+      LIMIT 1
+    `);
+    
+    if (rows.length === 0) {
+      return res.json({
+        success: true,
+        data: null
+      });
+    }
+    
+    res.json({
+      success: true,
+      data: rows[0]
+    });
+  } catch (error) {
+    console.error('Error fetching video settings:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch video settings'
+    });
+  }
+});
+
+// PUT /api/videos/settings - обновить настройки секции (должен быть ПЕРЕД /:id)
+router.put('/settings', async (req, res) => {
+  try {
+    const { title, subtitle } = req.body;
+    
+    // Сначала проверяем, есть ли уже настройки
+    const [existingRows] = await pool.execute(`
+      SELECT id FROM video_presentations_settings 
+      ORDER BY id DESC 
+      LIMIT 1
+    `);
+    
+    let result;
+    if (existingRows.length > 0) {
+      // Обновляем существующие настройки
+      const [updateResult] = await pool.execute(`
+        UPDATE video_presentations_settings 
+        SET title = ?, subtitle = ?, updated_at = NOW()
+        WHERE id = ?
+      `, [title, subtitle, existingRows[0].id]);
+      
+      // Получаем обновленные настройки
+      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [existingRows[0].id]);
+      result = { data: rows[0] };
+    } else {
+      // Создаем новые настройки
+      const [insertResult] = await pool.execute(`
+        INSERT INTO video_presentations_settings (title, subtitle, created_at, updated_at)
+        VALUES (?, ?, NOW(), NOW())
+      `, [title, subtitle]);
+      
+      // Получаем созданные настройки
+      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [insertResult.insertId]);
+      result = { data: rows[0] };
+    }
+    
+    res.json({
+      success: true,
+      data: result.data
+    });
+  } catch (error) {
+    console.error('Error updating video settings:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to update video settings'
+    });
+  }
+});
+
 // GET /api/videos/:id - получить видео по ID
 router.get('/:id', async (req, res) => {
   try {
@@ -190,84 +268,6 @@ router.delete('/:id', async (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to delete video'
-    });
-  }
-});
-
-// GET /api/videos/settings - получить настройки секции
-router.get('/settings', async (req, res) => {
-  try {
-    const [rows] = await pool.execute(`
-      SELECT * FROM video_presentations_settings 
-      ORDER BY id DESC 
-      LIMIT 1
-    `);
-    
-    if (rows.length === 0) {
-      return res.json({
-        success: true,
-        data: null
-      });
-    }
-    
-    res.json({
-      success: true,
-      data: rows[0]
-    });
-  } catch (error) {
-    console.error('Error fetching video settings:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to fetch video settings'
-    });
-  }
-});
-
-// PUT /api/videos/settings - обновить настройки секции
-router.put('/settings', async (req, res) => {
-  try {
-    const { title, subtitle } = req.body;
-    
-    // Сначала проверяем, есть ли уже настройки
-    const [existingRows] = await pool.execute(`
-      SELECT id FROM video_presentations_settings 
-      ORDER BY id DESC 
-      LIMIT 1
-    `);
-    
-    let result;
-    if (existingRows.length > 0) {
-      // Обновляем существующие настройки
-      const [updateResult] = await pool.execute(`
-        UPDATE video_presentations_settings 
-        SET title = ?, subtitle = ?, updated_at = NOW()
-        WHERE id = ?
-      `, [title, subtitle, existingRows[0].id]);
-      
-      // Получаем обновленные настройки
-      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [existingRows[0].id]);
-      result = { data: rows[0] };
-    } else {
-      // Создаем новые настройки
-      const [insertResult] = await pool.execute(`
-        INSERT INTO video_presentations_settings (title, subtitle, created_at, updated_at)
-        VALUES (?, ?, NOW(), NOW())
-      `, [title, subtitle]);
-      
-      // Получаем созданные настройки
-      const [rows] = await pool.execute('SELECT * FROM video_presentations_settings WHERE id = ?', [insertResult.insertId]);
-      result = { data: rows[0] };
-    }
-    
-    res.json({
-      success: true,
-      data: result.data
-    });
-  } catch (error) {
-    console.error('Error updating video settings:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to update video settings'
     });
   }
 });

@@ -10,8 +10,9 @@ import LeadsAdmin from './LeadsAdmin';
 import ProductModalsAdmin from './ProductModalsAdmin';
 import RequisitesAdmin from './RequisitesAdmin';
 import ScrollSectionAdmin from './ScrollSectionAdmin';
+import StylesAdmin from './StylesAdmin';
 
-type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section';
+type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section' | 'styles';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -32,6 +33,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     { id: 'product-modals' as AdminSection, name: 'Модальные окна', description: 'Управление модальными окнами продуктов' },
     { id: 'requisites' as AdminSection, name: 'Реквизиты', description: 'Управление реквизитами компании' },
     { id: 'scroll-section' as AdminSection, name: 'Scroll Section', description: 'Управление секцией с видео анимацией' },
+    { id: 'styles' as AdminSection, name: 'Стили сайта', description: 'Редактирование цветов, шрифтов и стилей компонентов' },
   ];
 
   const renderContent = () => {
@@ -58,6 +60,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         return <RequisitesAdmin />;
       case 'scroll-section':
         return <ScrollSectionAdmin />;
+      case 'styles':
+        return <StylesAdmin />;
       default:
         return <HeroAdmin />;
     }

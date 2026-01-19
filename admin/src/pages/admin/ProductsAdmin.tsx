@@ -238,9 +238,9 @@ const ProductsAdmin: React.FC = () => {
     });
     
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+    const response = await fetch('/api/upload', {
+      method: 'POST',
+      body: formData,
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache'
@@ -257,8 +257,8 @@ const ProductsAdmin: React.FC = () => {
       // Получаем текст ответа для диагностики
       const responseText = await response.text();
       console.log('Response text (first 500 chars):', responseText.substring(0, 500));
-      
-      if (!response.ok) {
+    
+    if (!response.ok) {
         // Если статус 304, это ошибка - POST запросы не должны возвращать 304
         if (response.status === 304) {
           throw new Error('Ошибка кэширования. Попробуйте перезагрузить страницу и повторить загрузку.');
@@ -272,8 +272,8 @@ const ProductsAdmin: React.FC = () => {
           // Если не JSON, используем текст ответа
           console.error('Failed to parse error response as JSON:', e);
           throw new Error(`Ошибка загрузки файла (${response.status}): ${responseText.substring(0, 200) || response.statusText}`);
-        }
-        
+    }
+    
         const errorMessage = errorData.error || errorData.message || `Ошибка загрузки файла (${response.status})`;
         throw new Error(errorMessage);
       }
@@ -296,7 +296,7 @@ const ProductsAdmin: React.FC = () => {
       }
       
       console.log('File uploaded successfully:', result.data.url);
-      return result.data.url;
+    return result.data.url;
     } catch (error) {
       console.error('Upload error details:', error);
       // Если это уже наша ошибка, просто пробрасываем её
@@ -925,7 +925,7 @@ const ProductsAdmin: React.FC = () => {
                     style={{ color: '#B8B8B8' }}
                   >
                   Дополнительные изображения продукта
-                  </label>
+                </label>
                 <FileUpload
                   onFileSelect={handleImageUpload}
                   accept="image/*"

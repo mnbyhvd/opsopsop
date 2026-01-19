@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
         {/* Форма связи */}
         <section className="py-12 md:py-20 relative z-10" >
           <PageContainer>
-          {/* Левая часть - заголовок и текст (колонки 1-6 на десктопе, 1-13 на мобильных) */}
+            {/* Левая часть - заголовок и текст (колонки 1-6 на десктопе, 1-13 на мобильных) */}
           <div className="col-start-1 col-end-13 md:col-end-7" style={{ paddingLeft: isMobile ? '16px' : '40px', paddingRight: isMobile ? '16px' : '60px' }}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

@@ -140,9 +140,9 @@ router.post('/', (req, res) => {
         });
         return res.status(400).json({
           success: false,
-          error: 'Файл не был загружен'
-        });
-      }
+        error: 'Файл не был загружен'
+      });
+    }
 
       console.log('File uploaded successfully:', {
         filename: req.file.filename,
@@ -152,26 +152,26 @@ router.post('/', (req, res) => {
         path: req.file.path
       });
 
-      // Формируем URL для доступа к файлу
-      const fileUrl = `/uploads/${req.file.path.split('uploads/')[1]}`;
-      
-      res.json({
-        success: true,
-        data: {
-          filename: req.file.filename,
-          originalName: req.file.originalname,
-          mimetype: req.file.mimetype,
-          size: req.file.size,
-          url: fileUrl
-        }
-      });
-    } catch (error) {
+    // Формируем URL для доступа к файлу
+    const fileUrl = `/uploads/${req.file.path.split('uploads/')[1]}`;
+    
+    res.json({
+      success: true,
+      data: {
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        mimetype: req.file.mimetype,
+        size: req.file.size,
+        url: fileUrl
+      }
+    });
+  } catch (error) {
       console.error('Error processing uploaded file:', error);
-      res.status(500).json({
-        success: false,
+    res.status(500).json({
+      success: false,
         error: 'Ошибка при обработке файла'
-      });
-    }
+    });
+  }
   });
 });
 

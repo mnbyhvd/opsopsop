@@ -174,20 +174,22 @@ p {
   
   body {
     background: var(--bg);
-    color: var(--text);
+    color: var(--font-body-color, var(--text));
     overflow-x: hidden;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif');
   }
   
   /* Принудительное применение Bebas Neue только к заголовкам */
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Bebas Neue', 'Arial Black', 'Arial', sans-serif !important;
+    font-family: var(--font-headings, 'Bebas Neue'), var(--font-headings-fallback, 'Arial Black, Arial, sans-serif') !important;
     font-feature-settings: "kern" 1, "liga" 1 !important;
+    color: var(--font-headings-color, #F5F5F5) !important;
   }
   
   /* Принудительное применение Inter к параграфам и тексту */
   p, span, div, button, a, input, textarea, label {
-    font-family: 'Inter', sans-serif !important;
+    font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif') !important;
+    color: var(--font-body-color, #F5F5F5) !important;
   }
 }
 
