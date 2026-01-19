@@ -358,7 +358,7 @@ const ProductsSection: React.FC = () => {
                 style={{
                   fontFamily: 'Bebas Neue',
                   fontWeight: 400,
-                  color: '#F2F0F0',
+                  color: 'var(--font-headings-color, var(--text))',
                   textTransform: 'uppercase',
                   margin: 0,
                   marginBottom: 0
@@ -370,7 +370,7 @@ const ProductsSection: React.FC = () => {
                 className="text-lg text-left md:text-center"
                 style={{
                   fontFamily: 'Bebas Neue',
-                  color: '#F2F0F0',
+                  color: 'var(--font-headings-color, var(--text))',
                   margin: 0,
                   marginTop: 0,
                   paddingTop: 0,
@@ -585,7 +585,7 @@ const ProductsSection: React.FC = () => {
                             fontSize: '16px !important',
                             lineHeight: '100% !important',
                             letterSpacing: '0% !important',
-                            color: '#F2F0F0 !important',
+                            color: 'var(--font-body-color, var(--text)) !important',
                             textDecoration: 'underline !important',
                             textDecorationStyle: 'solid',
                             textDecorationThickness: '1px',

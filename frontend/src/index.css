@@ -149,14 +149,15 @@ p {
 .about-title-dot {
   width: 4px !important;
   height: 4px !important;
-  background-color: #D71920 !important;
+  background-color: var(--accent) !important;
   border-radius: 50% !important;
   flex-shrink: 0 !important;
 }
 
 
 :root {
-  --bg: #0D0D0D !important;
+  /* Дефолтные значения - будут переопределены через JavaScript из API */
+  --bg: #0D0D0D;
   --text: #F5F5F5;
   --accent: #D71920;
   --brand: #ECC30B;
@@ -164,6 +165,55 @@ p {
   --radius-xl: 16px;
   --radius-lg: 12px;
   --blur-glass: 12px;
+  
+  /* Кнопки */
+  --button-primary-bg: #FFFFFF;
+  --button-primary-text: #0D0D0D;
+  --button-primary-border: #FFFFFF;
+  --button-primary-hover-bg: rgba(255, 255, 255, 0.1);
+  --button-primary-hover-text: #FFFFFF;
+  --button-primary-hover-border: transparent;
+  --button-primary-radius: 30px;
+  
+  --button-secondary-bg: transparent;
+  --button-secondary-text: #FFFFFF;
+  --button-secondary-border: #FFFFFF;
+  --button-secondary-hover-bg: rgba(255, 255, 255, 0.1);
+  --button-secondary-hover-text: #FFFFFF;
+  --button-secondary-hover-border: #FFFFFF;
+  --button-secondary-radius: 30px;
+  
+  /* Поля ввода */
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-text: #F5F5F5;
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus-bg: rgba(255, 255, 255, 0.08);
+  --input-focus-text: #F5F5F5;
+  --input-focus-border: rgba(255, 255, 255, 0.6);
+  --input-radius: 12px;
+  --input-placeholder: rgba(255, 255, 255, 0.5);
+  
+  /* Поиск */
+  --search-bg: rgba(255, 255, 255, 0.05);
+  --search-text: #F5F5F5;
+  --search-border: rgba(255, 255, 255, 0.1);
+  --search-focus-bg: rgba(255, 255, 255, 0.08);
+  --search-focus-border: rgba(255, 255, 255, 0.6);
+  --search-radius: 12px;
+  
+  /* Навигация */
+  --nav-bg: rgba(255, 255, 255, 0.05);
+  --nav-text: #F5F5F5;
+  --nav-link-hover: #D71920;
+  --nav-border: rgba(255, 255, 255, 0.1);
+  --nav-radius: 16px;
+  
+  /* Карточки */
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-text: #F5F5F5;
+  --card-border: rgba(255, 255, 255, 0.1);
+  --card-radius: 16px;
+  --card-hover-bg: rgba(255, 255, 255, 0.08);
 }
 
 @layer base {

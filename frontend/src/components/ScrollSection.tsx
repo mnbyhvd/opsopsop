@@ -534,9 +534,9 @@ const ScrollSection: React.FC = () => {
 
   // Мемоизированные компоненты для оптимизации рендеринга
   const LoadingComponent = useMemo(() => (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
-      <div className="text-center">
-        <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#F2F0F0' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)' }}>
+        <div className="text-center">
+          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--font-headings-color, var(--text))' }}>
           ЗАГРУЗКА СЕКЦИИ...
         </div>
         <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -547,10 +547,10 @@ const ScrollSection: React.FC = () => {
   const ErrorComponent = useMemo(() => (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
       <div className="text-center">
-        <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#D71920' }}>
+        <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--accent)' }}>
           ОШИБКА ЗАГРУЗКИ
         </div>
-        <div className="text-lg" style={{ fontFamily: 'Inter', color: '#B8B8B8' }}>
+        <div className="text-lg" style={{ fontFamily: 'var(--font-body, Inter)', color: 'var(--font-body-color, var(--text))' }}>
           Не удалось загрузить данные секции
         </div>
       </div>
@@ -567,7 +567,7 @@ const ScrollSection: React.FC = () => {
         ref={sectionRef}
         className="scroll-section relative"
         style={{ 
-          backgroundColor: '#0D0D0D',
+          backgroundColor: 'var(--bg)',
           // Высота секции: заголовок + общий блок (текст 50vh + видео 50vh = 100vh) + высота для прокрутки всех текстов
           // Уменьшаем множитель для текстовых блоков, чтобы убрать лишний скролл
           minHeight: `calc(20vh + 100vh + ${data.text_blocks.length * 80}vh)`
@@ -584,7 +584,7 @@ const ScrollSection: React.FC = () => {
               style={{
                 fontFamily: 'Bebas Neue',
                 fontWeight: 400,
-                color: '#F2F0F0',
+                color: 'var(--font-headings-color, var(--text))',
                 textTransform: 'uppercase'
               }}
             >
@@ -594,7 +594,7 @@ const ScrollSection: React.FC = () => {
               className="text-sm md:text-lg"
               style={{
                 fontFamily: 'Inter',
-                color: '#F2F0F0',
+                color: 'var(--font-headings-color, var(--text))',
                 maxWidth: '600px',
                 margin: '0'
               }}
@@ -643,7 +643,7 @@ const ScrollSection: React.FC = () => {
                       className="text-2xl md:text-3xl font-bold mb-4"
                       style={{ 
                         fontFamily: 'Bebas Neue',
-                        color: '#D71920'
+                        color: 'var(--accent)'
                       }}
                     >
                       {block.title}
@@ -720,7 +720,7 @@ const ScrollSection: React.FC = () => {
       ref={sectionRef}
       className="scroll-section relative"
       style={{ 
-        backgroundColor: '#0D0D0D',
+        backgroundColor: 'var(--bg)',
         overflow: 'hidden',
         // Высота секции: высота для всех текстовых блоков + пространство для видео в relative
         minHeight: `${minSectionHeight}vh`
@@ -732,10 +732,10 @@ const ScrollSection: React.FC = () => {
           <h2 
             className="mb-4"
             style={{
-              fontFamily: 'Bebas Neue',
+              fontFamily: 'var(--font-headings, Bebas Neue)',
               fontSize: '64px',
               fontWeight: 400,
-              color: '#F2F0F0',
+              color: 'var(--font-headings-color, var(--text))',
               textTransform: 'uppercase'
             }}
           >
@@ -744,8 +744,8 @@ const ScrollSection: React.FC = () => {
           <p 
             className="text-lg"
             style={{
-              fontFamily: 'Inter',
-              color: '#F2F0F0',
+              fontFamily: 'var(--font-body, Inter)',
+              color: 'var(--font-body-color, var(--text))',
               maxWidth: '600px',
               margin: '0 auto'
             }}
@@ -779,7 +779,7 @@ const ScrollSection: React.FC = () => {
                         className="text-3xl font-bold mb-2"
                         style={{ 
                           fontFamily: 'Bebas Neue',
-                          color: '#D71920'
+                          color: 'var(--accent)'
                         }}
                       >
                         {block.title}

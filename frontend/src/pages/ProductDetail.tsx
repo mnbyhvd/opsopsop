@@ -15,9 +15,9 @@ const ProductDetail: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)' }}>
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#F2F0F0' }}>
+          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--font-headings-color, var(--text))' }}>
             ЗАГРУЗКА ПРОДУКТА...
           </div>
           <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -30,10 +30,10 @@ const ProductDetail: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#D71920' }}>
+          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--accent)' }}>
             ПРОДУКТ НЕ НАЙДЕН
           </div>
-          <div className="text-lg mb-6" style={{ fontFamily: 'Inter', color: '#B8B8B8' }}>
+          <div className="text-lg mb-6" style={{ fontFamily: 'var(--font-body, Inter)', color: 'var(--font-body-color, var(--text))' }}>
             Запрашиваемый продукт не существует или был удален
           </div>
           <button
@@ -49,7 +49,7 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0D0D0D' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
 
       {/* Кнопка назад */}
       <div className="pt-24">
@@ -106,10 +106,10 @@ const ProductDetail: React.FC = () => {
               </div>
               <h1 
                 className="text-3xl md:text-4xl font-bold mb-4"
-                style={{ 
-                  fontFamily: 'Bebas Neue',
-                  color: '#F2F0F0'
-                }}
+            style={{ 
+              fontFamily: 'var(--font-headings, Bebas Neue)',
+              color: 'var(--font-headings-color, var(--text))'
+            }}
               >
                 {product.name}
               </h1>
@@ -119,18 +119,18 @@ const ProductDetail: React.FC = () => {
             <div>
               <h2 
                 className="text-lg md:text-xl font-bold mb-4"
-                style={{ 
-                  fontFamily: 'Bebas Neue',
-                  color: '#F2F0F0'
-                }}
+            style={{ 
+              fontFamily: 'var(--font-headings, Bebas Neue)',
+              color: 'var(--font-headings-color, var(--text))'
+            }}
               >
                 ОПИСАНИЕ
               </h2>
               <p 
                 className="text-base md:text-lg leading-relaxed"
                 style={{ 
-                  fontFamily: 'Inter',
-                  color: '#B8B8B8'
+                  fontFamily: 'var(--font-body, Inter)',
+                  color: 'var(--font-body-color, var(--text))'
                 }}
               >
                 {product.description}
@@ -158,20 +158,21 @@ const ProductDetail: React.FC = () => {
                 }}
                 className="w-full py-4 px-6 md:px-8 rounded-xl font-medium text-lg transition-all duration-200"
                 style={{ 
-                  fontFamily: 'Inter',
-                  backgroundColor: '#E0DADA', 
-                  color: '#0D0D0D',
-                  border: '1px solid #E0DADA',
+                  fontFamily: 'var(--font-body, Inter)',
+                  backgroundColor: 'var(--button-primary-bg)', 
+                  color: 'var(--button-primary-text)',
+                  border: `1px solid var(--button-primary-border)`,
+                  borderRadius: 'var(--button-primary-radius)'
                 }}
                 onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-hover-bg)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-hover-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-hover-border)';
                 }}
                 onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-bg)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-border)';
                 }}
               >
                 Оставить заявку

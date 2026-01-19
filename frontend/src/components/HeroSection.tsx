@@ -182,22 +182,23 @@ const HeroSection: React.FC = () => {
         
         <button 
           onClick={scrollToContactForm}
-          className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 rounded-xl font-medium text-base sm:text-lg md:text-xl transition-all self-start md:self-center"
+          className="inline-flex items-center justify-center px-6 py-3 sm:px-8 sm:py-4 md:px-10 md:py-4 font-medium text-base sm:text-lg md:text-xl transition-all self-start md:self-center"
           style={{ 
-            backgroundColor: '#E0DADA', 
-            color: '#0D0D0D',
-            border: '1px solid #E0DADA',
-            fontFamily: 'Inter'
+            backgroundColor: 'var(--button-primary-bg)', 
+            color: 'var(--button-primary-text)',
+            border: `1px solid var(--button-primary-border)`,
+            borderRadius: 'var(--button-primary-radius)',
+            fontFamily: 'var(--font-body, Inter)'
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
-            (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-            (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+            (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-hover-bg)';
+            (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-hover-text)';
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-hover-border)';
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
-            (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
-            (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+            (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-bg)';
+            (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-text)';
+            (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-border)';
           }}
         >
           Оставить заявку

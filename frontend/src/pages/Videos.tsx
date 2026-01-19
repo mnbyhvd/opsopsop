@@ -10,9 +10,9 @@ const Videos: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)' }}>
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#F2F0F0' }}>
+          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--font-headings-color, var(--text))' }}>
             ЗАГРУЗКА ВИДЕО...
           </div>
           <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
@@ -23,12 +23,12 @@ const Videos: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)' }}>
         <div className="text-center">
-          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'Bebas Neue', color: '#D71920' }}>
+          <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--accent)' }}>
             ОШИБКА ЗАГРУЗКИ
           </div>
-          <div className="text-lg" style={{ fontFamily: 'Inter', color: '#B8B8B8' }}>
+          <div className="text-lg" style={{ fontFamily: 'var(--font-body, Inter)', color: 'var(--font-body-color, var(--text))' }}>
             Не удалось загрузить видео
           </div>
         </div>
@@ -37,7 +37,7 @@ const Videos: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0D0D0D' }}>
+    <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Hero секция */}
       <section className="pt-20 pb-0 relative">
         <PageContainer>
@@ -50,8 +50,8 @@ const Videos: React.FC = () => {
               <h1 
                 className="text-6xl font-bold mb-6"
                 style={{ 
-                  fontFamily: 'Bebas Neue',
-                  color: '#F2F0F0',
+                  fontFamily: 'var(--font-headings, Bebas Neue)',
+                  color: 'var(--font-headings-color, var(--text))',
                   textTransform: 'uppercase'
                 }}
               >
@@ -61,8 +61,8 @@ const Videos: React.FC = () => {
               <p 
                 className="text-xl max-w-4xl mx-auto"
                 style={{ 
-                  fontFamily: 'Inter',
-                  color: '#B8B8B8'
+                  fontFamily: 'var(--font-body, Inter)',
+                  color: 'var(--font-body-color, var(--text))'
                 }}
               >
                 Главные особенности и преимущества в коротких видео-роликах

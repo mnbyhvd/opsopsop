@@ -80,7 +80,7 @@ const TechnicalSpecsSection: React.FC = () => {
   if (loading) {
     return (
       <div className="py-20 text-center">
-        <p style={{ color: '#F2F0F0' }}>Загрузка технических характеристик...</p>
+        <p style={{ color: 'var(--font-body-color, var(--text))' }}>Загрузка технических характеристик...</p>
       </div>
     );
   }
@@ -88,7 +88,7 @@ const TechnicalSpecsSection: React.FC = () => {
   if (technicalSpecs.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p style={{ color: '#F2F0F0' }}>Нет технических характеристик для отображения</p>
+        <p style={{ color: 'var(--font-body-color, var(--text))' }}>Нет технических характеристик для отображения</p>
       </div>
     );
   }
@@ -152,7 +152,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   <div className="about-title-dot"></div>
                   <h2 
                     className="about-title" 
-                    style={{ color: '#D71920' }}
+                    style={{ color: 'var(--accent)' }}
                   >
                     о системе
                   </h2>
@@ -161,7 +161,7 @@ const TechnicalSpecsSection: React.FC = () => {
               <h2 
                 className="uppercase text-left text-3xl md:text-4xl lg:text-6xl mb-8 md:mb-0"
                 style={{
-                  color: '#F2F0F0'
+                  color: 'var(--font-body-color, var(--text))'
                 }}
               >
                 Технические характеристики в цифрах
@@ -185,7 +185,7 @@ const TechnicalSpecsSection: React.FC = () => {
                     style={{
                       fontFamily: 'Inter',
                       fontWeight: 400,
-                      color: '#F2F0F0'
+                      color: 'var(--font-body-color, var(--text))'
                     }}
                   >
                     {spec.title}
@@ -206,7 +206,7 @@ const TechnicalSpecsSection: React.FC = () => {
                     <div 
                       className="text-5xl font-bold"
                       style={{
-                        color: '#D71920',
+                        color: 'var(--accent)',
                         lineHeight: '1'
                       }}
                     >
@@ -228,7 +228,7 @@ const TechnicalSpecsSection: React.FC = () => {
                       style={{
                         fontFamily: 'Inter',
                         fontWeight: 400,
-                        color: '#F2F0F0'
+                        color: 'var(--font-body-color, var(--text))'
                       }}
                     >
                       {spec.title}

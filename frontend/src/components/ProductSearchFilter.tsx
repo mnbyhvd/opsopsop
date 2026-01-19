@@ -90,7 +90,7 @@ const ProductSearchFilter: React.FC<ProductSearchFilterProps> = ({
               }`}
               style={{ 
                 fontFamily: 'Inter',
-                borderColor: selectedCategoryId ? '#ef4444' : 'var(--glass-border)',
+                borderColor: selectedCategoryId ? 'var(--accent)' : 'var(--glass-border)',
                 borderRadius: 'var(--radius-xl)'
               }}
             >

@@ -39,7 +39,7 @@ const AboutSection: React.FC = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
 
-  const colors = ['#D71920', '#4ecdc4', '#45b7d1', '#96ceb4'];
+  const colors = ['var(--accent)', '#4ecdc4', '#45b7d1', '#96ceb4'];
 
   // Основной обработчик скролла (только для десктопа)
   useEffect(() => {
@@ -188,7 +188,7 @@ const AboutSection: React.FC = () => {
   if (loading) {
     return (
       <div className="py-20 text-center">
-        <p style={{ color: '#F2F0F0' }}>Загрузка...</p>
+        <p style={{ color: 'var(--font-body-color, var(--text))' }}>Загрузка...</p>
       </div>
     );
   }
@@ -196,7 +196,7 @@ const AboutSection: React.FC = () => {
   if (!aboutItems || aboutItems.length === 0) {
     return (
       <div className="py-20 text-center">
-        <p style={{ color: '#F2F0F0' }}>Нет данных для отображения</p>
+        <p style={{ color: 'var(--font-body-color, var(--text))' }}>Нет данных для отображения</p>
       </div>
     );
   }
@@ -218,10 +218,10 @@ const AboutSection: React.FC = () => {
                 <div key={item.id} className="space-y-6">
                   {/* Текст */}
                   <div>
-                    <h3 className="text-2xl mb-4" style={{ color: '#F2F0F0' }}>
+                    <h3 className="text-2xl mb-4" style={{ color: 'var(--font-headings-color, var(--text))' }}>
                       {item.title}
                     </h3>
-                    <p className="text-sm md:text-lg leading-relaxed" style={{ color: '#F2F0F0', fontFamily: 'Inter' }}>
+                    <p className="text-sm md:text-lg leading-relaxed" style={{ color: 'var(--font-body-color, var(--text))', fontFamily: 'var(--font-body, Inter)' }}>
                       {item.description}
                     </p>
                   </div>
@@ -286,7 +286,7 @@ const AboutSection: React.FC = () => {
             <div className="about-title-dot"></div>
             <h2 
               className="about-title" 
-              style={{ color: '#D71920' }}
+              style={{ color: 'var(--accent)' }}
             >
               о системе
             </h2>
@@ -311,7 +311,7 @@ const AboutSection: React.FC = () => {
                   </h3>
                   <p 
                     className="text-lg leading-relaxed"
-                    style={{ color: '#F2F0F0' }}
+                    style={{ color: 'var(--font-body-color, var(--text))' }}
                   >
                     {activeItem.description}
                   </p>

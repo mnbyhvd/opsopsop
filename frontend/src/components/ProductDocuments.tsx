@@ -102,7 +102,7 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
           className="text-2xl font-bold"
           style={{ 
             fontFamily: 'Bebas Neue',
-            color: '#F2F0F0'
+            color: 'var(--font-headings-color, var(--text))'
           }}
         >
           ДОКУМЕНТЫ ДЛЯ СКАЧИВАНИЯ
@@ -115,9 +115,9 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
             className="flex items-center gap-2 px-4 py-2 border font-medium shadow-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-lg"
             style={{ 
               fontFamily: 'Inter',
-              borderColor: '#ffffff',
-              background: downloadingZip ? '#666666' : '#ffffff',
-              color: downloadingZip ? '#ffffff' : '#111827',
+              borderColor: 'var(--button-primary-border)',
+              background: downloadingZip ? '#666666' : 'var(--button-primary-bg)',
+              color: downloadingZip ? '#ffffff' : 'var(--button-primary-text)',
               boxSizing: 'border-box',
             }}
             onMouseEnter={(e) => {
@@ -126,18 +126,18 @@ const ProductDocuments: React.FC<ProductDocumentsProps> = ({ documents }) => {
                 target.style.background = 'color-mix(in srgb, white 5%, transparent)';
                 target.style.backdropFilter = 'blur(var(--blur-glass))';
                 target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
-                target.style.color = '#ffffff';
-                target.style.border = '1px solid transparent';
+                target.style.color = 'var(--button-primary-hover-text)';
+                target.style.border = `1px solid var(--button-primary-hover-border)`;
               }
             }}
             onMouseLeave={(e) => {
               if (!downloadingZip) {
                 const target = e.currentTarget as HTMLButtonElement;
-                target.style.background = '#ffffff';
+                target.style.background = 'var(--button-primary-bg)';
                 target.style.backdropFilter = 'none';
                 target.style.setProperty('-webkit-backdrop-filter', 'none');
-                target.style.color = '#111827';
-                target.style.border = '1px solid #ffffff';
+                target.style.color = 'var(--button-primary-text)';
+                target.style.border = `1px solid var(--button-primary-border)`;
               }
             }}
           >

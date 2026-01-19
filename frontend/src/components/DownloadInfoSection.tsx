@@ -139,7 +139,7 @@ const DownloadInfoSection: React.FC = () => {
       <section className="py-20 relative">
         <PageContainer>
           <div className="col-start-1 col-end-13 text-center mb-16 px-16">
-            <div className="text-xl" style={{ color: '#F2F0F0' }}>Загрузка документов...</div>
+            <div className="text-xl" style={{ color: 'var(--font-body-color, var(--text))' }}>Загрузка документов...</div>
           </div>
         </PageContainer>
       </section>
@@ -151,8 +151,8 @@ const DownloadInfoSection: React.FC = () => {
       <section className="py-20 relative">
         <PageContainer>
           <div className="col-start-1 col-end-13 text-center mb-16 px-16">
-            <div className="text-xl" style={{ color: '#D71920' }}>Ошибка загрузки документов</div>
-            <div className="text-lg" style={{ color: '#B8B8B8' }}>{error}</div>
+            <div className="text-xl" style={{ color: 'var(--accent)' }}>Ошибка загрузки документов</div>
+            <div className="text-lg" style={{ color: 'var(--font-body-color, var(--text))' }}>{error}</div>
           </div>
         </PageContainer>
       </section>
@@ -171,7 +171,7 @@ const DownloadInfoSection: React.FC = () => {
             style={{
               fontFamily: 'Bebas Neue',
               fontWeight: 400,
-              color: '#F2F0F0',
+              color: 'var(--font-headings-color, var(--text))',
               textTransform: 'uppercase'
             }}
           >
@@ -186,7 +186,7 @@ const DownloadInfoSection: React.FC = () => {
             <div 
               className="overflow-hidden w-full rounded-xl"
               style={{ 
-                backgroundColor: '#272727'
+                backgroundColor: 'var(--card-bg)'
               }}
             >
               {/* Заголовок секции */}
@@ -201,7 +201,7 @@ const DownloadInfoSection: React.FC = () => {
                   className="text-xl font-bold"
                   style={{
                     fontFamily: 'Bebas Neue',
-                    color: '#F2F0F0',
+                    color: 'var(--font-headings-color, var(--text))',
                     fontSize: isMobile ? '24px' : '36px',
                     textTransform: 'uppercase',
                     transform: 'translateY(3px)'
@@ -248,24 +248,24 @@ const DownloadInfoSection: React.FC = () => {
                           onClick={() => downloadFile(doc.url, doc.title)}
                           className="w-full p-3 md:p-4 flex items-center justify-between transition-all duration-200 group"
                           style={{ 
-                            backgroundColor: '#F2F0F0',
-                            color: '#191516',
+                            backgroundColor: 'var(--button-primary-bg)',
+                            color: 'var(--button-primary-text)',
                             borderRadius: '20px',
-                            border: '1px solid #F2F0F0',
+                            border: `1px solid var(--button-primary-border)`,
                             boxSizing: 'border-box'
                           }}
                           onMouseEnter={(e) => {
                             if (!isMobile) {
                               e.currentTarget.style.backgroundColor = 'transparent';
-                              e.currentTarget.style.color = '#F2F0F0';
-                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                              e.currentTarget.style.color = 'var(--button-primary-hover-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-hover-border)`;
                             }
                           }}
                           onMouseLeave={(e) => {
                             if (!isMobile) {
-                              e.currentTarget.style.backgroundColor = '#F2F0F0';
-                              e.currentTarget.style.color = '#191516';
-                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                              e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)';
+                              e.currentTarget.style.color = 'var(--button-primary-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-border)`;
                             }
                           }}
                         >
@@ -308,7 +308,7 @@ const DownloadInfoSection: React.FC = () => {
             <div 
               className="overflow-hidden w-full rounded-xl"
               style={{ 
-                backgroundColor: '#272727'
+                backgroundColor: 'var(--card-bg)'
               }}
             >
               {/* Заголовок секции */}
@@ -323,7 +323,7 @@ const DownloadInfoSection: React.FC = () => {
                   className="text-xl font-bold"
                   style={{
                     fontFamily: 'Bebas Neue',
-                    color: '#F2F0F0',
+                    color: 'var(--font-headings-color, var(--text))',
                     fontSize: isMobile ? '24px' : '36px',
                     textTransform: 'uppercase',
                     transform: 'translateY(3px)'
@@ -370,24 +370,24 @@ const DownloadInfoSection: React.FC = () => {
                           onClick={() => downloadFile(cert.url, cert.title)}
                           className="w-full p-3 md:p-4 flex items-center justify-between transition-all duration-200 group"
                           style={{ 
-                            backgroundColor: '#F2F0F0',
-                            color: '#191516',
+                            backgroundColor: 'var(--button-primary-bg)',
+                            color: 'var(--button-primary-text)',
                             borderRadius: '20px',
-                            border: '1px solid #F2F0F0',
+                            border: `1px solid var(--button-primary-border)`,
                             boxSizing: 'border-box'
                           }}
                           onMouseEnter={(e) => {
                             if (!isMobile) {
                               e.currentTarget.style.backgroundColor = 'transparent';
-                              e.currentTarget.style.color = '#F2F0F0';
-                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                              e.currentTarget.style.color = 'var(--button-primary-hover-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-hover-border)`;
                             }
                           }}
                           onMouseLeave={(e) => {
                             if (!isMobile) {
-                              e.currentTarget.style.backgroundColor = '#F2F0F0';
-                              e.currentTarget.style.color = '#191516';
-                              e.currentTarget.style.border = '1px solid #F2F0F0';
+                              e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)';
+                              e.currentTarget.style.color = 'var(--button-primary-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-border)`;
                             }
                           }}
                         >
@@ -431,26 +431,27 @@ const DownloadInfoSection: React.FC = () => {
           <div className="flex justify-center mt-8 md:mt-12">
             <button
               onClick={downloadAll}
-              className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto rounded-xl"
+              className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto"
               style={{ 
-                backgroundColor: '#E0DADA', 
-                color: '#0D0D0D',
-                border: '1px solid #E0DADA',
-                fontFamily: 'Inter',
+                backgroundColor: 'var(--button-primary-bg)', 
+                color: 'var(--button-primary-text)',
+                border: `1px solid var(--button-primary-border)`,
+                borderRadius: 'var(--button-primary-radius)',
+                fontFamily: 'var(--font-body, Inter)',
                 justifyContent: 'center'
               }}
               onMouseEnter={(e) => {
                 if (!isMobile) {
-                  (e.currentTarget as HTMLButtonElement).style.background = '#0D0D0D';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-hover-bg)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-hover-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-hover-border)';
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isMobile) {
-                  (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
-                  (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                  (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-bg)';
+                  (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-text)';
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-border)';
                 }
               }}
             >

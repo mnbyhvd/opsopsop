@@ -86,27 +86,28 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
               onClick={scrollToContactForm}
               className="inline-flex items-center gap-2 border px-5 h-10 font-medium shadow-sm transition-all"
               style={{
-                borderRadius: 'var(--radius-xl)',
-                borderColor: '#ffffff',
-                background: '#ffffff',
-                color: '#111827',
+                borderRadius: 'var(--button-primary-radius)',
+                borderColor: 'var(--button-primary-border)',
+                background: 'var(--button-primary-bg)',
+                color: 'var(--button-primary-text)',
                 boxSizing: 'border-box',
+                fontFamily: 'var(--font-body, Inter)'
               }}
               onMouseEnter={(e) => {
                 const target = e.currentTarget as HTMLButtonElement;
-                target.style.background = 'color-mix(in srgb, white 5%, transparent)';
+                target.style.background = 'var(--button-primary-hover-bg)';
                 target.style.backdropFilter = 'blur(var(--blur-glass))';
                 target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
-                target.style.color = '#ffffff';
-                target.style.border = '1px solid transparent';
+                target.style.color = 'var(--button-primary-hover-text)';
+                target.style.borderColor = 'var(--button-primary-hover-border)';
               }}
               onMouseLeave={(e) => {
                 const target = e.currentTarget as HTMLButtonElement;
-                target.style.background = '#ffffff';
+                target.style.background = 'var(--button-primary-bg)';
                 target.style.backdropFilter = 'none';
                 target.style.setProperty('-webkit-backdrop-filter', 'none');
-                target.style.color = '#111827';
-                target.style.border = '1px solid #ffffff';
+                target.style.color = 'var(--button-primary-text)';
+                target.style.borderColor = 'var(--button-primary-border)';
               }}
             >
               <ShoppingBag size={18} />
@@ -153,25 +154,25 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                 className="w-full mt-3 inline-flex items-center justify-center gap-2 border px-4 py-2 text-sm font-medium transition-all"
                 style={{
                   borderRadius: 'var(--radius-xl)',
-                  borderColor: '#ffffff',
-                  background: '#ffffff',
-                  color: '#111827',
+                  borderColor: 'var(--button-primary-border)',
+                  background: 'var(--button-primary-bg)',
+                  color: 'var(--button-primary-text)',
                 }}
                 onMouseEnter={(e) => {
                   const target = e.currentTarget as HTMLButtonElement;
                   target.style.background = 'color-mix(in srgb, white 5%, transparent)';
                   target.style.backdropFilter = 'blur(var(--blur-glass))';
                   target.style.setProperty('-webkit-backdrop-filter', 'blur(var(--blur-glass))');
-                  target.style.color = '#ffffff';
+                  target.style.color = 'var(--button-primary-hover-text)';
                   target.style.border = 'none';
                 }}
                 onMouseLeave={(e) => {
                   const target = e.currentTarget as HTMLButtonElement;
-                  target.style.background = '#ffffff';
+                  target.style.background = 'var(--button-primary-bg)';
                   target.style.backdropFilter = 'none';
                   target.style.setProperty('-webkit-backdrop-filter', 'none');
-                  target.style.color = '#111827';
-                  target.style.border = '1px solid #ffffff';
+                  target.style.color = 'var(--button-primary-text)';
+                  target.style.border = `1px solid var(--button-primary-border)`;
                 }}
               >
                 <ShoppingBag size={16} />

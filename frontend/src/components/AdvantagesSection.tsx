@@ -51,8 +51,8 @@ const TechnicalSpecsSection: React.FC = () => {
             <span 
               className="inline-block px-3 py-1 rounded-full text-sm"
               style={{
-                backgroundColor: '#D71920',
-                color: '#ffffff'
+                backgroundColor: 'var(--accent)',
+                color: 'var(--button-primary-text)'
               }}
             >
               • о системе
@@ -67,7 +67,7 @@ const TechnicalSpecsSection: React.FC = () => {
               lineHeight: '100%',
               letterSpacing: '-2px',
               fontVariationSettings: '"wdth" 10, "YTUC" 850, "YTAS" 900',
-              color: '#F2F0F0'
+              color: 'var(--font-body-color, var(--text))'
             }}
           >
             Технические характеристики в цифрах
@@ -79,7 +79,7 @@ const TechnicalSpecsSection: React.FC = () => {
           <div 
             ref={el => cardsRef.current[0] = el}
             className="relative bg-gray-800 rounded-2xl p-12 border border-gray-700"
-            style={{ backgroundColor: '#2A2A2A' }}
+            style={{ backgroundColor: 'var(--card-bg)' }}
           >
             {/* Сетка характеристик */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
@@ -89,7 +89,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   className="text-6xl font-bold mb-4"
                   style={{
                     fontFamily: 'Roboto Flex',
-                    color: '#D71920'
+                    color: 'var(--accent)'
                   }}
                 >
                   4
@@ -99,7 +99,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   style={{
                     fontFamily: 'Inter',
                     fontWeight: 400,
-                    color: '#F2F0F0'
+                    color: 'var(--font-body-color, var(--text))'
                   }}
                 >
                   Адресных шлейфа на панель
@@ -112,7 +112,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   className="text-6xl font-bold mb-4"
                   style={{
                     fontFamily: 'Roboto Flex',
-                    color: '#D71920'
+                    color: 'var(--accent)'
                   }}
                 >
                   199
@@ -122,7 +122,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   style={{
                     fontFamily: 'Inter',
                     fontWeight: 400,
-                    color: '#F2F0F0'
+                    color: 'var(--font-body-color, var(--text))'
                   }}
                 >
                   Извещателей на шлейф
@@ -135,7 +135,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   className="text-6xl font-bold mb-4"
                   style={{
                     fontFamily: 'Roboto Flex',
-                    color: '#D71920'
+                    color: 'var(--accent)'
                   }}
                 >
                   1000
@@ -145,7 +145,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   style={{
                     fontFamily: 'Inter',
                     fontWeight: 400,
-                    color: '#F2F0F0'
+                    color: 'var(--font-body-color, var(--text))'
                   }}
                 >
                   Метров - максимальная длина шлейфа
@@ -158,7 +158,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   className="text-6xl font-bold mb-4"
                   style={{
                     fontFamily: 'Roboto Flex',
-                    color: '#D71920'
+                    color: 'var(--accent)'
                   }}
                 >
                   32
@@ -168,7 +168,7 @@ const TechnicalSpecsSection: React.FC = () => {
                   style={{
                     fontFamily: 'Inter',
                     fontWeight: 400,
-                    color: '#F2F0F0'
+                    color: 'var(--font-body-color, var(--text))'
                   }}
                 >
                   Панели в единой сети

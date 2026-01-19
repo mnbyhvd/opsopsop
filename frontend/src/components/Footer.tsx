@@ -117,7 +117,7 @@ const Footer: React.FC = () => {
                     className="text-4xl md:text-6xl font-bold mb-4 md:mb-6 text-left md:text-left"
                     style={{ 
                       fontFamily: 'Bebas Neue',
-                      color: '#F2F0F0',
+                      color: 'var(--font-headings-color, var(--text))',
                       textTransform: 'uppercase'
                     }}
                   >
@@ -157,30 +157,35 @@ const Footer: React.FC = () => {
                       required
                       className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: isMobile ? '#272727' : 'transparent',
-                        color: '#F2F0F0',
-                        fontFamily: 'Inter',
-                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        backgroundColor: isMobile ? '#272727' : 'var(--input-bg)',
+                        color: 'var(--input-text)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)',
+                        borderRadius: 'var(--input-radius)',
                         borderTop: 'none',
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                       onFocus={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderColor = 'var(--input-focus-border)';
                         e.currentTarget.style.borderWidth = '2px';
+                        e.currentTarget.style.backgroundColor = 'var(--input-focus-bg)';
+                        e.currentTarget.style.color = 'var(--input-focus-text)';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)';
                         e.currentTarget.style.borderWidth = '1px';
+                        e.currentTarget.style.backgroundColor = isMobile ? '#272727' : 'var(--input-bg)';
+                        e.currentTarget.style.color = 'var(--input-text)';
                       }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
-                        fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        color: 'var(--input-placeholder)',
                         backgroundColor: 'transparent'
                       }}
                     >
@@ -198,30 +203,35 @@ const Footer: React.FC = () => {
                       required
                       className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: isMobile ? '#272727' : 'transparent',
-                        color: '#F2F0F0',
-                        fontFamily: 'Inter',
-                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        backgroundColor: isMobile ? '#272727' : 'var(--input-bg)',
+                        color: 'var(--input-text)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)',
+                        borderRadius: 'var(--input-radius)',
                         borderTop: 'none',
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                       onFocus={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderColor = 'var(--input-focus-border)';
                         e.currentTarget.style.borderWidth = '2px';
+                        e.currentTarget.style.backgroundColor = 'var(--input-focus-bg)';
+                        e.currentTarget.style.color = 'var(--input-focus-text)';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)';
                         e.currentTarget.style.borderWidth = '1px';
+                        e.currentTarget.style.backgroundColor = isMobile ? '#272727' : 'var(--input-bg)';
+                        e.currentTarget.style.color = 'var(--input-text)';
                       }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
-                        fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        color: 'var(--input-placeholder)',
                         backgroundColor: 'transparent'
                       }}
                     >
@@ -239,30 +249,35 @@ const Footer: React.FC = () => {
                       required
                       className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200"
                       style={{
-                        backgroundColor: isMobile ? '#272727' : 'transparent',
-                        color: '#F2F0F0',
-                        fontFamily: 'Inter',
-                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        backgroundColor: isMobile ? '#272727' : 'var(--input-bg)',
+                        color: 'var(--input-text)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)',
+                        borderRadius: 'var(--input-radius)',
                         borderTop: 'none',
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       placeholder=" "
                       onFocus={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderColor = 'var(--input-focus-border)';
                         e.currentTarget.style.borderWidth = '2px';
+                        e.currentTarget.style.backgroundColor = 'var(--input-focus-bg)';
+                        e.currentTarget.style.color = 'var(--input-focus-text)';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)';
                         e.currentTarget.style.borderWidth = '1px';
+                        e.currentTarget.style.backgroundColor = isMobile ? '#272727' : 'var(--input-bg)';
+                        e.currentTarget.style.color = 'var(--input-text)';
                       }}
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
-                        fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        color: 'var(--input-placeholder)',
                         backgroundColor: 'transparent'
                       }}
                     >
@@ -279,30 +294,35 @@ const Footer: React.FC = () => {
                       rows={isMobile ? 5 : 4}
                       className="w-full px-4 py-3 md:py-3 rounded-lg border focus:outline-none transition-all duration-200 resize-none"
                       style={{
-                        backgroundColor: isMobile ? '#272727' : 'transparent',
-                        color: '#F2F0F0',
-                        fontFamily: 'Inter',
-                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)',
+                        backgroundColor: isMobile ? '#272727' : 'var(--input-bg)',
+                        color: 'var(--input-text)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        borderColor: isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)',
+                        borderRadius: 'var(--input-radius)',
                         borderTop: 'none',
                         fontSize: isMobile ? '16px' : 'inherit'
                       }}
                       onFocus={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.6)';
+                        e.currentTarget.style.borderColor = 'var(--input-focus-border)';
                         e.currentTarget.style.borderWidth = '2px';
+                        e.currentTarget.style.backgroundColor = 'var(--input-focus-bg)';
+                        e.currentTarget.style.color = 'var(--input-focus-text)';
                       }}
                       onBlur={(e) => {
                         e.currentTarget.style.borderTop = 'none';
-                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.3)';
+                        e.currentTarget.style.borderColor = isMobile ? 'rgba(255, 255, 255, 0.2)' : 'var(--input-border)';
                         e.currentTarget.style.borderWidth = '1px';
+                        e.currentTarget.style.backgroundColor = isMobile ? '#272727' : 'var(--input-bg)';
+                        e.currentTarget.style.color = 'var(--input-text)';
                       }}
                       placeholder=" "
                     />
                     <label 
                       className="absolute left-3 -top-2 px-2 text-sm font-medium transition-all duration-200"
                       style={{ 
-                        fontFamily: 'Inter',
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        fontFamily: 'var(--font-body, Inter)',
+                        color: 'var(--input-placeholder)',
                         backgroundColor: 'transparent'
                       }}
                     >
@@ -319,7 +339,7 @@ const Footer: React.FC = () => {
                       onChange={(e) => setAgreed(e.target.checked)}
                       className="mt-1 w-4 h-4 md:w-4 md:h-4 rounded border-2 border-gray-300 focus:ring-red-500 flex-shrink-0"
                       style={{
-                        accentColor: '#D71920',
+                        accentColor: 'var(--accent)',
                         marginTop: isMobile ? '4px' : '4px'
                       }}
                     />
@@ -328,7 +348,7 @@ const Footer: React.FC = () => {
                       className="text-sm md:text-sm"
                       style={{
                         fontFamily: 'Inter',
-                        color: '#F2F0F0',
+                        color: 'var(--font-headings-color, var(--text))',
                         lineHeight: '1.5'
                       }}
                     >
@@ -338,7 +358,7 @@ const Footer: React.FC = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="underline hover:no-underline transition-all duration-200"
-                        style={{ color: '#D71920' }}
+                        style={{ color: 'var(--accent)' }}
                       >
                         обработку персональных данных
                       </a>
@@ -349,22 +369,23 @@ const Footer: React.FC = () => {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed rounded-xl"
+                    className="w-full inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     style={{
-                      backgroundColor: isSubmitting ? '#666' : '#E0DADA',
-                      color: isSubmitting ? '#F2F0F0' : '#0D0D0D',
-                      border: isSubmitting ? '1px solid #666' : '1px solid #E0DADA',
-                      fontFamily: 'Inter'
+                      backgroundColor: isSubmitting ? '#666' : 'var(--button-primary-bg)',
+                      color: isSubmitting ? '#F2F0F0' : 'var(--button-primary-text)',
+                      border: isSubmitting ? '1px solid #666' : `1px solid var(--button-primary-border)`,
+                      borderRadius: 'var(--button-primary-radius)',
+                      fontFamily: 'var(--font-body, Inter)'
                     }}
                     onMouseEnter={!isSubmitting && !isMobile ? (e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
-                      (e.currentTarget as HTMLButtonElement).style.color = '#ffffff';
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = '#ffffff';
+                      (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-hover-bg)';
+                      (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-hover-text)';
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-hover-border)';
                     } : undefined}
                     onMouseLeave={!isSubmitting && !isMobile ? (e) => {
-                      (e.currentTarget as HTMLButtonElement).style.background = '#E0DADA';
-                      (e.currentTarget as HTMLButtonElement).style.color = '#0D0D0D';
-                      (e.currentTarget as HTMLButtonElement).style.borderColor = '#E0DADA';
+                      (e.currentTarget as HTMLButtonElement).style.background = 'var(--button-primary-bg)';
+                      (e.currentTarget as HTMLButtonElement).style.color = 'var(--button-primary-text)';
+                      (e.currentTarget as HTMLButtonElement).style.borderColor = 'var(--button-primary-border)';
                     } : undefined}
                     whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                   >

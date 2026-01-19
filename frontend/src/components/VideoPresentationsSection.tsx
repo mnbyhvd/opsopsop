@@ -196,7 +196,7 @@ const VideoPresentationsSection: React.FC = () => {
       >
         <PageContainer>
           <div className="col-start-2 col-end-12 text-center">
-            <div className="text-xl" style={{ color: '#F2F0F0' }}>Загрузка...</div>
+            <div className="text-xl" style={{ color: 'var(--font-body-color, var(--text))' }}>Загрузка...</div>
           </div>
         </PageContainer>
       </section>
@@ -216,7 +216,7 @@ const VideoPresentationsSection: React.FC = () => {
             style={{
               fontFamily: 'Bebas Neue',
               fontWeight: 400,
-              color: '#F2F0F0',
+              color: 'var(--font-headings-color, var(--text))',
               textTransform: 'uppercase'
             }}
           >
@@ -226,7 +226,7 @@ const VideoPresentationsSection: React.FC = () => {
             className="text-lg text-left lg:text-center lg:mx-auto"
             style={{
               fontFamily: 'Bebas Neue',
-              color: '#F2F0F0',
+              color: 'var(--font-headings-color, var(--text))',
               maxWidth: '600px'
             }}
           >
@@ -285,7 +285,7 @@ const VideoPresentationsSection: React.FC = () => {
                     <div 
                       className="relative w-full h-80 overflow-hidden cursor-pointer group"
                       style={{ 
-                        backgroundColor: '#2a2a2a',
+                        backgroundColor: 'var(--card-bg)',
                         borderRadius: '18px'
                       }}
                       onClick={() => handleVideoClick(video)}
@@ -307,7 +307,7 @@ const VideoPresentationsSection: React.FC = () => {
                             className="text-lg font-bold mb-2"
                             style={{
                               fontFamily: 'Bebas Neue',
-                              color: '#F2F0F0',
+                              color: 'var(--font-headings-color, var(--text))',
                               textTransform: 'uppercase'
                             }}
                           >
@@ -408,7 +408,7 @@ const VideoPresentationsSection: React.FC = () => {
                   className="text-xl font-bold mb-2"
                   style={{
                     fontFamily: 'Bebas Neue',
-                    color: '#F2F0F0',
+                    color: 'var(--font-headings-color, var(--text))',
                     textTransform: 'uppercase'
                   }}
                 >
@@ -418,7 +418,7 @@ const VideoPresentationsSection: React.FC = () => {
                   className="text-sm"
                   style={{
                     fontFamily: 'Inter',
-                    color: '#B8B8B8'
+                    color: 'var(--font-body-color, var(--text))'
                   }}
                 >
                   {selectedVideo.description}
