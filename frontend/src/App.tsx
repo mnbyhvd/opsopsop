@@ -36,9 +36,9 @@ const App: React.FC = () => {
     <ApiErrorBoundary>
       <Router>
         <ScrollToTop />
-        <div className="min-h-screen flex flex-col" style={{ backgroundColor: '#0D0D0D' }}>
+        <div className="min-h-screen flex flex-col" style={{ backgroundColor: 'var(--bg)' }}>
           <Navigation />
-          <main className="flex-grow" style={{ backgroundColor: '#0D0D0D' }}>
+          <main className="flex-grow" style={{ backgroundColor: 'var(--bg)' }}>
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />

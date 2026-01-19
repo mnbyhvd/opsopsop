@@ -237,10 +237,16 @@ p {
   }
   
   /* Принудительное применение Inter к параграфам и тексту */
-  p, span, div, button, a, input, textarea, label {
-    font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif') !important;
-    color: var(--font-body-color, #F5F5F5) !important;
-  }
+p, span, div, a, input, textarea, label {
+  font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif') !important;
+  color: var(--font-body-color, #F5F5F5) !important;
+}
+
+/* Для кнопок не применяем общий цвет текста, чтобы приоритет был у настроек кнопок */
+button {
+  font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif') !important;
+  color: var(--button-primary-text, var(--font-body-color, #F5F5F5)) !important;
+}
 }
 
 @layer components {

@@ -180,7 +180,7 @@ const Videos: React.FC = () => {
                 className="absolute inset-0 w-full h-full rounded-lg"
                 controls
                 autoPlay
-                style={{ backgroundColor: '#000' }}
+                style={{ backgroundColor: 'var(--bg)' }}
               >
                 <source src={selectedVideo.video_url} type="video/mp4" />
                 Ваш браузер не поддерживает видео.

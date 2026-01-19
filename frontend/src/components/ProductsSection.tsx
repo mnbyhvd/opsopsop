@@ -495,7 +495,7 @@ const ProductsSection: React.FC = () => {
           height: '450px',
           opacity: 0.2,
           top: '60%',
-          backgroundColor: '#D9D9D9',
+          backgroundColor: 'var(--card-bg)',
           borderRadius: '50%',
           filter: 'blur(308.4px)',
           zIndex: -1

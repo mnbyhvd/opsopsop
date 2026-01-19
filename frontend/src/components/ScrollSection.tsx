@@ -545,7 +545,7 @@ const ScrollSection: React.FC = () => {
   ), []);
 
   const ErrorComponent = useMemo(() => (
-    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0D0D0D' }}>
+    <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--bg)' }}>
       <div className="text-center">
         <div className="text-2xl font-bold mb-4" style={{ fontFamily: 'var(--font-headings, Bebas Neue)', color: 'var(--accent)' }}>
           ОШИБКА ЗАГРУЗКИ

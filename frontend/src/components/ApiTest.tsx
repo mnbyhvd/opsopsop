@@ -54,7 +54,7 @@ const ApiTest: React.FC = () => {
   return (
     <div className="p-8">
       <h2 style={{ color: '#F2F0F0', marginBottom: '20px' }}>API Test Results:</h2>
-      <pre style={{ color: '#B8B8B8', backgroundColor: '#2A2A2A', padding: '20px', borderRadius: '8px' }}>
+      <pre style={{ color: 'var(--font-body-color, var(--text))', backgroundColor: 'var(--card-bg)', padding: '20px', borderRadius: 'var(--radius-lg)' }}>
         {JSON.stringify(data, null, 2)}
       </pre>
     </div>

@@ -13,7 +13,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
   return (
     <div 
       className="fixed inset-0 flex items-center justify-center z-50"
-      style={{ backgroundColor: '#0D0D0D' }}
+      style={{ backgroundColor: 'var(--bg)' }}
     >
       <div className="text-center">
         {showLogo && (
@@ -30,7 +30,7 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({
             </h1>
             <div 
               className="w-16 h-0.5 mx-auto"
-              style={{ backgroundColor: '#D71920' }}
+            style={{ backgroundColor: 'var(--accent)' }}
             />
           </div>
         )}

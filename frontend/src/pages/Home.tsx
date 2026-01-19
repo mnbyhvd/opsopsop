@@ -11,7 +11,7 @@ import PageContainer from '../components/PageContainer';
 const Home: React.FC = () => {
 
   return (
-    <div className="overflow-x-hidden" style={{ backgroundColor: '#0D0D0D' }}>
+    <div className="overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       {/* Hero Section */}
       <HeroSection />
 
