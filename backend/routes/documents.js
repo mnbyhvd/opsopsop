@@ -117,7 +117,7 @@ router.put('/:id', async (req, res) => {
       });
     }
 
-    const validTypes = ['document', 'certificate'];
+    const validTypes = ['document', 'certificate', 'presentation'];
     if (!validTypes.includes(type)) {
       return res.status(400).json({
         success: false,
