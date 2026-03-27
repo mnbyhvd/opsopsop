@@ -218,17 +218,20 @@ const DownloadsAdmin: React.FC = () => {
         if (isCreating) {
           setDocuments([...documents, result.data]);
         } else {
-          setDocuments(documents.map(document => 
+          setDocuments(documents.map(document =>
             document.id === editingDocument.id ? result.data : document
           ));
         }
         setEditingDocument(null);
         setIsCreating(false);
       } else {
-        console.error('Error saving document');
+        const errBody = await response.json().catch(() => ({}));
+        console.error('Error saving document — status:', response.status, errBody);
+        alert(`Ошибка сохранения (${response.status}): ${errBody.error || errBody.message || 'неизвестная ошибка'}`);
       }
     } catch (error) {
       console.error('Error saving document:', error);
+      alert(`Ошибка: ${error}`);
     }
   };
 

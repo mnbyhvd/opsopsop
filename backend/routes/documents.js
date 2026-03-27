@@ -110,11 +110,26 @@ router.put('/:id', async (req, res) => {
       is_active
     } = req.body;
     
+    if (!title || !type) {
+      return res.status(400).json({
+        success: false,
+        error: 'title и type обязательны'
+      });
+    }
+
+    const validTypes = ['document', 'certificate'];
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({
+        success: false,
+        error: `Недопустимый тип: ${type}. Допустимые: ${validTypes.join(', ')}`
+      });
+    }
+
     const [result] = await pool.execute(`
-      UPDATE documents 
+      UPDATE documents
       SET title = ?, url = ?, type = ?, sort_order = ?, is_active = ?, updated_at = NOW()
       WHERE id = ?
-    `, [title, url, type, sort_order, is_active, id]);
+    `, [title, url || null, type, sort_order || 0, is_active ? 1 : 0, id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({
