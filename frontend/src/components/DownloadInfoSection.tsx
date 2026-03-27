@@ -8,7 +8,7 @@ interface Document {
   id: number;
   title: string;
   url: string;
-  type: 'document' | 'certificate';
+  type: 'document' | 'certificate' | 'presentation';
   sort_order: number;
   is_active: boolean;
   file_size?: number;
@@ -20,10 +20,11 @@ interface Document {
 }
 
 const DownloadInfoSection: React.FC = () => {
-  const { documents, certificates, loading, error } = useDocuments();
+  const { documents, certificates, presentations, loading, error } = useDocuments();
   const [expandedSections, setExpandedSections] = useState({
     documents: true,
-    certificates: false
+    certificates: false,
+    presentations: false
   });
   const [isMobile, setIsMobile] = useState(false);
 
@@ -37,7 +38,7 @@ const DownloadInfoSection: React.FC = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  const toggleSection = (section: 'documents' | 'certificates') => {
+  const toggleSection = (section: 'documents' | 'certificates' | 'presentations') => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
@@ -85,7 +86,7 @@ const DownloadInfoSection: React.FC = () => {
             console.log(`Пропускаем внешний URL: ${cert.url}`);
             continue;
           }
-          
+
           // Формируем полный URL для файла
           const fullUrl = cert.url.startsWith('http') ? cert.url : `${cert.url}`;
           console.log(`URL сертификата: ${fullUrl}`);
@@ -100,6 +101,30 @@ const DownloadInfoSection: React.FC = () => {
           }
         } catch (error) {
           console.error(`Ошибка загрузки сертификата ${cert.title}:`, error);
+        }
+      }
+
+      // Добавляем все презентации в ZIP
+      for (const pres of presentations) {
+        try {
+          console.log(`Загружаем презентацию: ${pres.title}`);
+          if (pres.url.startsWith('http') && !pres.url.includes('localhost') && !pres.url.includes('127.0.0.1')) {
+            console.log(`Пропускаем внешний URL: ${pres.url}`);
+            continue;
+          }
+
+          const fullUrl = pres.url.startsWith('http') ? pres.url : `${pres.url}`;
+          const response = await fetch(fullUrl);
+          if (response.ok) {
+            const blob = await response.blob();
+            const fileExtension = pres.file_type?.split('/')[1] || 'pdf';
+            zip.file(`presentations/${pres.title}.${fileExtension}`, blob);
+            console.log(`Презентация ${pres.title} добавлена в ZIP`);
+          } else {
+            console.error(`Ошибка загрузки презентации ${pres.title}: ${response.status}`);
+          }
+        } catch (error) {
+          console.error(`Ошибка загрузки презентации ${pres.title}:`, error);
         }
       }
       
@@ -425,6 +450,128 @@ const DownloadInfoSection: React.FC = () => {
                 )}
               </AnimatePresence>
             </div>
+
+            {/* Секция Презентации */}
+            <div
+              className="overflow-hidden w-full rounded-xl"
+              style={{
+                backgroundColor: 'var(--card-bg)'
+              }}
+            >
+              {/* Заголовок секции */}
+              <button
+                onClick={() => toggleSection('presentations')}
+                className="w-full p-4 md:p-6 flex items-center justify-between transition-all duration-200 rounded-t-xl"
+                style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0)'
+                }}
+              >
+                <h3
+                  className="text-xl font-bold"
+                  style={{
+                    fontFamily: 'Bebas Neue',
+                    color: 'var(--font-headings-color, var(--text))',
+                    fontSize: isMobile ? '24px' : '36px',
+                    textTransform: 'uppercase',
+                    transform: 'translateY(3px)'
+                  }}
+                >
+                  ПРЕЗЕНТАЦИИ
+                </h3>
+                <motion.div
+                  animate={{ rotate: expandedSections.presentations ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <svg
+                    width={isMobile ? "20" : "24"}
+                    height={isMobile ? "20" : "24"}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    className="text-white"
+                  >
+                    <path
+                      d="M6 9L12 15L18 9"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </motion.div>
+              </button>
+
+              {/* Список презентаций */}
+              <AnimatePresence>
+                {expandedSections.presentations && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-4 md:p-6 pt-4 space-y-3 md:space-y-4">
+                      {presentations.map((pres) => (
+                        <button
+                          key={pres.id}
+                          onClick={() => downloadFile(pres.url, pres.title)}
+                          className="w-full p-3 md:p-4 flex items-center justify-between transition-all duration-200 group"
+                          style={{
+                            backgroundColor: 'var(--button-primary-bg)',
+                            color: 'var(--button-primary-text)',
+                            borderRadius: '20px',
+                            border: `1px solid var(--button-primary-border)`,
+                            boxSizing: 'border-box'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = 'transparent';
+                              e.currentTarget.style.color = 'var(--button-primary-hover-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-hover-border)`;
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isMobile) {
+                              e.currentTarget.style.backgroundColor = 'var(--button-primary-bg)';
+                              e.currentTarget.style.color = 'var(--button-primary-text)';
+                              e.currentTarget.style.border = `1px solid var(--button-primary-border)`;
+                            }
+                          }}
+                        >
+                          <span
+                            className="text-left"
+                            style={{
+                              fontFamily: 'Inter',
+                              fontWeight: 500,
+                              fontSize: isMobile ? '14px' : '16px',
+                              lineHeight: '100%',
+                              letterSpacing: '0%'
+                            }}
+                          >
+                            {pres.title}
+                          </span>
+                          <svg
+                            width={isMobile ? "18" : "20"}
+                            height={isMobile ? "18" : "20"}
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            className="text-gray-400 group-hover:rotate-45 transition-transform duration-200"
+                          >
+                            <path
+                              d="M7 17L17 7M17 7H7M17 7V17"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Кнопка "Скачать все ZIP" - по центру */}
@@ -432,8 +579,8 @@ const DownloadInfoSection: React.FC = () => {
             <button
               onClick={downloadAll}
               className="inline-flex items-center px-8 md:px-10 py-3 md:py-4 font-medium text-base md:text-xl transition-all w-full md:w-auto"
-              style={{ 
-                backgroundColor: 'var(--button-primary-bg)', 
+              style={{
+                backgroundColor: 'var(--button-primary-bg)',
                 color: 'var(--button-primary-text)',
                 border: `1px solid var(--button-primary-border)`,
                 borderRadius: 'var(--button-primary-radius)',

@@ -4,7 +4,7 @@ interface Document {
   id: number;
   title: string;
   url: string;
-  type: 'document' | 'certificate';
+  type: 'document' | 'certificate' | 'presentation';
   sort_order: number;
   is_active: boolean;
   file_size?: number;
@@ -26,6 +26,7 @@ const API_URL = '/api/documents';
 export const useDocuments = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [certificates, setCertificates] = useState<Document[]>([]);
+  const [presentations, setPresentations] = useState<Document[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -33,20 +34,23 @@ export const useDocuments = () => {
     try {
       setLoading(true);
       const response = await fetch(API_URL);
-      
+
       if (response.ok) {
         const result: DocumentsResponse = await response.json();
         if (result.success && result.data) {
-          // Разделяем документы и сертификаты
+          // Разделяем документы, сертификаты и презентации
           const docs = result.data.filter(item => item.type === 'document' && item.is_active);
           const certs = result.data.filter(item => item.type === 'certificate' && item.is_active);
-          
+          const pres = result.data.filter(item => item.type === 'presentation' && item.is_active);
+
           // Сортируем по sort_order
           docs.sort((a, b) => a.sort_order - b.sort_order);
           certs.sort((a, b) => a.sort_order - b.sort_order);
-          
+          pres.sort((a, b) => a.sort_order - b.sort_order);
+
           setDocuments(docs);
           setCertificates(certs);
+          setPresentations(pres);
           return;
         }
       }
@@ -134,6 +138,7 @@ export const useDocuments = () => {
 
       setDocuments(fallbackDocuments);
       setCertificates(fallbackCertificates);
+      setPresentations([]);
     } finally {
       setLoading(false);
     }
@@ -146,6 +151,7 @@ export const useDocuments = () => {
   return {
     documents,
     certificates,
+    presentations,
     loading,
     error,
     refetch: fetchDocuments

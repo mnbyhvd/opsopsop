@@ -25,7 +25,7 @@ interface Document {
   id: number;
   title: string;
   url: string;
-  type: 'document' | 'certificate';
+  type: 'document' | 'certificate' | 'presentation';
   sort_order: number;
   is_active: boolean;
   created_at: string;
@@ -63,6 +63,13 @@ const SortableDocument: React.FC<SortableDocumentProps> = ({ document, index, on
         </svg>
       );
     }
+    if (type === 'presentation') {
+      return (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M2 3h20v14H2V3zm2 2v10h16V5H4zm7 12l-2 3h6l-2-3h-2zm-3 3h10v1H8v-1z"/>
+        </svg>
+      );
+    }
     return (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
         <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
@@ -92,8 +99,8 @@ const SortableDocument: React.FC<SortableDocumentProps> = ({ document, index, on
             <div className="flex items-center gap-4 mb-2">
               <div 
                 className="w-12 h-12 rounded-lg flex items-center justify-center"
-                style={{ 
-                  backgroundColor: document.type === 'certificate' ? '#D71920' : '#4A90E2',
+                style={{
+                  backgroundColor: document.type === 'certificate' ? '#D71920' : document.type === 'presentation' ? '#9B59B6' : '#4A90E2',
                   color: '#F2F0F0'
                 }}
               >
@@ -117,7 +124,7 @@ const SortableDocument: React.FC<SortableDocumentProps> = ({ document, index, on
                     color: '#B8B8B8'
                   }}
                 >
-                  Тип: {document.type === 'certificate' ? 'Сертификат' : 'Документ'} | 
+                  Тип: {document.type === 'certificate' ? 'Сертификат' : document.type === 'presentation' ? 'Презентация' : 'Документ'} |
                   URL: {document.url}
                 </div>
                 <div 
@@ -410,6 +417,24 @@ const DownloadsAdmin: React.FC = () => {
           >
             Добавить сертификат
           </button>
+          <button
+            onClick={() => {
+              setEditingDocument({
+                id: 0,
+                title: '',
+                url: '',
+                type: 'presentation',
+                sort_order: documents.length + 1,
+                is_active: true,
+                created_at: '',
+                updated_at: ''
+              });
+              setIsCreating(true);
+            }}
+            className="admin-button-secondary"
+          >
+            Добавить презентацию
+          </button>
           <DataExporter onExport={handleExport} />
         </div>
       </div>
@@ -447,7 +472,17 @@ const DownloadsAdmin: React.FC = () => {
                 color: '#F2F0F0'
               }}
             >
-              {isCreating ? 'Создание нового документа' : 'Редактирование документа'}
+              {isCreating
+                ? editingDocument.type === 'certificate'
+                  ? 'Создание нового сертификата'
+                  : editingDocument.type === 'presentation'
+                    ? 'Создание новой презентации'
+                    : 'Создание нового документа'
+                : editingDocument.type === 'certificate'
+                  ? 'Редактирование сертификата'
+                  : editingDocument.type === 'presentation'
+                    ? 'Редактирование презентации'
+                    : 'Редактирование документа'}
             </h2>
             
             <div className="space-y-4">
@@ -502,11 +537,12 @@ const DownloadsAdmin: React.FC = () => {
                 </label>
                 <select
                   value={editingDocument.type}
-                  onChange={(e) => setEditingDocument({...editingDocument, type: e.target.value as 'document' | 'certificate'})}
+                  onChange={(e) => setEditingDocument({...editingDocument, type: e.target.value as 'document' | 'certificate' | 'presentation'})}
                   className="admin-input"
                 >
                   <option value="document">Документ</option>
                   <option value="certificate">Сертификат</option>
+                  <option value="presentation">Презентация</option>
                 </select>
               </div>
               
