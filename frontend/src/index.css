@@ -247,6 +247,11 @@ button {
   font-family: var(--font-body, 'Inter'), var(--font-body-fallback, 'sans-serif') !important;
   color: var(--button-primary-text, var(--font-body-color, #F5F5F5)) !important;
 }
+
+/* Span/p внутри кнопок наследуют цвет кнопки, а не --font-body-color */
+button span, button p {
+  color: inherit !important;
+}
 }
 
 @layer components {

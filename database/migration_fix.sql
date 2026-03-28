@@ -81,6 +81,9 @@ ALTER TABLE videos ADD COLUMN IF NOT EXISTS upload_date TIMESTAMP DEFAULT CURREN
 ALTER TABLE videos ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE videos ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;
 
+-- Исправляем тип колонки type в таблице documents (добавляем 'presentation')
+ALTER TABLE documents MODIFY COLUMN type ENUM('document', 'certificate', 'presentation') NOT NULL DEFAULT 'document';
+
 -- Добавляем недостающие поля в таблицу documents если их нет
 ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_size BIGINT;
 ALTER TABLE documents ADD COLUMN IF NOT EXISTS file_type VARCHAR(100);

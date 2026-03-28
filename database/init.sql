@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS documents (
     id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     url VARCHAR(500) NOT NULL,
-    type VARCHAR(20) NOT NULL CHECK (type IN ('document', 'certificate')),
+    type ENUM('document', 'certificate', 'presentation') NOT NULL DEFAULT 'document',
     sort_order INT DEFAULT 1,
     is_active BOOLEAN DEFAULT true,
     file_size BIGINT,
