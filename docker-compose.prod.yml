@@ -87,6 +87,7 @@ services:
   prerender:
     build: ./prerender
     container_name: opsopsop-prerender
+    user: root
     environment:
       FRONTEND_URL: http://opsopsop-frontend
       API_URL: http://opsopsop-backend:3001
