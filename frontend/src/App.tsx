@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
@@ -33,6 +34,7 @@ const App: React.FC = () => {
   }
 
   return (
+    <HelmetProvider>
     <ApiErrorBoundary>
       <Router>
         <ScrollToTop />
@@ -56,6 +58,7 @@ const App: React.FC = () => {
         </div>
       </Router>
     </ApiErrorBoundary>
+    </HelmetProvider>
   );
 };
 

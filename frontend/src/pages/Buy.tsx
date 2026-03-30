@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Phone, Mail, MapPin, MessageCircle, ExternalLink } from 'lucide-react';
 
 const Buy: React.FC = () => {
@@ -62,6 +63,11 @@ const Buy: React.FC = () => {
 
   return (
     <div className="min-h-screen py-8">
+      <Helmet>
+        <title>Купить | СПС МАСТЕР</title>
+        <meta name="description" content="Купить системы пожарной сигнализации СПС МАСТЕР. Оставьте заявку или свяжитесь с нами по телефону — оформим заказ быстро." />
+        <link rel="canonical" href="https://sps-master.ru/buy" />
+      </Helmet>
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">Купить</h1>
         

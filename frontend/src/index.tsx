@@ -66,11 +66,20 @@ loadStylesFromAPI().then(theme => {
   applyTheme(defaultTheme);
 });
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+const rootElement = document.getElementById('root') as HTMLElement;
+
+if (rootElement.hasChildNodes()) {
+  // Pre-rendered HTML exists — hydrate instead of replacing
+  ReactDOM.hydrateRoot(
+    rootElement,
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+} else {
+  ReactDOM.createRoot(rootElement).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  );
+}

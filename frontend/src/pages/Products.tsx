@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import PageContainer from '../components/PageContainer';
@@ -57,6 +58,11 @@ const Products: React.FC = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
+      <Helmet>
+        <title>Продукция | СПС МАСТЕР</title>
+        <meta name="description" content="Каталог продукции СПС МАСТЕР — приборы пожарной сигнализации, извещатели, блоки управления. Сертифицированное оборудование для объектов любой сложности." />
+        <link rel="canonical" href="https://sps-master.ru/products" />
+      </Helmet>
       {/* Hero секция */}
       <section className="pt-20 pb-0 relative">
         <PageContainer>

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Clock, Phone, Mail, MessageCircle } from 'lucide-react';
 
 const Support: React.FC = () => {
@@ -28,6 +29,11 @@ const Support: React.FC = () => {
 
   return (
     <div className="min-h-screen py-8">
+      <Helmet>
+        <title>Поддержка | СПС МАСТЕР</title>
+        <meta name="description" content="Техническая поддержка СПС МАСТЕР — телефон, email, форма обратной связи. Помогаем с монтажом, настройкой и обслуживанием систем пожарной сигнализации." />
+        <link rel="canonical" href="https://sps-master.ru/support" />
+      </Helmet>
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">Поддержка</h1>
         

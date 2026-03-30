@@ -1,4 +1,5 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import PageContainer from '../components/PageContainer';
 import { useRequisites } from '../hooks/useRequisites';
@@ -36,7 +37,11 @@ const Requisites: React.FC = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
-      
+      <Helmet>
+        <title>Реквизиты | СПС МАСТЕР</title>
+        <meta name="description" content="Реквизиты компании СПС МАСТЕР — ИНН, КПП, ОГРН, банковские реквизиты и контактные данные для документооборота." />
+        <link rel="canonical" href="https://sps-master.ru/requisites" />
+      </Helmet>
       {/* Hero секция */}
       <section className="pt-20 pb-0 relative">
         <PageContainer>

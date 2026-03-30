@@ -2,16 +2,28 @@
 
 ## Быстрый деплой (обновление кода)
 
+Собираем по одному контейнеру — меньше нагрузка на сервер во время сборки.
+
 ```bash
 # 1. Залить изменения на сервер
 git pull origin main
 
-# 2. Пересобрать и перезапустить контейнеры
-docker compose -f docker-compose.prod.yml up --build -d
+# 2. Backend (лёгкий, без webpack — поднимается первым)
+docker compose -f docker-compose.prod.yml up --build -d backend
+sleep 10
 
-# 3. Проверить статус
+# 3. Admin (React сборка — ждём завершения)
+docker compose -f docker-compose.prod.yml up --build -d admin
+sleep 30
+
+# 4. Frontend (React сборка)
+docker compose -f docker-compose.prod.yml up --build -d frontend
+
+# 5. Проверить статус
 docker ps
 ```
+
+> nginx и db не пересобираем — они не меняются.
 
 ---
 
@@ -26,8 +38,12 @@ git pull origin main
 # 2. Применить миграцию вручную (docker-entrypoint-initdb.d НЕ перезапускается автоматически)
 docker exec opsopsop-db mysql -u master_sps_user -p'MasterSPS2024!' master_sps < database/migration_fix.sql
 
-# 3. Пересобрать контейнеры
-docker compose -f docker-compose.prod.yml up --build -d
+# 3. Пересобрать по одному (см. раздел выше)
+docker compose -f docker-compose.prod.yml up --build -d backend
+sleep 10
+docker compose -f docker-compose.prod.yml up --build -d admin
+sleep 30
+docker compose -f docker-compose.prod.yml up --build -d frontend
 ```
 
 > **Важно:** `docker-entrypoint-initdb.d` запускает SQL-скрипты только при первом старте БД (пустой volume).

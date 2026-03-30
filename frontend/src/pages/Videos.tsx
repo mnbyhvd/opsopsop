@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import PageContainer from '../components/PageContainer';
 import { useVideos, Video } from '../hooks/useVideos';
@@ -38,6 +39,11 @@ const Videos: React.FC = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
+      <Helmet>
+        <title>Видеопрезентации | СПС МАСТЕР</title>
+        <meta name="description" content="Видеопрезентации и обзоры оборудования СПС МАСТЕР. Смотрите как работают наши системы пожарной сигнализации." />
+        <link rel="canonical" href="https://sps-master.ru/videos" />
+      </Helmet>
       {/* Hero секция */}
       <section className="pt-20 pb-0 relative">
         <PageContainer>

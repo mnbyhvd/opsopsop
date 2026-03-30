@@ -1,0 +1,9 @@
+{
+  "name": "sps-prerender",
+  "version": "1.0.0",
+  "description": "Prerender script for SPS Master website",
+  "private": true,
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}

@@ -1,8 +1,14 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
 
 const Certificates: React.FC = () => {
   return (
     <div className="min-h-screen py-8">
+      <Helmet>
+        <title>Сертификаты | СПС МАСТЕР</title>
+        <meta name="description" content="Сертификаты и лицензии СПС МАСТЕР. Вся продукция сертифицирована и соответствует требованиям пожарной безопасности РФ." />
+        <link rel="canonical" href="https://sps-master.ru/certificates" />
+      </Helmet>
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">Сертификаты</h1>
         

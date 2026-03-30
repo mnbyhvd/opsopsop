@@ -43,13 +43,15 @@ services:
       - master_sps_network
 
   frontend:
-    build: 
+    build:
       context: ./frontend
       args:
         REACT_APP_API_URL: ""
     container_name: opsopsop-frontend
     expose:
       - "80"
+    volumes:
+      - prerendered_html:/usr/share/nginx/html/prerendered
     networks:
       - master_sps_network
 
@@ -82,6 +84,24 @@ services:
     networks:
       - master_sps_network
 
+  prerender:
+    build: ./prerender
+    container_name: opsopsop-prerender
+    environment:
+      FRONTEND_URL: http://opsopsop-frontend
+      API_URL: http://opsopsop-backend:3001
+      OUTPUT_DIR: /prerendered
+      SITE_URL: https://sps-master.ru
+    volumes:
+      - prerendered_html:/prerendered
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - master_sps_network
+    profiles:
+      - prerender
+
   certbot:
     image: certbot/certbot
     container_name: opsopsop-certbot
@@ -100,6 +120,7 @@ services:
 volumes:
   mysql_data:
   certbot_webroot:
+  prerendered_html:
 
 networks:
   master_sps_network:

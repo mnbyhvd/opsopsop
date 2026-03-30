@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+
+Sitemap: https://sps-master.ru/sitemap.xml
