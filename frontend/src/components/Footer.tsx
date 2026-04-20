@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import PageContainer from './PageContainer';
 import { useFooterSettings } from '../hooks/useFooterSettings';
+import { sanitizeHtml } from '../utils/richText';
 
 const Footer: React.FC = () => {
   const { settings } = useFooterSettings();
@@ -124,15 +125,11 @@ const Footer: React.FC = () => {
                     {settings.form_title || 'СВЯЖИТЕСЬ С НАМИ'}
                   </h2>
                   
-                  <p 
-                    className="text-base md:text-lg leading-relaxed text-left md:text-left mb-8 md:mb-0"
-                    style={{
-                      fontFamily: 'Inter',
-                      color: '#F2F0F0'
-                    }}
-                  >
-                    {settings.form_description || 'Оставьте заявку и получите спецификацию и коммерческое предложение, подобранные именно под ваши задачи.'}
-                  </p>
+                  <p
+                    className="rich-text text-base md:text-lg leading-relaxed text-left md:text-left mb-8 md:mb-0"
+                    style={{ fontFamily: 'Inter', color: '#F2F0F0' }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(settings.form_description || 'Оставьте заявку и получите спецификацию и коммерческое предложение, подобранные именно под ваши задачи.') }}
+                  />
                 </motion.div>
             </div>
 

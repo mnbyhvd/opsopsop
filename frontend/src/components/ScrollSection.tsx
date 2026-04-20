@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react';
 import PageContainer from './PageContainer';
+import { sanitizeHtml } from '../utils/richText';
 
 interface TextBlock {
   id: number;
@@ -590,17 +591,11 @@ const ScrollSection: React.FC = () => {
             >
               {data.section_title}
             </h2>
-            <p 
-              className="text-sm md:text-lg"
-              style={{
-                fontFamily: 'Inter',
-                color: 'var(--font-headings-color, var(--text))',
-                maxWidth: '600px',
-                margin: '0'
-              }}
-            >
-              {data.section_subtitle}
-            </p>
+            <p
+              className="rich-text text-sm md:text-lg"
+              style={{ fontFamily: 'Inter', color: 'var(--font-headings-color, var(--text))', maxWidth: '600px', margin: '0' }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHtml(data.section_subtitle) }}
+            />
           </div>
 
           {/* Общий контейнер для текстов и видео - фиксируется вместе */}
@@ -648,15 +643,11 @@ const ScrollSection: React.FC = () => {
                     >
                       {block.title}
                     </h3>
-                    <p 
-                      className="text-sm md:text-lg"
-                      style={{ 
-                        fontFamily: 'Inter',
-                        color: '#F2F0F0'
-                      }}
-                    >
-                      {block.description}
-                    </p>
+                    <p
+                      className="rich-text text-sm md:text-lg"
+                      style={{ fontFamily: 'Inter', color: '#F2F0F0' }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(block.description) }}
+                    />
                   </div>
                 ))}
               </div>
@@ -741,17 +732,11 @@ const ScrollSection: React.FC = () => {
           >
             {data.section_title}
           </h2>
-          <p 
-            className="text-lg"
-            style={{
-              fontFamily: 'var(--font-body, Inter)',
-              color: 'var(--font-body-color, var(--text))',
-              maxWidth: '600px',
-              margin: '0 auto'
-            }}
-          >
-            {data.section_subtitle}
-          </p>
+          <p
+            className="rich-text text-lg"
+            style={{ fontFamily: 'var(--font-body, Inter)', color: 'var(--font-body-color, var(--text))', maxWidth: '600px', margin: '0 auto' }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(data.section_subtitle) }}
+          />
         </div>
 
         {/* Левая часть - текстовые блоки */}
@@ -784,15 +769,11 @@ const ScrollSection: React.FC = () => {
                       >
                         {block.title}
                       </h3>
-                      <p 
-                        className="text-lg"
-                        style={{ 
-                          fontFamily: 'Inter',
-                          color: '#F2F0F0'
-                        }}
-                      >
-                        {block.description}
-                      </p>
+                      <p
+                        className="rich-text text-lg"
+                        style={{ fontFamily: 'Inter', color: '#F2F0F0' }}
+                        dangerouslySetInnerHTML={{ __html: sanitizeHtml(block.description) }}
+                      />
                     </div>
                   </div>
                 </div>

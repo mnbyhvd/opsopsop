@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiService } from '../services/apiService';
+import { sanitizeHtml } from '../utils/richText';
 
 interface HeroData {
   id: number;
@@ -154,31 +155,18 @@ const HeroSection: React.FC = () => {
         />
         
         {heroData?.subtitle && (
-          <h2 
-            className="mb-6 text-left md:text-center text-lg sm:text-xl md:text-2xl lg:text-3xl w-full md:w-auto"
-            style={{
-              fontFamily: 'Inter',
-              fontWeight: 500,
-              lineHeight: '120%',
-              letterSpacing: '0%',
-              color: '#666'
-            }}
-          >
-            {heroData.subtitle}
-          </h2>
+          <h2
+            className="rich-text mb-6 text-left md:text-center text-lg sm:text-xl md:text-2xl lg:text-3xl w-full md:w-auto"
+            style={{ fontFamily: 'Inter', fontWeight: 500, lineHeight: '120%', letterSpacing: '0%', color: '#666' }}
+            dangerouslySetInnerHTML={{ __html: sanitizeHtml(heroData.subtitle) }}
+          />
         )}
-        
-        <p 
-          className="mb-10 max-w-3xl w-full md:w-auto mx-0 md:mx-auto text-left md:text-center px-0 md:px-4 text-sm sm:text-base md:text-lg lg:text-xl"
-          style={{
-            fontFamily: 'Inter',
-            fontWeight: 400,
-            lineHeight: '140%',
-            letterSpacing: '0%'
-          }}
-        >
-          {heroData?.description || 'Интеллектуальные датчики пожарной безопасности с самым быстрым временем срабатывания на рынке. Получите расчёт стоимости и техническую документацию.'}
-        </p>
+
+        <p
+          className="rich-text mb-10 max-w-3xl w-full md:w-auto mx-0 md:mx-auto text-left md:text-center px-0 md:px-4 text-sm sm:text-base md:text-lg lg:text-xl"
+          style={{ fontFamily: 'Inter', fontWeight: 400, lineHeight: '140%', letterSpacing: '0%' }}
+          dangerouslySetInnerHTML={{ __html: sanitizeHtml(heroData?.description || 'Интеллектуальные датчики пожарной безопасности с самым быстрым временем срабатывания на рынке. Получите расчёт стоимости и техническую документацию.') }}
+        />
         
         <button 
           onClick={scrollToContactForm}

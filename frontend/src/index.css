@@ -339,6 +339,7 @@ button span, button p {
   }
 }
 
+
 /* Скрытие скроллбара для горизонтального скролла */
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */

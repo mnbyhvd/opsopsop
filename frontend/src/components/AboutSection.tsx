@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAbout } from '../hooks/useAbout';
 import PageContainer from './PageContainer';
+import { sanitizeHtml } from '../utils/richText';
 
 const AboutSection: React.FC = () => {
   const { aboutItems, loading } = useAbout();
@@ -221,9 +222,11 @@ const AboutSection: React.FC = () => {
                     <h3 className="text-2xl mb-4" style={{ color: 'var(--font-headings-color, var(--text))' }}>
                       {item.title}
                     </h3>
-                    <p className="text-sm md:text-lg leading-relaxed" style={{ color: 'var(--font-body-color, var(--text))', fontFamily: 'var(--font-body, Inter)' }}>
-                      {item.description}
-                    </p>
+                    <p
+                      className="rich-text text-sm md:text-lg leading-relaxed"
+                      style={{ color: 'var(--font-body-color, var(--text))', fontFamily: 'var(--font-body, Inter)' }}
+                      dangerouslySetInnerHTML={{ __html: sanitizeHtml(item.description) }}
+                    />
                   </div>
                   
                   {/* Картинка */}
@@ -309,12 +312,11 @@ const AboutSection: React.FC = () => {
                   >
                     {activeItem.title}
                   </h3>
-                  <p 
-                    className="text-lg leading-relaxed"
+                  <p
+                    className="rich-text text-lg leading-relaxed"
                     style={{ color: 'var(--font-body-color, var(--text))' }}
-                  >
-                    {activeItem.description}
-                  </p>
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(activeItem.description) }}
+                  />
                 </motion.div>
               </AnimatePresence>
             )}
