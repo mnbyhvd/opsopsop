@@ -215,12 +215,14 @@ async function main() {
           }
 
           #seo-prerender-underlay {
-            position: absolute;
-            inset: 0 auto auto 0;
+            position: fixed;
+            inset: 0;
             z-index: 0;
             width: 100%;
-            min-height: 100%;
+            height: 100vh;
+            max-height: 100vh;
             overflow: hidden;
+            contain: layout paint style;
             isolation: isolate;
             pointer-events: none;
           }
