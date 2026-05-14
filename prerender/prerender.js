@@ -75,6 +75,14 @@ function saveHtml(route, html) {
   return filePath;
 }
 
+function resetOutputDir() {
+  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
+  for (const entry of fs.readdirSync(OUTPUT_DIR)) {
+    fs.rmSync(path.join(OUTPUT_DIR, entry), { recursive: true, force: true });
+  }
+}
+
 function generateSitemap(allRoutes) {
   const urls = allRoutes.map(route => {
     const isHome = route === '/';
@@ -113,8 +121,8 @@ async function main() {
   console.log(`Output:   ${OUTPUT_DIR}`);
   console.log('');
 
-  // Ensure output directory exists
-  fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+  // Remove old snapshots so nginx cannot serve stale prerendered pages.
+  resetOutputDir();
 
   // Fetch dynamic product routes
   console.log('Fetching product IDs from API...');
