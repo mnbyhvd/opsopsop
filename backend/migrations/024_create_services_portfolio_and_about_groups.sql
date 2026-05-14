@@ -1,6 +1,21 @@
 -- Add homepage about groups, services, and portfolio entities.
 
-ALTER TABLE about_section ADD COLUMN IF NOT EXISTS section_group VARCHAR(50) DEFAULT 'main';
+SET @column_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'about_section'
+      AND COLUMN_NAME = 'section_group'
+);
+SET @sql = IF(
+    @column_exists = 0,
+    'ALTER TABLE about_section ADD COLUMN section_group VARCHAR(50) DEFAULT ''main''',
+    'SELECT 1'
+);
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 UPDATE about_section SET section_group = 'main' WHERE section_group IS NULL OR section_group = '';
 
 CREATE TABLE IF NOT EXISTS service_blocks (
@@ -85,12 +100,110 @@ FROM portfolio_projects p
 WHERE p.slug = 'aps-soue-moscow'
 AND NOT EXISTS (SELECT 1 FROM portfolio_sections s WHERE s.project_id = p.id);
 
-CREATE INDEX IF NOT EXISTS idx_about_section_group ON about_section(section_group);
-CREATE INDEX IF NOT EXISTS idx_service_blocks_active ON service_blocks(is_active);
-CREATE INDEX IF NOT EXISTS idx_service_blocks_sort ON service_blocks(sort_order);
-CREATE INDEX IF NOT EXISTS idx_portfolio_projects_slug ON portfolio_projects(slug);
-CREATE INDEX IF NOT EXISTS idx_portfolio_projects_active ON portfolio_projects(is_active);
-CREATE INDEX IF NOT EXISTS idx_portfolio_projects_sort ON portfolio_projects(sort_order);
-CREATE INDEX IF NOT EXISTS idx_portfolio_sections_project ON portfolio_sections(project_id);
-CREATE INDEX IF NOT EXISTS idx_portfolio_sections_active ON portfolio_sections(is_active);
-CREATE INDEX IF NOT EXISTS idx_portfolio_sections_sort ON portfolio_sections(sort_order);
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'about_section'
+      AND INDEX_NAME = 'idx_about_section_group'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_about_section_group ON about_section(section_group)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'service_blocks'
+      AND INDEX_NAME = 'idx_service_blocks_active'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_service_blocks_active ON service_blocks(is_active)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'service_blocks'
+      AND INDEX_NAME = 'idx_service_blocks_sort'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_service_blocks_sort ON service_blocks(sort_order)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_projects'
+      AND INDEX_NAME = 'idx_portfolio_projects_slug'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_projects_slug ON portfolio_projects(slug)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_projects'
+      AND INDEX_NAME = 'idx_portfolio_projects_active'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_projects_active ON portfolio_projects(is_active)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_projects'
+      AND INDEX_NAME = 'idx_portfolio_projects_sort'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_projects_sort ON portfolio_projects(sort_order)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_sections'
+      AND INDEX_NAME = 'idx_portfolio_sections_project'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_sections_project ON portfolio_sections(project_id)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_sections'
+      AND INDEX_NAME = 'idx_portfolio_sections_active'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_sections_active ON portfolio_sections(is_active)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+SET @index_exists = (
+    SELECT COUNT(*)
+    FROM INFORMATION_SCHEMA.STATISTICS
+    WHERE TABLE_SCHEMA = DATABASE()
+      AND TABLE_NAME = 'portfolio_sections'
+      AND INDEX_NAME = 'idx_portfolio_sections_sort'
+);
+SET @sql = IF(@index_exists = 0, 'CREATE INDEX idx_portfolio_sections_sort ON portfolio_sections(sort_order)', 'SELECT 1');
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
