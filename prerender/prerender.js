@@ -75,6 +75,16 @@ function saveHtml(route, html) {
   return filePath;
 }
 
+function saveHybridHtml(route, html) {
+  const dir = route === '/'
+    ? OUTPUT_DIR
+    : path.join(OUTPUT_DIR, route);
+  fs.mkdirSync(dir, { recursive: true });
+  const filePath = path.join(dir, 'hybrid.html');
+  fs.writeFileSync(filePath, html, 'utf-8');
+  return filePath;
+}
+
 function resetOutputDir() {
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
 
@@ -184,8 +194,86 @@ async function main() {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
       const html = await page.content();
+      const hybridHtml = await page.evaluate(() => {
+        const root = document.getElementById('root');
+
+        if (!root) {
+          return `<!DOCTYPE html>${document.documentElement.outerHTML}`;
+        }
+
+        const style = document.createElement('style');
+        style.id = 'sps-prerender-underlay-style';
+        style.textContent = `
+          html,
+          body {
+            min-height: 100%;
+            background: var(--bg, #0D0D0D);
+          }
+
+          body {
+            position: relative;
+          }
+
+          #seo-prerender-underlay {
+            position: absolute;
+            inset: 0 auto auto 0;
+            z-index: 0;
+            width: 100%;
+            min-height: 100%;
+            overflow: hidden;
+            isolation: isolate;
+            pointer-events: none;
+          }
+
+          #seo-prerender-underlay .fixed,
+          #seo-prerender-underlay .sticky {
+            position: static !important;
+            inset: auto !important;
+            transform: none !important;
+          }
+
+          #seo-prerender-underlay *,
+          #seo-prerender-underlay *::before,
+          #seo-prerender-underlay *::after {
+            pointer-events: none !important;
+          }
+
+          #root {
+            position: relative;
+            z-index: 2;
+            min-height: 100vh;
+            background: var(--bg, #0D0D0D);
+          }
+        `;
+        document.head.appendChild(style);
+
+        const underlay = document.createElement('div');
+        underlay.id = 'seo-prerender-underlay';
+        underlay.setAttribute('data-sps-prerender-underlay', 'true');
+        underlay.innerHTML = root.innerHTML;
+
+        underlay.querySelectorAll('[id]').forEach((element, index) => {
+          const currentId = element.getAttribute('id');
+          element.setAttribute('data-original-id', currentId || '');
+          element.setAttribute('id', `seo-underlay-${index}-${currentId || 'node'}`);
+        });
+        underlay.querySelectorAll('label[for]').forEach((element) => {
+          element.removeAttribute('for');
+        });
+        underlay
+          .querySelectorAll('a, button, input, textarea, select, summary, [tabindex]')
+          .forEach((element) => {
+            element.setAttribute('tabindex', '-1');
+          });
+
+        root.parentNode.insertBefore(underlay, root);
+        root.innerHTML = '';
+
+        return `<!DOCTYPE html>${document.documentElement.outerHTML}`;
+      });
       const savedPath = saveHtml(route, html);
-      console.log(`OK → ${savedPath}`);
+      const savedHybridPath = saveHybridHtml(route, hybridHtml);
+      console.log(`OK → ${savedPath}; underlay → ${savedHybridPath}`);
       successCount++;
     } catch (err) {
       console.log(`FAILED: ${err.message}`);
