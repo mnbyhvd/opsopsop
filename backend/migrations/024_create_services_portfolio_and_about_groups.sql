@@ -1,5 +1,8 @@
 -- Add homepage about groups, services, and portfolio entities.
 
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 SET @column_exists = (
     SELECT COUNT(*)
     FROM INFORMATION_SCHEMA.COLUMNS

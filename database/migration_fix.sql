@@ -1,5 +1,7 @@
 -- Миграция для исправления структуры таблиц
 USE master_sps;
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
 
 -- Добавляем недостающие поля в таблицу products
 ALTER TABLE products ADD COLUMN IF NOT EXISTS category_id INT NULL;
