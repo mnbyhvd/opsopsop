@@ -6,6 +6,8 @@ export const API_ENDPOINTS = {
   NAVIGATION: `${API_BASE_URL}/api/navigation`,
   PRODUCTS: `${API_BASE_URL}/api/products`,
   CATEGORIES: `${API_BASE_URL}/api/categories`,
+  SERVICES: `${API_BASE_URL}/api/services`,
+  PORTFOLIO: `${API_BASE_URL}/api/portfolio`,
   LEADS: `${API_BASE_URL}/api/leads`,
   LEADS_STATS: `${API_BASE_URL}/api/leads/stats/overview`,
   REQUISITES: `${API_BASE_URL}/api/requisites`,

@@ -16,11 +16,20 @@ const pool = mysql.createPool({
 // GET about section data
 router.get('/', async (req, res) => {
   try {
+    const { group } = req.query;
+    const params = [];
+    let whereClause = 'WHERE is_active = true';
+
+    if (group) {
+      whereClause += ' AND section_group = ?';
+      params.push(group);
+    }
+
     const [rows] = await pool.execute(`
       SELECT * FROM about_section 
-      WHERE is_active = true 
+      ${whereClause}
       ORDER BY sort_order ASC
-    `);
+    `, params);
     
     res.json({
       success: true,
@@ -67,12 +76,12 @@ router.get('/:id', async (req, res) => {
 // POST create new about section item (admin only)
 router.post('/', async (req, res) => {
   try {
-    const { title, description, image_url, sort_order, is_active } = req.body;
+    const { title, description, image_url, sort_order, is_active, section_group } = req.body;
     
     const [result] = await pool.execute(`
-      INSERT INTO about_section (title, description, image_url, sort_order, is_active, created_at)
-      VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
-    `, [title, description, image_url, sort_order || 0, is_active || true]);
+      INSERT INTO about_section (title, description, image_url, sort_order, is_active, section_group, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `, [title, description, image_url, sort_order || 0, is_active !== undefined ? is_active : true, section_group || 'main']);
     
     const [newItem] = await pool.execute(`
       SELECT * FROM about_section WHERE id = ?
@@ -95,13 +104,13 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, image_url, sort_order, is_active } = req.body;
+    const { title, description, image_url, sort_order, is_active, section_group } = req.body;
     
     const [result] = await pool.execute(`
       UPDATE about_section 
-      SET title = ?, description = ?, image_url = ?, sort_order = ?, is_active = ?, updated_at = CURRENT_TIMESTAMP
+      SET title = ?, description = ?, image_url = ?, sort_order = ?, is_active = ?, section_group = ?, updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
-    `, [title, description, image_url, sort_order, is_active, id]);
+    `, [title, description, image_url, sort_order, is_active, section_group || 'main', id]);
     
     if (result.affectedRows === 0) {
       return res.status(404).json({

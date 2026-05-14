@@ -6,6 +6,7 @@ export interface AboutItem {
   title: string;
   description: string;
   image_url: string;
+  section_group?: string;
   sort_order: number;
   is_active: boolean;
   created_at: string;
@@ -60,7 +61,7 @@ const fallbackData: AboutItem[] = [
   }
 ];
 
-export const useAbout = () => {
+export const useAbout = (group: string = 'main') => {
   const [aboutItems, setAboutItems] = useState<AboutItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +72,7 @@ export const useAbout = () => {
         setLoading(true);
         setError(null);
         
-        const response = await axios.get<AboutResponse>('/api/about');
+        const response = await axios.get<AboutResponse>(`/api/about?group=${encodeURIComponent(group)}`);
         
         if (response.data.success) {
           setAboutItems(response.data.data);
@@ -89,7 +90,7 @@ export const useAbout = () => {
     };
 
     fetchAboutItems();
-  }, []);
+  }, [group]);
 
   return {
     aboutItems,

@@ -19,7 +19,10 @@ sleep 30
 # 4. Frontend (React сборка)
 docker compose -f docker-compose.prod.yml up --build -d frontend
 
-# 5. Проверить статус
+# 5. Обновить пререндер для Яндекса и sitemap/robots
+docker compose -f docker-compose.prod.yml --profile prerender run --rm prerender
+
+# 6. Проверить статус
 docker ps
 ```
 
@@ -38,12 +41,13 @@ git pull origin main
 # 2. Применить миграцию вручную (docker-entrypoint-initdb.d НЕ перезапускается автоматически)
 docker exec opsopsop-db mysql -u master_sps_user -p'MasterSPS2024!' master_sps < database/migration_fix.sql
 
-# 3. Пересобрать по одному (см. раздел выше)
+# 3. Пересобрать по одному (см. раздел выше) и затем обязательно обновить пререндер
 docker compose -f docker-compose.prod.yml up --build -d backend
 sleep 10
 docker compose -f docker-compose.prod.yml up --build -d admin
 sleep 30
 docker compose -f docker-compose.prod.yml up --build -d frontend
+docker compose -f docker-compose.prod.yml --profile prerender run --rm prerender
 ```
 
 > **Важно:** `docker-entrypoint-initdb.d` запускает SQL-скрипты только при первом старте БД (пустой volume).
@@ -107,6 +111,13 @@ docker compose -f docker-compose.prod.yml up --build -d admin
 
 # Проверить API
 curl https://sps-master.ru/api/documents
+
+# Переснять все индексируемые страницы
+docker compose -f docker-compose.prod.yml --profile prerender run --rm prerender
+
+# Проверить sitemap и robots
+curl https://sps-master.ru/sitemap.xml
+curl https://sps-master.ru/robots.txt
 ```
 
 ---

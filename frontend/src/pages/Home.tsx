@@ -27,6 +27,9 @@ const Home: React.FC = () => {
       {/* Technical Specs Section */}
       <TechnicalSpecsSection />
 
+      {/* Additional About Section */}
+      <AboutSection group="secondary" label="решения" />
+
       {/* Products Section */}
       <ProductsSection />
 

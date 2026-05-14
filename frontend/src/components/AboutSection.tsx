@@ -3,9 +3,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAbout } from '../hooks/useAbout';
 import PageContainer from './PageContainer';
 import { sanitizeHtml } from '../utils/richText';
+import { resolveMediaUrl } from '../utils/media';
 
-const AboutSection: React.FC = () => {
-  const { aboutItems, loading } = useAbout();
+interface AboutSectionProps {
+  group?: 'main' | 'secondary' | string;
+  label?: string;
+  className?: string;
+}
+
+const AboutSection: React.FC<AboutSectionProps> = ({ group = 'main', label = 'о системе', className = '' }) => {
+  const { aboutItems, loading } = useAbout(group);
   const [isMobile, setIsMobile] = useState(false);
   
   // Определяем мобильное устройство
@@ -20,17 +27,6 @@ const AboutSection: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
   
-  // Отладочная информация
-  useEffect(() => {
-    console.log('AboutSection - aboutItems:', aboutItems);
-    aboutItems.forEach((item, index) => {
-      console.log(`Item ${index}:`, {
-        title: item.title,
-        image_url: item.image_url,
-        full_url: `/api${item.image_url}`
-      });
-    });
-  }, [aboutItems]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTextFixed, setIsTextFixed] = useState(false);
   const [isLastTextUnfixed, setIsLastTextUnfixed] = useState(false);
@@ -209,7 +205,7 @@ const AboutSection: React.FC = () => {
     return (
       <section 
         ref={sectionRef}
-        className="about-section relative pt-8 pb-16"
+        className={`about-section relative pt-8 pb-16 ${className}`}
       >
         <PageContainer>
           <div className="col-start-1 col-end-13">
@@ -233,7 +229,7 @@ const AboutSection: React.FC = () => {
                   <div className="w-full h-64 flex items-center justify-center">
                     {item.image_url ? (
                       <img 
-                        src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
+                        src={resolveMediaUrl(item.image_url)}
                         alt={item.title}
                         className="max-w-full max-h-full object-contain rounded-lg"
                         onError={(e) => {
@@ -262,11 +258,19 @@ const AboutSection: React.FC = () => {
   return (
     <section 
       ref={sectionRef}
-      className="about-section relative pb-16"
+      className={`about-section relative pb-16 ${className}`}
       style={{ 
-        minHeight: '1984px'
+        minHeight: `${Math.max(1040, aboutItems.length * 496)}px`
       }}
     >
+      <div className="sr-only" data-seo-content={`about-${group}`}>
+        {aboutItems.map(item => (
+          <article key={`seo-${item.id}`}>
+            <h2>{item.title}</h2>
+            <p>{item.description}</p>
+          </article>
+        ))}
+      </div>
       <PageContainer>
       {/* Контейнер для текста - колонки 2-6 */}
           <div 
@@ -291,7 +295,7 @@ const AboutSection: React.FC = () => {
               className="about-title" 
               style={{ color: 'var(--accent)' }}
             >
-              о системе
+              {label}
             </h2>
           </div>
           
@@ -341,12 +345,9 @@ const AboutSection: React.FC = () => {
               >
                 {item.image_url ? (
                   <img 
-                    src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
+                    src={resolveMediaUrl(item.image_url)}
                     alt={item.title}
                     className="max-w-full max-h-full object-contain rounded-lg"
-                    onLoad={() => {
-                      console.log('Изображение загружено:', item.image_url);
-                    }}
                     onError={(e) => {
                       console.error('Ошибка загрузки изображения:', item.image_url);
                       e.currentTarget.style.display = 'none';

@@ -100,6 +100,46 @@ export interface Category {
   updated_at: string;
 }
 
+export interface ServiceBlock {
+  id: number;
+  title: string;
+  description: string;
+  image_url?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PortfolioSection {
+  id: number;
+  project_id: number;
+  title: string;
+  description: string;
+  image_url?: string;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PortfolioProject {
+  id: number;
+  title: string;
+  slug: string;
+  location?: string;
+  summary?: string;
+  description?: string;
+  image_url?: string;
+  sort_order: number;
+  is_active: boolean;
+  meta_title?: string;
+  meta_description?: string;
+  sections?: PortfolioSection[];
+  created_at: string;
+  updated_at: string;
+}
+
 // Hook return types
 export interface UseNavigationReturn {
   navigation: NavigationItem[];

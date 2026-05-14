@@ -68,7 +68,7 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, index, onEdit, onDele
               {item.image_url && (
                 <div className="flex-shrink-0">
                   <img 
-                    src={item.image_url.startsWith('http') ? item.image_url : item.image_url.startsWith('/uploads') ? item.image_url : `/api${item.image_url}`} 
+                    src={item.image_url.startsWith('http') || item.image_url.startsWith('/uploads') || item.image_url.startsWith('/images') ? item.image_url : `/api${item.image_url}`}
                     alt={item.title}
                     className="w-24 h-16 object-contain rounded-lg"
                   />
@@ -125,7 +125,8 @@ const SortableItem: React.FC<SortableItemProps> = ({ item, index, onEdit, onDele
 };
 
 const AboutAdmin: React.FC = () => {
-  const { aboutItems, loading } = useAbout();
+  const [activeGroup, setActiveGroup] = useState<'main' | 'secondary'>('main');
+  const { aboutItems, loading } = useAbout(activeGroup);
   const [items, setItems] = useState<AboutItem[]>([]);
   const [editingItem, setEditingItem] = useState<AboutItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -139,9 +140,7 @@ const AboutAdmin: React.FC = () => {
   );
 
   useEffect(() => {
-    if (aboutItems.length > 0) {
-      setItems(aboutItems);
-    }
+    setItems(aboutItems);
   }, [aboutItems]);
 
   const handleEdit = (item: AboutItem) => {
@@ -155,6 +154,7 @@ const AboutAdmin: React.FC = () => {
       title: '',
       description: '',
       image_url: '',
+      section_group: activeGroup,
       sort_order: items.length + 1,
       is_active: true,
       created_at: '',
@@ -308,10 +308,11 @@ const AboutAdmin: React.FC = () => {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              ...items.find(item => item.id === update.id),
-              sort_order: update.sort_order
-            }),
+        body: JSON.stringify({
+          ...items.find(item => item.id === update.id),
+          section_group: activeGroup,
+          sort_order: update.sort_order
+        }),
           })
         );
 
@@ -350,7 +351,21 @@ const AboutAdmin: React.FC = () => {
         >
           Управление блоком "О системе"
         </h1>
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4 items-center">
+          <div className="flex gap-2 p-1 rounded-xl" style={{ background: 'rgba(255,255,255,0.06)' }}>
+            <button
+              onClick={() => setActiveGroup('main')}
+              className={activeGroup === 'main' ? 'admin-button-primary' : 'admin-button-secondary'}
+            >
+              About #1
+            </button>
+            <button
+              onClick={() => setActiveGroup('secondary')}
+              className={activeGroup === 'secondary' ? 'admin-button-primary' : 'admin-button-secondary'}
+            >
+              About #2
+            </button>
+          </div>
           <button
             onClick={handleCreate}
             className="admin-button-primary"
@@ -399,6 +414,23 @@ const AboutAdmin: React.FC = () => {
             
             <div className="space-y-4">
               <div>
+                <label
+                  className="block text-sm font-medium mb-2"
+                  style={{ color: '#B8B8B8' }}
+                >
+                  Группа на главной
+                </label>
+                <select
+                  value={editingItem.section_group || activeGroup}
+                  onChange={(e) => setEditingItem({...editingItem, section_group: e.target.value})}
+                  className="admin-input"
+                >
+                  <option value="main">About #1 до характеристик</option>
+                  <option value="secondary">About #2 после характеристик</option>
+                </select>
+              </div>
+
+              <div>
                 <label 
                   className="block text-sm font-medium mb-2"
                   style={{ color: '#B8B8B8' }}
@@ -444,7 +476,7 @@ const AboutAdmin: React.FC = () => {
                 {editingItem.image_url && (
                   <div className="mt-4">
                     <img 
-                      src={editingItem.image_url.startsWith('http') ? editingItem.image_url : editingItem.image_url.startsWith('/uploads') ? editingItem.image_url : `/api${editingItem.image_url}`} 
+                      src={editingItem.image_url.startsWith('http') || editingItem.image_url.startsWith('/uploads') || editingItem.image_url.startsWith('/images') ? editingItem.image_url : `/api${editingItem.image_url}`}
                       alt="Preview" 
                       className="w-32 h-20 object-contain rounded"
                     />

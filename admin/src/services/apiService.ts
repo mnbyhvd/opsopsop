@@ -61,13 +61,90 @@ class ApiService {
   }
 
   // About
-  async getAbout() {
-    return this.request(API_ENDPOINTS.ABOUT);
+  async getAbout(group?: string) {
+    const endpoint = group ? `${API_ENDPOINTS.ABOUT}?group=${encodeURIComponent(group)}` : API_ENDPOINTS.ABOUT;
+    return this.request(endpoint);
   }
 
   // Products
   async getProducts() {
     return this.request(API_ENDPOINTS.PRODUCTS);
+  }
+
+  async getServices(all: boolean = false) {
+    return this.request(`${API_ENDPOINTS.SERVICES}${all ? '?all=true' : ''}`);
+  }
+
+  async createService(serviceData: any) {
+    return this.request(API_ENDPOINTS.SERVICES, {
+      method: 'POST',
+      body: JSON.stringify(serviceData),
+    });
+  }
+
+  async updateService(id: number, serviceData: any) {
+    return this.request(`${API_ENDPOINTS.SERVICES}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(serviceData),
+    });
+  }
+
+  async deleteService(id: number) {
+    return this.request(`${API_ENDPOINTS.SERVICES}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPortfolioProjects(all: boolean = false) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}${all ? '?all=true' : ''}`);
+  }
+
+  async getPortfolioProject(slugOrId: string | number, all: boolean = false) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${slugOrId}${all ? '?all=true' : ''}`);
+  }
+
+  async createPortfolioProject(projectData: any) {
+    return this.request(API_ENDPOINTS.PORTFOLIO, {
+      method: 'POST',
+      body: JSON.stringify(projectData),
+    });
+  }
+
+  async updatePortfolioProject(id: number, projectData: any) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(projectData),
+    });
+  }
+
+  async deletePortfolioProject(id: number) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getPortfolioSections(projectId: number, all: boolean = true) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${projectId}/sections${all ? '?all=true' : ''}`);
+  }
+
+  async createPortfolioSection(projectId: number, sectionData: any) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${projectId}/sections`, {
+      method: 'POST',
+      body: JSON.stringify(sectionData),
+    });
+  }
+
+  async updatePortfolioSection(id: number, sectionData: any) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/sections/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(sectionData),
+    });
+  }
+
+  async deletePortfolioSection(id: number) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/sections/${id}`, {
+      method: 'DELETE',
+    });
   }
 
   async getProduct(id: number) {

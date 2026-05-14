@@ -25,7 +25,9 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
     ? navigation
     : [
         { id: 2, title: 'Продукция', url: '/products', sort_order: 1, parent_id: null, is_active: true, created_at: '', updated_at: '' },
-        { id: 3, title: 'Видео-презентации', url: '/videos', sort_order: 2, parent_id: null, is_active: true, created_at: '', updated_at: '' },
+        { id: 3, title: 'Услуги', url: '/services', sort_order: 2, parent_id: null, is_active: true, created_at: '', updated_at: '' },
+        { id: 4, title: 'Портфолио', url: '/portfolio', sort_order: 3, parent_id: null, is_active: true, created_at: '', updated_at: '' },
+        { id: 5, title: 'Видео-презентации', url: '/videos', sort_order: 4, parent_id: null, is_active: true, created_at: '', updated_at: '' },
       ];
 
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);

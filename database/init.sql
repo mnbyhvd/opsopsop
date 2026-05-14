@@ -95,10 +95,54 @@ CREATE TABLE IF NOT EXISTS about_section (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     image_url VARCHAR(500),
+    section_group VARCHAR(50) DEFAULT 'main',
     sort_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create service_blocks table
+CREATE TABLE IF NOT EXISTS service_blocks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(500),
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create portfolio_projects table
+CREATE TABLE IF NOT EXISTS portfolio_projects (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    location VARCHAR(255),
+    summary TEXT,
+    description TEXT,
+    image_url VARCHAR(500),
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    meta_title VARCHAR(255),
+    meta_description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Create portfolio_sections table
+CREATE TABLE IF NOT EXISTS portfolio_sections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(500),
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES portfolio_projects(id) ON DELETE CASCADE
 );
 
 -- Create advantages table (used for technical specs)
@@ -280,8 +324,10 @@ CREATE TABLE IF NOT EXISTS requisites (
 -- Insert sample navigation data
 INSERT IGNORE INTO navigation_menu (title, url, sort_order, parent_id, is_active) VALUES
 ('Продукция', '/products', 1, NULL, true),
-('Видео-презентации', '/videos', 3, NULL, true),
-('Реквизиты', '/requisites', 4, NULL, true);
+('Услуги', '/services', 2, NULL, true),
+('Портфолио', '/portfolio', 3, NULL, true),
+('Видео-презентации', '/videos', 4, NULL, true),
+('Реквизиты', '/requisites', 5, NULL, true);
 
 -- Insert sample categories data
 INSERT IGNORE INTO categories (name, description, image_url, sort_order, is_active) VALUES
@@ -291,11 +337,38 @@ INSERT IGNORE INTO categories (name, description, image_url, sort_order, is_acti
 ('Компоненты', 'Вспомогательные компоненты', '/images/categories/components.jpg', 4, true);
 
 -- Insert sample about section data
-INSERT IGNORE INTO about_section (title, description, image_url, sort_order, is_active) VALUES
-('Кольцевая топология шлейфов', 'Отказоустойчивость. При обрыве или коротком замыкании шлейф делится на два рабочих радиальных. Система продолжает работать.', '/placeholder-about-1.png', 1, true),
-('Изоляторы короткого замыкания (ИКЗ)', 'Встроенные в устройства ИКЗ автоматически изолируют поврежденный участок, сохраняя работоспособность остальной части шлейфа.', '/placeholder-about-2.png', 2, true),
-('Цифровой протокол M105', 'Цифровая связь с устройствами. До 199 извещателей и 20 модулей управления на один шлейф. Полный контроль состояния каждого устройства.', '/placeholder-about-3.png', 3, true),
-('Сеть MasterNet', 'Объедините до 32 панелей в единую кольцевую сеть с автоматическим обходом обрывов. Защита объектов с неограниченной площадью.', '/placeholder-about-4.png', 4, true);
+INSERT IGNORE INTO about_section (title, description, image_url, section_group, sort_order, is_active) VALUES
+('Кольцевая топология шлейфов', 'Отказоустойчивость. При обрыве или коротком замыкании шлейф делится на два рабочих радиальных. Система продолжает работать.', '/images/placeholders/placeholder-about-1.png', 'main', 1, true),
+('Изоляторы короткого замыкания (ИКЗ)', 'Встроенные в устройства ИКЗ автоматически изолируют поврежденный участок, сохраняя работоспособность остальной части шлейфа.', '/images/placeholders/placeholder-about-2.png', 'main', 2, true),
+('Цифровой протокол M105', 'Цифровая связь с устройствами. До 199 извещателей и 20 модулей управления на один шлейф. Полный контроль состояния каждого устройства.', '/images/placeholders/placeholder-about-3.png', 'main', 3, true),
+('Сеть MasterNet', 'Объедините до 32 панелей в единую кольцевую сеть с автоматическим обходом обрывов. Защита объектов с неограниченной площадью.', '/images/placeholders/placeholder-about-4.png', 'main', 4, true),
+('Единая среда проектирования', 'Система подходит для объектов разного масштаба: от отдельных помещений до распределённых комплексов с несколькими панелями и сценариями оповещения.', '/images/placeholders/placeholder-about-1.png', 'secondary', 1, true),
+('Интеграция с инженерными системами', 'Оборудование позволяет связывать пожарную автоматику, оповещение, диспетчеризацию и исполнительные устройства в единую управляемую инфраструктуру.', '/images/placeholders/placeholder-about-2.png', 'secondary', 2, true),
+('Контроль состояния оборудования', 'Адресная архитектура помогает быстро находить события, неисправности и зоны срабатывания, сокращая время диагностики и обслуживания.', '/images/placeholders/placeholder-about-3.png', 'secondary', 3, true);
+
+-- Insert sample service blocks
+INSERT IGNORE INTO service_blocks (title, description, image_url, sort_order, is_active) VALUES
+('Проектирование систем противопожарной безопасности', 'Анализ объекта, разработка рабочей документации и подбор технических решений для систем пожарной сигнализации, оповещения и управления эвакуацией.', '/images/placeholders/placeholder-about-1.png', 1, true),
+('Монтаж систем пожарной сигнализации', 'Полный комплекс монтажных работ: прокладка трасс, установка оборудования, подключение и подготовка систем к пусконаладке.', '/images/placeholders/placeholder-about-2.png', 2, true),
+('Монтаж систем пожаротушения', 'Установка и интеграция систем пожаротушения в общий контур безопасности объекта с проверкой исполнительных модулей.', '/images/placeholders/placeholder-about-3.png', 3, true),
+('Монтаж систем дымоудаления', 'Монтаж и настройка систем дымоудаления, обеспечивающих безопасную эвакуацию и снижение последствий задымления.', '/images/placeholders/placeholder-about-4.png', 4, true),
+('Техническое обслуживание систем пожарной безопасности', 'Плановое обслуживание, диагностика, проверка работоспособности и документирование состояния систем на объекте.', '/images/placeholders/placeholder-about-1.png', 5, true),
+('Экспертиза систем пожарной безопасности', 'Аудит проектных решений, проверка документации, обследование действующих систем и подготовка рекомендаций.', '/images/placeholders/placeholder-about-2.png', 6, true);
+
+-- Insert sample portfolio projects
+INSERT IGNORE INTO portfolio_projects (title, slug, location, summary, description, image_url, sort_order, is_active, meta_title, meta_description) VALUES
+('Автоматическая пожарная сигнализация и СОУЭ', 'aps-soue-moscow', 'Москва, Московский, Киевское шоссе, 22 км', 'Полное оснащение объекта современными системами противопожарной защиты.', 'В рамках проекта выполнено полное оснащение объекта современными системами противопожарной защиты: разработана рабочая документация, смонтирована адресно-аналоговая система автоматической пожарной сигнализации на базе приборов «Мастер 1-2F1E», а также система оповещения и управления эвакуацией 2-го типа.', '/images/placeholders/placeholder-about-1.png', 1, true, 'Автоматическая пожарная сигнализация и СОУЭ | СПС МАСТЕР', 'Пример проекта СПС МАСТЕР: пожарная сигнализация, СОУЭ, монтаж и пусконаладка.'),
+('Комплекс противопожарной защиты торгового объекта', 'fire-safety-trade-center', 'Москва', 'Проектирование, монтаж и проверка систем пожарной безопасности для торгового объекта.', 'Команда выполнила полный цикл работ от проектной документации до ввода комплекса противопожарной защиты в эксплуатацию.', '/images/placeholders/placeholder-about-2.png', 2, true, 'Комплекс противопожарной защиты | СПС МАСТЕР', 'Портфолио СПС МАСТЕР: комплексные решения пожарной безопасности.');
+
+-- Insert sample portfolio sections
+INSERT IGNORE INTO portfolio_sections (project_id, title, description, image_url, sort_order, is_active) VALUES
+(1, 'Система автоматической пожарной сигнализации', 'Обеспечение раннего обнаружения очага возгорания и определение его точного местоположения. Автоматическая выдача сигнала на запуск системы оповещения.', '/images/placeholders/placeholder-about-1.png', 1, true),
+(1, 'Система оповещения и управления эвакуацией', 'Проектирование системы оповещения 2-го типа и обеспечение необходимого уровня звукового давления для гарантированного слышимого сигнала.', '/images/placeholders/placeholder-about-2.png', 2, true),
+(1, 'Состав проектных работ', 'Структурная схема, планы размещения оборудования и кабельных трасс, схемы подключения приборов и спецификация оборудования.', '/images/placeholders/placeholder-about-3.png', 3, true),
+(1, 'Основное установленное оборудование', 'Приёмно-контрольный прибор, резервированное питание, дымовые и ручные пожарные извещатели, звуковые и световые оповещатели, кабельные линии.', '/images/placeholders/placeholder-about-4.png', 4, true),
+(1, 'Ключевые технические решения', 'Алгоритмы принятия решения о пожаре, контроль целостности линий, подключение нагрузок и резервирование ключевых узлов системы.', '/images/placeholders/placeholder-about-1.png', 5, true),
+(2, 'Проектирование и монтаж', 'Разработка рабочей документации, монтаж адресной системы и проведение комплексных испытаний.', '/images/placeholders/placeholder-about-2.png', 1, true),
+(2, 'Пусконаладка и ввод в эксплуатацию', 'Проверка сценариев срабатывания, настройка оборудования и передача системы заказчику.', '/images/placeholders/placeholder-about-3.png', 2, true);
 
 -- Insert sample technical specs data
 INSERT IGNORE INTO advantages (title, description, value, sort_order, is_active) VALUES
@@ -442,6 +515,16 @@ CREATE INDEX idx_videos_is_active ON videos(is_active);
 CREATE INDEX idx_products_category ON products(category);
 CREATE INDEX idx_products_is_active ON products(is_active);
 CREATE INDEX idx_products_sort_order ON products(sort_order);
+
+CREATE INDEX idx_about_section_group ON about_section(section_group);
+CREATE INDEX idx_service_blocks_active ON service_blocks(is_active);
+CREATE INDEX idx_service_blocks_sort ON service_blocks(sort_order);
+CREATE INDEX idx_portfolio_projects_slug ON portfolio_projects(slug);
+CREATE INDEX idx_portfolio_projects_active ON portfolio_projects(is_active);
+CREATE INDEX idx_portfolio_projects_sort ON portfolio_projects(sort_order);
+CREATE INDEX idx_portfolio_sections_project ON portfolio_sections(project_id);
+CREATE INDEX idx_portfolio_sections_active ON portfolio_sections(is_active);
+CREATE INDEX idx_portfolio_sections_sort ON portfolio_sections(sort_order);
 
 CREATE INDEX idx_product_images_product ON product_images(product_id);
 CREATE INDEX idx_product_images_active ON product_images(is_active);

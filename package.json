@@ -9,6 +9,7 @@
     "admin": "cd admin && npm start",
     "install-all": "npm install && cd frontend && npm install && cd ../admin && npm install && cd ../backend && npm install",
     "build": "cd frontend && npm run build && cd ../admin && npm run build",
+    "prerender": "docker compose -f docker-compose.prod.yml --profile prerender run --rm prerender",
     "start": "npm run dev"
   },
   "devDependencies": {

@@ -13,6 +13,8 @@ const STATIC_ROUTES = [
   '/',
   '/about',
   '/products',
+  '/services',
+  '/portfolio',
   '/certificates',
   '/docs',
   '/videos',
@@ -48,6 +50,19 @@ async function fetchProductIds() {
   }
 }
 
+async function fetchPortfolioSlugs() {
+  try {
+    const result = await httpGet(`${API_URL}/api/portfolio`);
+    const projects = result.data || result || [];
+    const slugs = projects.map(p => p.slug).filter(Boolean);
+    console.log(`  Found ${slugs.length} portfolio projects: ${slugs.join(', ')}`);
+    return slugs;
+  } catch (err) {
+    console.error(`  Failed to fetch portfolio projects: ${err.message}`);
+    return [];
+  }
+}
+
 function saveHtml(route, html) {
   // route "/" → OUTPUT_DIR/index.html
   // route "/about" → OUTPUT_DIR/about/index.html
@@ -79,6 +94,17 @@ ${urls}
 </urlset>`;
 }
 
+function generateRobotsTxt() {
+  return `User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api
+
+Sitemap: ${SITE_URL}/sitemap.xml
+Host: ${SITE_URL.replace(/^https?:\/\//, '')}
+`;
+}
+
 // ─── Main ─────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('=== SPS Master Prerender ===');
@@ -94,7 +120,11 @@ async function main() {
   console.log('Fetching product IDs from API...');
   const productIds = await fetchProductIds();
   const productRoutes = productIds.map(id => `/product/${id}`);
-  const allRoutes = [...STATIC_ROUTES, ...productRoutes];
+
+  console.log('Fetching portfolio slugs from API...');
+  const portfolioSlugs = await fetchPortfolioSlugs();
+  const portfolioRoutes = portfolioSlugs.map(slug => `/portfolio/${slug}`);
+  const allRoutes = [...STATIC_ROUTES, ...productRoutes, ...portfolioRoutes];
 
   console.log(`\nTotal routes to render: ${allRoutes.length}`);
 
@@ -122,11 +152,11 @@ async function main() {
     try {
       page = await browser.newPage();
 
-      // Block images, fonts, media to speed up rendering
+      // Block fonts/media to speed up rendering. Keep images in markup for SEO and previews.
       await page.setRequestInterception(true);
       page.on('request', (req) => {
         const type = req.resourceType();
-        if (type === 'image' || type === 'media' || type === 'font') {
+        if (type === 'media' || type === 'font') {
           req.abort();
         } else {
           req.continue();
@@ -138,9 +168,12 @@ async function main() {
         timeout: 30000,
       });
 
-      // Extra wait to ensure React finishes rendering
-      // (accounts for 500ms LoadingScreen + API calls)
-      await new Promise(resolve => setTimeout(resolve, 3000));
+      // Extra waits ensure React, Helmet and API-driven content finish rendering.
+      await page.waitForFunction(() => {
+        const text = document.body.innerText || '';
+        return !text.includes('Загрузка') && !text.includes('Loading');
+      }, { timeout: 10000 }).catch(() => {});
+      await new Promise(resolve => setTimeout(resolve, 1500));
 
       const html = await page.content();
       const savedPath = saveHtml(route, html);
@@ -164,6 +197,23 @@ async function main() {
   const sitemapPath = path.join(OUTPUT_DIR, 'sitemap.xml');
   fs.writeFileSync(sitemapPath, sitemap, 'utf-8');
   console.log(`Sitemap saved: ${sitemapPath}`);
+
+  console.log('Generating robots.txt...');
+  const robotsPath = path.join(OUTPUT_DIR, 'robots.txt');
+  fs.writeFileSync(robotsPath, generateRobotsTxt(), 'utf-8');
+  console.log(`Robots saved: ${robotsPath}`);
+
+  const reportPath = path.join(OUTPUT_DIR, 'prerender-report.json');
+  fs.writeFileSync(reportPath, JSON.stringify({
+    generated_at: new Date().toISOString(),
+    site_url: SITE_URL,
+    frontend_url: FRONTEND_URL,
+    api_url: API_URL,
+    routes: allRoutes,
+    success_count: successCount,
+    fail_count: failCount
+  }, null, 2), 'utf-8');
+  console.log(`Report saved: ${reportPath}`);
 
   console.log(`\n=== Done ===`);
   console.log(`Success: ${successCount}/${allRoutes.length}`);

@@ -81,6 +81,7 @@ jspm_packages/
 # Temporary folders
 tmp/
 temp/
+.superpowers/
 
 # Editor directories and files
 .vscode/*
@@ -115,5 +116,4 @@ uploads/
 # Deployment files
 deploy/
 temp-deploy/
-
 

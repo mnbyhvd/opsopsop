@@ -47,13 +47,26 @@ class ApiService {
   }
 
   // About
-  async getAbout() {
-    return this.request(API_ENDPOINTS.ABOUT);
+  async getAbout(group?: string) {
+    const endpoint = group ? `${API_ENDPOINTS.ABOUT}?group=${encodeURIComponent(group)}` : API_ENDPOINTS.ABOUT;
+    return this.request(endpoint);
   }
 
   // Products
   async getProducts() {
     return this.request(API_ENDPOINTS.PRODUCTS);
+  }
+
+  async getServices() {
+    return this.request(API_ENDPOINTS.SERVICES);
+  }
+
+  async getPortfolioProjects() {
+    return this.request(API_ENDPOINTS.PORTFOLIO);
+  }
+
+  async getPortfolioProject(slug: string) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${slug}`);
   }
 
   // Videos

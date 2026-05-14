@@ -3,6 +3,8 @@ import AboutAdmin from './AboutAdmin';
 import TechnicalSpecsAdmin from './TechnicalSpecsAdmin';
 import HeroAdmin from './HeroAdmin';
 import ProductsAdmin from './ProductsAdmin';
+import ServicesAdmin from './ServicesAdmin';
+import PortfolioAdmin from './PortfolioAdmin';
 import VideosAdmin from './VideosAdmin';
 import DownloadsAdmin from './DownloadsAdmin';
 import FooterAdmin from './FooterAdmin';
@@ -12,7 +14,7 @@ import RequisitesAdmin from './RequisitesAdmin';
 import ScrollSectionAdmin from './ScrollSectionAdmin';
 import StylesAdmin from './StylesAdmin';
 
-type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section' | 'styles';
+type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'services' | 'portfolio' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section' | 'styles';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -26,6 +28,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     { id: 'about' as AdminSection, name: 'О системе', description: 'Блок с анимированными парами текст-изображение' },
     { id: 'technical' as AdminSection, name: 'Технические характеристики', description: 'Блок с цифрами и описаниями' },
     { id: 'products' as AdminSection, name: 'Продукция', description: 'Управление продуктами и их страницами' },
+    { id: 'services' as AdminSection, name: 'Услуги', description: 'Управление страницей услуг' },
+    { id: 'portfolio' as AdminSection, name: 'Портфолио', description: 'Проекты, карточки и секции проектов' },
     { id: 'videos' as AdminSection, name: 'Видео-презентации', description: 'Управление видео контентом' },
     { id: 'downloads' as AdminSection, name: 'Документы', description: 'Управление документами и сертификатами' },
     { id: 'footer' as AdminSection, name: 'Футер', description: 'Контакты и форма заявки' },
@@ -46,6 +50,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         return <TechnicalSpecsAdmin />;
       case 'products':
         return <ProductsAdmin />;
+      case 'services':
+        return <ServicesAdmin />;
+      case 'portfolio':
+        return <PortfolioAdmin />;
       case 'videos':
         return <VideosAdmin />;
       case 'downloads':

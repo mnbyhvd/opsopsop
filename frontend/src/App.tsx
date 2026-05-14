@@ -10,6 +10,9 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Products from './pages/Products';
 import ProductDetail from './pages/ProductDetail';
+import Services from './pages/Services';
+import Portfolio from './pages/Portfolio';
+import PortfolioDetail from './pages/PortfolioDetail';
 import Certificates from './pages/Certificates';
 import Documentation from './pages/Documentation';
 import Videos from './pages/Videos';
@@ -46,6 +49,9 @@ const App: React.FC = () => {
               <Route path="/about" element={<About />} />
               <Route path="/products" element={<Products />} />
               <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/services" element={<Services />} />
+              <Route path="/portfolio" element={<Portfolio />} />
+              <Route path="/portfolio/:slug" element={<PortfolioDetail />} />
               <Route path="/certificates" element={<Certificates />} />
               <Route path="/docs" element={<Documentation />} />
               <Route path="/videos" element={<Videos />} />
