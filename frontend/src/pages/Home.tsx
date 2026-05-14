@@ -14,8 +14,8 @@ const Home: React.FC = () => {
   return (
     <div className="overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
       <Helmet>
-        <title>СПС МАСТЕР — Системы пожарной сигнализации</title>
-        <meta name="description" content="СПС МАСТЕР — профессиональные системы пожарной и охранной сигнализации. Надёжное оборудование, сертифицированное производство, поддержка 24/7." />
+        <title>Автоматическая система пожарной сигнализации - Мастер</title>
+        <meta name="description" content="Современная интеллектуальная система пожарной сигнализации с интуитивным управлением, которая обеспечивает непрерывный мониторинг и быстрое реагирование." />
         <link rel="canonical" href="https://sps-master.ru/" />
       </Helmet>
       {/* Hero Section */}
