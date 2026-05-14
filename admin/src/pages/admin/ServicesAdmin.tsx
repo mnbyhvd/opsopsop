@@ -30,6 +30,7 @@ const ServicesAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
   const loadItems = async () => {
     setLoading(true);
@@ -45,23 +46,35 @@ const ServicesAdmin: React.FC = () => {
   }, []);
 
   const uploadFile = async (file: File): Promise<string> => {
-    const formData = new FormData();
-    formData.append('file', file);
-    const response = await fetch('/api/upload', { method: 'POST', body: formData });
-    if (!response.ok) throw new Error('Ошибка загрузки файла');
-    const result = await response.json();
-    return result.data.url;
+    const response = await apiService.uploadFile(file, 'image');
+
+    if (!response.success) {
+      throw new Error(response.error || 'Ошибка загрузки файла');
+    }
+
+    const data = response.data as { url?: string; publicUrl?: string } | undefined;
+    const imageUrl = data?.url || data?.publicUrl;
+
+    if (!imageUrl) {
+      throw new Error('Сервер не вернул URL загруженного файла');
+    }
+
+    return imageUrl;
   };
 
   const handleImageUpload = async (file: File) => {
     if (!editingItem) return;
     setUploading(true);
+    setUploadStatus(null);
     try {
       const imageUrl = await uploadFile(file);
       setEditingItem({ ...editingItem, image_url: imageUrl });
+      setUploadStatus(`Файл загружен: ${imageUrl}. Нажмите "Сохранить", чтобы привязать его к услуге.`);
     } catch (error) {
       console.error('Service image upload error:', error);
-      alert('Ошибка загрузки изображения');
+      const message = error instanceof Error ? error.message : 'Ошибка загрузки изображения';
+      setUploadStatus(message);
+      alert(`Ошибка загрузки изображения: ${message}`);
     } finally {
       setUploading(false);
     }
@@ -69,11 +82,13 @@ const ServicesAdmin: React.FC = () => {
 
   const handleCreate = () => {
     setEditingItem(emptyService(items.length + 1));
+    setUploadStatus(null);
     setIsCreating(true);
   };
 
   const handleEdit = (item: ServiceBlock) => {
     setEditingItem({ ...item });
+    setUploadStatus(null);
     setIsCreating(false);
   };
 
@@ -87,6 +102,7 @@ const ServicesAdmin: React.FC = () => {
     if (response.success) {
       await loadItems();
       setEditingItem(null);
+      setUploadStatus(null);
       setIsCreating(false);
     } else {
       alert(response.error || 'Ошибка сохранения услуги');
@@ -182,8 +198,31 @@ const ServicesAdmin: React.FC = () => {
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Изображение</label>
                 <FileUpload onFileSelect={handleImageUpload} accept="image/*" maxSize={10} disabled={uploading} showPreview />
+                {uploading && (
+                  <div className="mt-2 text-sm" style={{ color: '#B8B8B8' }}>
+                    Загружаем файл...
+                  </div>
+                )}
+                {uploadStatus && (
+                  <div className="mt-2 text-sm" style={{ color: uploadStatus.startsWith('Файл загружен') ? '#22C55E' : '#D71920' }}>
+                    {uploadStatus}
+                  </div>
+                )}
                 <input className="admin-input mt-3" value={editingItem.image_url || ''} onChange={e => setEditingItem({ ...editingItem, image_url: e.target.value })} placeholder="URL изображения" />
-                {editingItem.image_url && <img src={resolveMediaUrl(editingItem.image_url)} alt="Preview" className="mt-3 w-40 h-28 object-cover rounded-lg" />}
+                {editingItem.image_url && (
+                  <div className="mt-3">
+                    <img src={resolveMediaUrl(editingItem.image_url)} alt="Preview" className="w-40 h-28 object-cover rounded-lg" />
+                    <a
+                      href={resolveMediaUrl(editingItem.image_url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-sm underline"
+                      style={{ color: '#B8B8B8' }}
+                    >
+                      Открыть файл
+                    </a>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Порядок</label>
@@ -197,7 +236,7 @@ const ServicesAdmin: React.FC = () => {
 
             <div className="flex gap-4 mt-8">
               <button onClick={handleSave} className="admin-button-success" disabled={saving}>{saving ? 'Сохранение...' : 'Сохранить'}</button>
-              <button onClick={() => setEditingItem(null)} className="admin-button-secondary">Отмена</button>
+              <button onClick={() => { setEditingItem(null); setUploadStatus(null); }} className="admin-button-secondary">Отмена</button>
             </div>
           </div>
         </div>

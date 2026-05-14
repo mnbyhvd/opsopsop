@@ -11,14 +11,20 @@ interface ApiResponse<T> {
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
     try {
+      const { headers, ...requestOptions } = options;
+      const isFormData = options.body instanceof FormData;
+      const requestHeaders = new Headers(headers);
+
+      requestHeaders.set('Cache-Control', 'no-cache');
+      requestHeaders.set('Pragma', 'no-cache');
+
+      if (!isFormData && !requestHeaders.has('Content-Type')) {
+        requestHeaders.set('Content-Type', 'application/json');
+      }
+
       const response = await fetch(endpoint, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache',
-          'Pragma': 'no-cache',
-          ...options.headers,
-        },
-        ...options,
+        ...requestOptions,
+        headers: requestHeaders,
       });
 
       if (!response.ok) {
@@ -353,6 +359,7 @@ class ApiService {
     return this.request(API_ENDPOINTS.UPLOAD, {
       method: 'POST',
       body: formData,
+      cache: 'no-store',
     });
   }
 

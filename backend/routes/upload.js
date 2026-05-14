@@ -4,11 +4,13 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 
+const uploadsRoot = path.join(__dirname, '..', 'uploads');
+
 // Создаем папки для загрузки если их нет
 const uploadDirs = {
-  images: 'uploads/images',
-  videos: 'uploads/videos',
-  documents: 'uploads/documents'
+  images: path.join(uploadsRoot, 'images'),
+  videos: path.join(uploadsRoot, 'videos'),
+  documents: path.join(uploadsRoot, 'documents')
 };
 
 Object.values(uploadDirs).forEach(dir => {
@@ -20,16 +22,14 @@ Object.values(uploadDirs).forEach(dir => {
 // Настройка multer для загрузки файлов
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    let uploadPath = 'uploads/';
-    
+    let uploadPath = uploadDirs.documents;
+
     if (file.mimetype.startsWith('image/')) {
-      uploadPath += 'images/';
+      uploadPath = uploadDirs.images;
     } else if (file.mimetype.startsWith('video/')) {
-      uploadPath += 'videos/';
-    } else {
-      uploadPath += 'documents/';
+      uploadPath = uploadDirs.videos;
     }
-    
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -73,6 +73,11 @@ const upload = multer({
     fileSize: 100 * 1024 * 1024 // 100MB
   }
 });
+
+function getPublicUploadUrl(filePath) {
+  const relativePath = path.relative(uploadsRoot, filePath).split(path.sep).join('/');
+  return `/uploads/${relativePath}`;
+}
 
 // POST /api/upload - загрузка файла
 router.post('/', (req, res) => {
@@ -153,7 +158,7 @@ router.post('/', (req, res) => {
       });
 
     // Формируем URL для доступа к файлу
-    const fileUrl = `/uploads/${req.file.path.split('uploads/')[1]}`;
+    const fileUrl = getPublicUploadUrl(req.file.path);
     
     res.json({
       success: true,
@@ -162,7 +167,8 @@ router.post('/', (req, res) => {
         originalName: req.file.originalname,
         mimetype: req.file.mimetype,
         size: req.file.size,
-        url: fileUrl
+        url: fileUrl,
+        publicUrl: fileUrl
       }
     });
   } catch (error) {
@@ -190,7 +196,8 @@ router.post('/multiple', upload.array('files', 10), (req, res) => {
       originalName: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
-      url: `/uploads/${file.path.split('uploads/')[1]}`
+      url: getPublicUploadUrl(file.path),
+      publicUrl: getPublicUploadUrl(file.path)
     }));
     
     res.json({
