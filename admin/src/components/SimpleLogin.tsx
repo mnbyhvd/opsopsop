@@ -67,10 +67,6 @@ const SimpleLogin: React.FC<SimpleLoginProps> = ({ onLogin, error }) => {
           </button>
         </form>
         
-        <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Логин: <strong>admin</strong></p>
-          <p>Пароль: <strong>MasterSPS2024!</strong></p>
-        </div>
       </div>
     </div>
   );
