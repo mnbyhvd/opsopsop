@@ -84,6 +84,11 @@ class ApiService {
     return this.request(API_ENDPOINTS.TECHNICAL_SPECS);
   }
 
+  // Homepage Blocks
+  async getHomeBlocks() {
+    return this.request(API_ENDPOINTS.HOME_BLOCKS);
+  }
+
   // Advantages
   async getAdvantages() {
     return this.request(API_ENDPOINTS.ADVANTAGES);

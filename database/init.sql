@@ -298,6 +298,18 @@ CREATE TABLE IF NOT EXISTS scroll_section_text_blocks (
     FOREIGN KEY (scroll_section_id) REFERENCES scroll_section(id) ON DELETE CASCADE
 );
 
+-- Create home_blocks table
+CREATE TABLE IF NOT EXISTS home_blocks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    block_key VARCHAR(100) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Create requisites table
 CREATE TABLE IF NOT EXISTS requisites (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -447,6 +459,17 @@ INSERT IGNORE INTO scroll_section_text_blocks (scroll_section_id, title, descrip
 (1, 'Цифровой протокол M105', 'Высокоскоростная передача данных между устройствами с полным контролем состояния', 2),
 (1, 'Кольцевая топология', 'Отказоустойчивая архитектура с автоматическим обходом поврежденных участков', 3);
 
+-- Insert homepage block visibility defaults
+INSERT IGNORE INTO home_blocks (block_key, title, description, sort_order, is_active) VALUES
+('hero', 'Hero секция', 'Главный экран сайта с основным заголовком и CTA.', 1, true),
+('about_main', 'О системе', 'Первый информационный блок о системе.', 2, true),
+('technical_specs', 'Технические характеристики', 'Блок технических характеристик в цифрах.', 3, true),
+('about_secondary', 'Решения', 'Второй информационный блок с отдельной группой данных.', 4, true),
+('products', 'Продукция', 'Блок продукции на главной странице.', 5, true),
+('video_presentations', 'Видео-презентации', 'Блок видео-презентаций на главной странице.', 6, true),
+('downloads', 'Файлы для скачивания', 'Блок документов, сертификатов и презентаций.', 7, true),
+('scroll_video', 'Scroll-блок с видео', 'Видео-блок со скролл-анимацией перед формой связи.', 8, true);
+
 -- Insert sample requisites data
 INSERT IGNORE INTO requisites (company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address, postal_address, phone, email, bank_name, bik, bank_account, correspondent_account, director_name, director_position) VALUES
 ('ООО "АПС МАСТЕР"', 'Общество с ограниченной ответственностью "АПС МАСТЕР"', '1234567890', '123456789', '1234567890123', 'г. Москва, ул. Примерная, д. 1, оф. 101', 'г. Москва, ул. Примерная, д. 1, оф. 101', 'г. Москва, ул. Примерная, д. 1, оф. 101', '+7 (495) 123-45-67', 'info@aps-master.ru', 'ПАО "Сбербанк"', '044525225', '40702810123456789012', '30101810400000000225', 'Иванов Иван Иванович', 'Генеральный директор');
@@ -525,6 +548,8 @@ CREATE INDEX idx_portfolio_projects_sort ON portfolio_projects(sort_order);
 CREATE INDEX idx_portfolio_sections_project ON portfolio_sections(project_id);
 CREATE INDEX idx_portfolio_sections_active ON portfolio_sections(is_active);
 CREATE INDEX idx_portfolio_sections_sort ON portfolio_sections(sort_order);
+
+CREATE INDEX idx_home_blocks_sort ON home_blocks(sort_order);
 
 CREATE INDEX idx_product_images_product ON product_images(product_id);
 CREATE INDEX idx_product_images_active ON product_images(is_active);

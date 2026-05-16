@@ -7,6 +7,7 @@ import ServicesAdmin from './ServicesAdmin';
 import PortfolioAdmin from './PortfolioAdmin';
 import VideosAdmin from './VideosAdmin';
 import DownloadsAdmin from './DownloadsAdmin';
+import HomeBlocksAdmin from './HomeBlocksAdmin';
 import FooterAdmin from './FooterAdmin';
 import LeadsAdmin from './LeadsAdmin';
 import ProductModalsAdmin from './ProductModalsAdmin';
@@ -14,7 +15,7 @@ import RequisitesAdmin from './RequisitesAdmin';
 import ScrollSectionAdmin from './ScrollSectionAdmin';
 import StylesAdmin from './StylesAdmin';
 
-type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'services' | 'portfolio' | 'videos' | 'downloads' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section' | 'styles';
+type AdminSection = 'hero' | 'about' | 'technical' | 'products' | 'services' | 'portfolio' | 'videos' | 'downloads' | 'home-blocks' | 'footer' | 'leads' | 'product-modals' | 'requisites' | 'scroll-section' | 'styles';
 
 interface AdminDashboardProps {
   onLogout: () => void;
@@ -32,6 +33,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     { id: 'portfolio' as AdminSection, name: 'Портфолио', description: 'Проекты, карточки и секции проектов' },
     { id: 'videos' as AdminSection, name: 'Видео-презентации', description: 'Управление видео контентом' },
     { id: 'downloads' as AdminSection, name: 'Документы', description: 'Управление документами и сертификатами' },
+    { id: 'home-blocks' as AdminSection, name: 'Блоки главной', description: 'Включение и скрытие секций главной страницы' },
     { id: 'footer' as AdminSection, name: 'Футер', description: 'Контакты и форма заявки' },
     { id: 'leads' as AdminSection, name: 'Заявки', description: 'Управление заявками с сайта' },
     { id: 'product-modals' as AdminSection, name: 'Модальные окна', description: 'Управление модальными окнами продуктов' },
@@ -58,6 +60,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
         return <VideosAdmin />;
       case 'downloads':
         return <DownloadsAdmin />;
+      case 'home-blocks':
+        return <HomeBlocksAdmin />;
       case 'footer':
         return <FooterAdmin />;
       case 'leads':

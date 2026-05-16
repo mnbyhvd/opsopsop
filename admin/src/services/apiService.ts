@@ -298,6 +298,18 @@ class ApiService {
     return this.request(API_ENDPOINTS.TECHNICAL_SPECS);
   }
 
+  // Homepage Blocks
+  async getHomeBlocks() {
+    return this.request(API_ENDPOINTS.HOME_BLOCKS);
+  }
+
+  async updateHomeBlock(blockKey: string, blockData: any) {
+    return this.request(`${API_ENDPOINTS.HOME_BLOCKS}/${blockKey}`, {
+      method: 'PUT',
+      body: JSON.stringify(blockData),
+    });
+  }
+
   // Advantages
   async getAdvantages() {
     return this.request(API_ENDPOINTS.ADVANTAGES);

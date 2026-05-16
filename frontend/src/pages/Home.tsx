@@ -7,9 +7,10 @@ import ProductsSection from '../components/ProductsSection';
 import VideoPresentationsSection from '../components/VideoPresentationsSection';
 import DownloadInfoSection from '../components/DownloadInfoSection';
 import ScrollSection from '../components/ScrollSection';
-import PageContainer from '../components/PageContainer';
+import { useHomeBlocks } from '../hooks/useHomeBlocks';
 
 const Home: React.FC = () => {
+  const { isEnabled } = useHomeBlocks();
 
   return (
     <div className="overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
@@ -19,27 +20,27 @@ const Home: React.FC = () => {
         <link rel="canonical" href="https://sps-master.ru/" />
       </Helmet>
       {/* Hero Section */}
-      <HeroSection />
+      {isEnabled('hero') && <HeroSection />}
 
       {/* About Section */}
-      <AboutSection />
+      {isEnabled('about_main') && <AboutSection />}
 
       {/* Technical Specs Section */}
-      <TechnicalSpecsSection />
+      {isEnabled('technical_specs') && <TechnicalSpecsSection />}
 
       {/* Additional About Section */}
-      <AboutSection group="secondary" label="решения" />
+      {isEnabled('about_secondary') && <AboutSection group="secondary" label="решения" />}
 
       {/* Products Section */}
-      <ProductsSection />
+      {isEnabled('products') && <ProductsSection />}
 
       {/* Video Presentations Section */}
-      <VideoPresentationsSection />
+      {isEnabled('video_presentations') && <VideoPresentationsSection />}
 
 
       {/* Download Info Section */}
-      <DownloadInfoSection />
-      <ScrollSection />
+      {isEnabled('downloads') && <DownloadInfoSection />}
+      {isEnabled('scroll_video') && <ScrollSection />}
     </div>
   );
 };

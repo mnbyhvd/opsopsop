@@ -17,6 +17,7 @@ export const API_ENDPOINTS = {
   ABOUT: `${API_BASE_URL}/api/about`,
   ADVANTAGES: `${API_BASE_URL}/api/advantages`,
   TECHNICAL_SPECS: `${API_BASE_URL}/api/technical-specs`,
+  HOME_BLOCKS: `${API_BASE_URL}/api/home-blocks`,
   FOOTER: `${API_BASE_URL}/api/footer`,
   FOOTER_SETTINGS: `${API_BASE_URL}/api/footer-settings`,
   PRODUCT_MODALS: `${API_BASE_URL}/api/product-modals`,

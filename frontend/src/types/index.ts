@@ -140,6 +140,17 @@ export interface PortfolioProject {
   updated_at: string;
 }
 
+export interface HomeBlock {
+  id: number;
+  block_key: string;
+  title: string;
+  description?: string | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 // Hook return types
 export interface UseNavigationReturn {
   navigation: NavigationItem[];
