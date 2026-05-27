@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ShoppingBag } from 'lucide-react';
+import { Menu, MessageSquare, X } from 'lucide-react';
 import { useNavigation } from '../hooks/useNavigation';
 import { NavigationProps } from '../types';
 
@@ -82,7 +82,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
             </Link>
           </div>
 
-          {/* Right: Buy button - только на десктопе (lg и выше) */}
+          {/* Right: request button - только на десктопе (lg и выше) */}
           <div className="hidden lg:flex items-center gap-4">
             <button
               onClick={scrollToContactForm}
@@ -112,8 +112,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                 target.style.borderColor = 'var(--button-primary-border)';
               }}
             >
-              <ShoppingBag size={18} />
-              Купить
+              <MessageSquare size={18} />
+              Оставить заявку
             </button>
           </div>
 
@@ -147,7 +147,7 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                 </Link>
               ))}
               
-              {/* Кнопка Купить в мобильном меню */}
+              {/* Кнопка заявки в мобильном меню */}
               <button
                 onClick={() => {
                   closeMobileMenu();
@@ -177,8 +177,8 @@ const Navigation: React.FC<NavigationProps> = ({ className = '' }) => {
                   target.style.border = `1px solid var(--button-primary-border)`;
                 }}
               >
-                <ShoppingBag size={16} />
-                Купить
+                <MessageSquare size={16} />
+                Оставить заявку
               </button>
             </div>
           </div>

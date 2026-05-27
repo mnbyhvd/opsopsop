@@ -1,14 +1,10 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SeoHead from '../components/SeoHead';
 
 const About: React.FC = () => {
   return (
     <div className="min-h-screen py-8">
-      <Helmet>
-        <title>О компании | СПС МАСТЕР</title>
-        <meta name="description" content="О компании СПС МАСТЕР — производитель систем пожарной и охранной сигнализации. История, команда, ценности." />
-        <link rel="canonical" href="https://sps-master.ru/about" />
-      </Helmet>
+      <SeoHead pageKey="about" />
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">О системе АПС МАСТЕР</h1>
         

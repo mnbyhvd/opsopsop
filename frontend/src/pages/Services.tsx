@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SeoHead from '../components/SeoHead';
 import { motion } from 'framer-motion';
 import PageContainer from '../components/PageContainer';
 import { useServices } from '../hooks/useServices';
@@ -10,11 +10,7 @@ const Services: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)' }}>
-      <Helmet>
-        <title>Услуги | СПС МАСТЕР</title>
-        <meta name="description" content="Услуги СПС МАСТЕР: проектирование, монтаж, пусконаладка, обслуживание и экспертиза систем пожарной безопасности." />
-        <link rel="canonical" href="https://sps-master.ru/services" />
-      </Helmet>
+      <SeoHead pageKey="services" />
 
       <PageContainer>
         <div className="col-start-1 col-end-13 mb-12 px-4 md:px-0">

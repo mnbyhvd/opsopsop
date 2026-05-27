@@ -89,6 +89,11 @@ class ApiService {
     return this.request(API_ENDPOINTS.HOME_BLOCKS);
   }
 
+  // Page Meta
+  async getPageMeta(pageKey: string) {
+    return this.request(`${API_ENDPOINTS.PAGE_META}/${pageKey}`);
+  }
+
   // Advantages
   async getAdvantages() {
     return this.request(API_ENDPOINTS.ADVANTAGES);

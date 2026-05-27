@@ -7,11 +7,10 @@ import { resolveMediaUrl } from '../utils/media';
 
 interface AboutSectionProps {
   group?: 'main' | 'secondary' | string;
-  label?: string;
   className?: string;
 }
 
-const AboutSection: React.FC<AboutSectionProps> = ({ group = 'main', label = 'о системе', className = '' }) => {
+const AboutSection: React.FC<AboutSectionProps> = ({ group = 'main', className = '' }) => {
   const { aboutItems, loading } = useAbout(group);
   const [isMobile, setIsMobile] = useState(false);
   
@@ -103,16 +102,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ group = 'main', label = 'о
             // Добавляем отступ от начала секции до колонки изображений
             const sectionRect = sectionRef.current.getBoundingClientRect();
             const columnTopInSection = imageColumnRect.top - sectionRect.top;
-            
-            // Учитываем высоту заголовка "о системе" и отступы
-            const textContainer = sectionRef.current.querySelector('[data-text-container]');
-            let headerHeight = 0;
-            if (textContainer) {
-              const headerElement = textContainer.querySelector('h2');
-              if (headerElement) {
-                headerHeight = headerElement.getBoundingClientRect().height + 32; 
-              }
-            }
             
             // Вычисляем высоту: (количество картинок - 1) × (высота картинки + отступ)
             const images = imageContainer.querySelectorAll('[data-image-item]');
@@ -289,16 +278,6 @@ const AboutSection: React.FC<AboutSectionProps> = ({ group = 'main', label = 'о
             }}
           >
         <div className="w-full">
-          <div className="about-title-block" style={{ marginBottom: '32px' }}>
-            <div className="about-title-dot"></div>
-            <h2 
-              className="about-title" 
-              style={{ color: 'var(--accent)' }}
-            >
-              {label}
-            </h2>
-          </div>
-          
           {/* Контейнер для текста с эффектом dissolve */}
           <div className="relative h-96">
             {activeItem && (

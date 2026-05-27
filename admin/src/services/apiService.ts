@@ -310,6 +310,18 @@ class ApiService {
     });
   }
 
+  // Page Meta
+  async getPageMeta() {
+    return this.request(API_ENDPOINTS.PAGE_META);
+  }
+
+  async updatePageMeta(pageKey: string, pageMetaData: any) {
+    return this.request(`${API_ENDPOINTS.PAGE_META}/${pageKey}`, {
+      method: 'PUT',
+      body: JSON.stringify(pageMetaData),
+    });
+  }
+
   // Advantages
   async getAdvantages() {
     return this.request(API_ENDPOINTS.ADVANTAGES);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SeoHead from '../components/SeoHead';
 import HeroSection from '../components/HeroSection';
 import AboutSection from '../components/AboutSection';
 import TechnicalSpecsSection from '../components/TechnicalSpecsSection';
@@ -14,11 +14,7 @@ const Home: React.FC = () => {
 
   return (
     <div className="overflow-x-hidden" style={{ backgroundColor: 'var(--bg)' }}>
-      <Helmet>
-        <title>Автоматическая система пожарной сигнализации - Мастер</title>
-        <meta name="description" content="Современная интеллектуальная система пожарной сигнализации с интуитивным управлением, которая обеспечивает непрерывный мониторинг и быстрое реагирование." />
-        <link rel="canonical" href="https://sps-master.ru/" />
-      </Helmet>
+      <SeoHead pageKey="home" />
       {/* Hero Section */}
       {isEnabled('hero') && <HeroSection />}
 
@@ -29,7 +25,7 @@ const Home: React.FC = () => {
       {isEnabled('technical_specs') && <TechnicalSpecsSection />}
 
       {/* Additional About Section */}
-      {isEnabled('about_secondary') && <AboutSection group="secondary" label="решения" />}
+      {isEnabled('about_secondary') && <AboutSection group="secondary" />}
 
       {/* Products Section */}
       {isEnabled('products') && <ProductsSection />}

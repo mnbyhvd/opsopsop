@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SeoHead from '../components/SeoHead';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import PageContainer from '../components/PageContainer';
@@ -11,11 +11,7 @@ const Portfolio: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)' }}>
-      <Helmet>
-        <title>Портфолио | СПС МАСТЕР</title>
-        <meta name="description" content="Портфолио СПС МАСТЕР: реализованные проекты пожарной сигнализации, СОУЭ, пожаротушения и комплексной противопожарной защиты." />
-        <link rel="canonical" href="https://sps-master.ru/portfolio" />
-      </Helmet>
+      <SeoHead pageKey="portfolio" />
 
       <PageContainer>
         <div className="col-start-1 col-end-13 mb-12 px-4 md:px-0">

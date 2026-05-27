@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
+import SeoHead from '../components/SeoHead';
 import PageContainer from '../components/PageContainer';
 import ProductImageCarousel from '../components/ProductImageCarousel';
 import ProductDocuments from '../components/ProductDocuments';
@@ -51,11 +51,11 @@ const ProductDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: 'var(--bg)' }}>
-      <Helmet>
-        <title>{product.name} | СПС МАСТЕР</title>
-        <meta name="description" content={product.description ? product.description.slice(0, 160) : `${product.name} — система пожарной сигнализации от СПС МАСТЕР.`} />
-        <link rel="canonical" href={`https://sps-master.ru/product/${product.id}`} />
-      </Helmet>
+      <SeoHead
+        title={`${product.name} | СПС МАСТЕР`}
+        description={product.description ? product.description.slice(0, 160) : `${product.name} — система пожарной сигнализации от СПС МАСТЕР.`}
+        canonicalPath={`/product/${product.id}`}
+      />
 
       {/* Кнопка назад */}
       <div className="pt-24">

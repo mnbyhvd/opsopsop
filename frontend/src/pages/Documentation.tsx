@@ -1,15 +1,11 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
+import SeoHead from '../components/SeoHead';
 import { Download } from 'lucide-react';
 
 const Documentation: React.FC = () => {
   return (
     <div className="min-h-screen py-8">
-      <Helmet>
-        <title>Документация | СПС МАСТЕР</title>
-        <meta name="description" content="Техническая документация, руководства по установке и эксплуатации оборудования СПС МАСТЕР. Скачать паспорта и инструкции." />
-        <link rel="canonical" href="https://sps-master.ru/docs" />
-      </Helmet>
+      <SeoHead pageKey="docs" />
       <div className="container mx-auto px-4">
         <h1 className="text-4xl font-bold text-center mb-12">Документация</h1>
         

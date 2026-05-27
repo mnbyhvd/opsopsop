@@ -1,7 +1,7 @@
 import React from 'react';
-import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import SeoHead from '../components/SeoHead';
 import PageContainer from '../components/PageContainer';
 import { usePortfolioProject } from '../hooks/usePortfolio';
 import { resolveMediaUrl } from '../utils/media';
@@ -34,11 +34,11 @@ const PortfolioDetail: React.FC = () => {
 
   return (
     <div className="min-h-screen pt-24 pb-20" style={{ backgroundColor: 'var(--bg)' }}>
-      <Helmet>
-        <title>{metaTitle}</title>
-        <meta name="description" content={metaDescription} />
-        <link rel="canonical" href={`https://sps-master.ru/portfolio/${project.slug}`} />
-      </Helmet>
+      <SeoHead
+        title={metaTitle}
+        description={metaDescription}
+        canonicalPath={`/portfolio/${project.slug}`}
+      />
 
       <PageContainer>
         <div className="col-start-1 col-end-13 px-4 md:px-0 mb-20">

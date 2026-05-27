@@ -151,6 +151,18 @@ export interface HomeBlock {
   updated_at: string;
 }
 
+export interface PageMeta {
+  id: number;
+  page_key: string;
+  path: string;
+  label: string;
+  title: string;
+  description: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
 // Hook return types
 export interface UseNavigationReturn {
   navigation: NavigationItem[];

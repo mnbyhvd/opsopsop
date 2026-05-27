@@ -93,6 +93,7 @@ app.use('/api/requisites', require('./routes/requisites'));
 app.use('/api/scroll-section', require('./routes/scrollSection'));
 app.use('/api/about', require('./routes/about'));
 app.use('/api/home-blocks', require('./routes/homeBlocks'));
+app.use('/api/page-meta', require('./routes/pageMeta'));
 app.use('/api/advantages', require('./routes/advantages'));
 app.use('/api/technical-specs', require('./routes/technicalSpecs'));
 app.use('/api/hero', require('./routes/hero'));

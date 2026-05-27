@@ -310,6 +310,19 @@ CREATE TABLE IF NOT EXISTS home_blocks (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- Create page_meta table
+CREATE TABLE IF NOT EXISTS page_meta (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    page_key VARCHAR(100) NOT NULL UNIQUE,
+    path VARCHAR(255) NOT NULL,
+    label VARCHAR(255) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    sort_order INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
 -- Create requisites table
 CREATE TABLE IF NOT EXISTS requisites (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -470,6 +483,20 @@ INSERT IGNORE INTO home_blocks (block_key, title, description, sort_order, is_ac
 ('downloads', 'Файлы для скачивания', 'Блок документов, сертификатов и презентаций.', 7, true),
 ('scroll_video', 'Scroll-блок с видео', 'Видео-блок со скролл-анимацией перед формой связи.', 8, true);
 
+-- Insert page SEO defaults
+INSERT IGNORE INTO page_meta (page_key, path, label, title, description, sort_order) VALUES
+('home', '/', 'Главная', 'Автоматическая система пожарной сигнализации - Мастер', 'Современная интеллектуальная система пожарной сигнализации с интуитивным управлением, которая обеспечивает непрерывный мониторинг и быстрое реагирование.', 1),
+('products', '/products', 'Продукция', 'Продукция | СПС МАСТЕР', 'Каталог продукции СПС МАСТЕР — приборы пожарной сигнализации, извещатели, блоки управления. Сертифицированное оборудование для объектов любой сложности.', 2),
+('services', '/services', 'Услуги', 'Услуги | СПС МАСТЕР', 'Услуги СПС МАСТЕР: проектирование, монтаж, пусконаладка, обслуживание и экспертиза систем пожарной безопасности.', 3),
+('portfolio', '/portfolio', 'Портфолио', 'Портфолио | СПС МАСТЕР', 'Портфолио СПС МАСТЕР: реализованные проекты пожарной сигнализации, СОУЭ, пожаротушения и комплексной противопожарной защиты.', 4),
+('videos', '/videos', 'Видео-презентации', 'Видеопрезентации | СПС МАСТЕР', 'Видеопрезентации и обзоры оборудования СПС МАСТЕР. Смотрите как работают наши системы пожарной сигнализации.', 5),
+('requisites', '/requisites', 'Реквизиты', 'Реквизиты | СПС МАСТЕР', 'Реквизиты компании СПС МАСТЕР — ИНН, КПП, ОГРН, банковские реквизиты и контактные данные для документооборота.', 6),
+('about', '/about', 'О компании', 'О компании | СПС МАСТЕР', 'О компании СПС МАСТЕР — производитель систем пожарной и охранной сигнализации. История, команда, ценности.', 7),
+('certificates', '/certificates', 'Сертификаты', 'Сертификаты | СПС МАСТЕР', 'Сертификаты и лицензии СПС МАСТЕР. Вся продукция сертифицирована и соответствует требованиям пожарной безопасности РФ.', 8),
+('docs', '/docs', 'Документация', 'Документация | СПС МАСТЕР', 'Техническая документация, руководства по установке и эксплуатации оборудования СПС МАСТЕР. Скачать паспорта и инструкции.', 9),
+('support', '/support', 'Поддержка', 'Поддержка | СПС МАСТЕР', 'Техническая поддержка СПС МАСТЕР — телефон, email, форма обратной связи. Помогаем с монтажом, настройкой и обслуживанием систем пожарной сигнализации.', 10),
+('buy', '/buy', 'Оставить заявку', 'Оставить заявку | СПС МАСТЕР', 'Оставить заявку на системы пожарной сигнализации СПС МАСТЕР. Свяжемся с вами и подготовим предложение под задачи объекта.', 11);
+
 -- Insert sample requisites data
 INSERT IGNORE INTO requisites (company_name, legal_name, inn, kpp, ogrn, legal_address, actual_address, postal_address, phone, email, bank_name, bik, bank_account, correspondent_account, director_name, director_position) VALUES
 ('ООО "АПС МАСТЕР"', 'Общество с ограниченной ответственностью "АПС МАСТЕР"', '1234567890', '123456789', '1234567890123', 'г. Москва, ул. Примерная, д. 1, оф. 101', 'г. Москва, ул. Примерная, д. 1, оф. 101', 'г. Москва, ул. Примерная, д. 1, оф. 101', '+7 (495) 123-45-67', 'info@aps-master.ru', 'ПАО "Сбербанк"', '044525225', '40702810123456789012', '30101810400000000225', 'Иванов Иван Иванович', 'Генеральный директор');
@@ -550,6 +577,7 @@ CREATE INDEX idx_portfolio_sections_active ON portfolio_sections(is_active);
 CREATE INDEX idx_portfolio_sections_sort ON portfolio_sections(sort_order);
 
 CREATE INDEX idx_home_blocks_sort ON home_blocks(sort_order);
+CREATE INDEX idx_page_meta_sort ON page_meta(sort_order);
 
 CREATE INDEX idx_product_images_product ON product_images(product_id);
 CREATE INDEX idx_product_images_active ON product_images(is_active);
