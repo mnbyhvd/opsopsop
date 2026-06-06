@@ -153,6 +153,30 @@ class ApiService {
     });
   }
 
+  async getPortfolioDocuments(projectId: number, all: boolean = true) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${projectId}/documents${all ? '?all=true' : ''}`);
+  }
+
+  async createPortfolioDocument(projectId: number, documentData: any) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/${projectId}/documents`, {
+      method: 'POST',
+      body: JSON.stringify(documentData),
+    });
+  }
+
+  async updatePortfolioDocument(id: number, documentData: any) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/documents/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(documentData),
+    });
+  }
+
+  async deletePortfolioDocument(id: number) {
+    return this.request(`${API_ENDPOINTS.PORTFOLIO}/documents/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
   async getProduct(id: number) {
     return this.request(`${API_ENDPOINTS.PRODUCTS}/${id}`);
   }
@@ -173,6 +197,30 @@ class ApiService {
 
   async deleteProduct(id: number) {
     return this.request(`${API_ENDPOINTS.PRODUCTS}/${id}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async getProductContentBlocks(all: boolean = false) {
+    return this.request(`${API_ENDPOINTS.PRODUCT_CONTENT_BLOCKS}${all ? '?all=true' : ''}`);
+  }
+
+  async createProductContentBlock(blockData: any) {
+    return this.request(API_ENDPOINTS.PRODUCT_CONTENT_BLOCKS, {
+      method: 'POST',
+      body: JSON.stringify(blockData),
+    });
+  }
+
+  async updateProductContentBlock(id: number, blockData: any) {
+    return this.request(`${API_ENDPOINTS.PRODUCT_CONTENT_BLOCKS}/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(blockData),
+    });
+  }
+
+  async deleteProductContentBlock(id: number) {
+    return this.request(`${API_ENDPOINTS.PRODUCT_CONTENT_BLOCKS}/${id}`, {
       method: 'DELETE',
     });
   }

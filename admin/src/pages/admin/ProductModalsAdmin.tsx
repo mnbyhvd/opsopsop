@@ -23,8 +23,14 @@ interface ProductArea {
   color: string;
 }
 
+interface Product {
+  id: number;
+  name: string;
+}
+
 const ProductModalsAdmin: React.FC = () => {
   const [modals, setModals] = useState<ProductModal[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [areas] = useState<ProductArea[]>([
     { id: 'area-1', name: 'ППКУП', color: '#00ff22' },
     { id: 'area-2', name: 'Датчик', color: '#a600ff' },
@@ -43,6 +49,22 @@ const ProductModalsAdmin: React.FC = () => {
   useEffect(() => {
     fetchModals();
   }, [selectedArea]);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('/api/products');
+      if (response.ok) {
+        const data = await response.json();
+        setProducts(data.data || []);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
 
   const fetchModals = async () => {
     setLoading(true);
@@ -425,6 +447,26 @@ const ProductModalsAdmin: React.FC = () => {
               <div className="admin-form-section">
                 <h3>Кнопка</h3>
                 <div className="admin-form-group">
+                  <label>Ссылка на конкретный продукт:</label>
+                  <select
+                    value={editingModal.button_url?.startsWith('/product/') ? editingModal.button_url.replace('/product/', '') : ''}
+                    onChange={(e) => setEditingModal({
+                      ...editingModal,
+                      button_url: e.target.value ? `/product/${e.target.value}` : editingModal.button_url
+                    })}
+                    className="admin-input"
+                  >
+                    <option value="">Не выбрано</option>
+                    {products.map(product => (
+                      <option key={product.id} value={product.id}>
+                        {product.name}
+                      </option>
+                    ))}
+                  </select>
+                  <small>При выборе продукта URL кнопки заполнится автоматически.</small>
+                </div>
+
+                <div className="admin-form-group">
                   <label>Текст кнопки:</label>
                   <input
                     type="text"
@@ -438,11 +480,11 @@ const ProductModalsAdmin: React.FC = () => {
                 <div className="admin-form-group">
                   <label>URL кнопки:</label>
                   <input
-                    type="url"
+                    type="text"
                     value={editingModal.button_url}
                     onChange={(e) => setEditingModal({...editingModal, button_url: e.target.value})}
                     className="admin-input"
-                    placeholder="https://example.com"
+                    placeholder="/product/1 или https://example.com"
                   />
                 </div>
               </div>

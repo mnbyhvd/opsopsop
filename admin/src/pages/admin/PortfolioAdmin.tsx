@@ -27,6 +27,18 @@ interface PortfolioSection {
   is_active: boolean;
 }
 
+interface PortfolioDocument {
+  id: number;
+  project_id: number;
+  title: string;
+  file_url: string;
+  file_type?: string | null;
+  file_size?: number | null;
+  original_filename?: string | null;
+  sort_order: number;
+  is_active: boolean;
+}
+
 const slugify = (value: string) =>
   value
     .trim()
@@ -61,6 +73,7 @@ const emptySection = (projectId: number, sortOrder: number): PortfolioSection =>
 const PortfolioAdmin: React.FC = () => {
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
   const [sections, setSections] = useState<PortfolioSection[]>([]);
+  const [documents, setDocuments] = useState<PortfolioDocument[]>([]);
   const [selectedProjectId, setSelectedProjectId] = useState<number | null>(null);
   const [editingProject, setEditingProject] = useState<PortfolioProject | null>(null);
   const [editingSection, setEditingSection] = useState<PortfolioSection | null>(null);
@@ -69,6 +82,7 @@ const PortfolioAdmin: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingDocument, setUploadingDocument] = useState(false);
 
   const selectedProject = projects.find(project => project.id === selectedProjectId) || null;
 
@@ -94,12 +108,24 @@ const PortfolioAdmin: React.FC = () => {
     }
   };
 
+  const loadDocuments = async (projectId: number | null) => {
+    if (!projectId) {
+      setDocuments([]);
+      return;
+    }
+    const response = await apiService.getPortfolioDocuments(projectId, true);
+    if (response.success && Array.isArray(response.data)) {
+      setDocuments((response.data as PortfolioDocument[]).sort((a, b) => a.sort_order - b.sort_order));
+    }
+  };
+
   useEffect(() => {
     loadProjects();
   }, []);
 
   useEffect(() => {
     loadSections(selectedProjectId);
+    loadDocuments(selectedProjectId);
   }, [selectedProjectId]);
 
   const uploadFile = async (file: File): Promise<string> => {
@@ -136,6 +162,60 @@ const PortfolioAdmin: React.FC = () => {
       alert('Ошибка загрузки изображения');
     } finally {
       setUploading(false);
+    }
+  };
+
+  const uploadPortfolioDocument = async (file: File) => {
+    if (!selectedProjectId) return;
+    setUploadingDocument(true);
+    try {
+      const response = await apiService.uploadFile(file, 'document');
+      if (!response.success || !response.data) {
+        throw new Error(response.error || 'Ошибка загрузки документа');
+      }
+
+      const data = response.data as {
+        url?: string;
+        publicUrl?: string;
+        originalName?: string;
+        mimetype?: string;
+        size?: number;
+      };
+      const fileUrl = data.url || data.publicUrl;
+      if (!fileUrl) {
+        throw new Error('Сервер не вернул URL документа');
+      }
+
+      const documentResponse = await apiService.createPortfolioDocument(selectedProjectId, {
+        title: data.originalName || file.name,
+        file_url: fileUrl,
+        file_type: data.mimetype || file.type || null,
+        file_size: data.size || file.size || null,
+        original_filename: data.originalName || file.name,
+        sort_order: documents.length + 1,
+        is_active: true
+      });
+
+      if (!documentResponse.success) {
+        throw new Error(documentResponse.error || 'Ошибка сохранения документа проекта');
+      }
+
+      await loadDocuments(selectedProjectId);
+    } catch (error) {
+      console.error('Portfolio document upload error:', error);
+      alert(error instanceof Error ? error.message : 'Ошибка загрузки документа');
+    } finally {
+      setUploadingDocument(false);
+    }
+  };
+
+  const deleteDocument = async (id: number) => {
+    if (!window.confirm('Удалить документ проекта?')) return;
+    const response = await apiService.deletePortfolioDocument(id);
+    if (response.success) {
+      setDocuments(documents.filter(document => document.id !== id));
+    } else {
+      alert(response.error || 'Ошибка удаления документа');
     }
   };
 
@@ -324,6 +404,49 @@ const PortfolioAdmin: React.FC = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          )}
+
+          {selectedProjectId && (
+            <div className="mt-8">
+              <h3 className="text-lg font-semibold mb-4" style={{ color: '#F2F0F0' }}>
+                Документация проекта для ZIP-архива
+              </h3>
+              <div className="admin-card">
+                <FileUpload
+                  onFileSelect={uploadPortfolioDocument}
+                  accept=".pdf,.doc,.docx,.xls,.xlsx"
+                  maxSize={100}
+                  disabled={uploadingDocument}
+                />
+                {uploadingDocument && (
+                  <div className="mt-2 text-sm" style={{ color: '#B8B8B8' }}>Загрузка документа...</div>
+                )}
+
+                <div className="mt-5 space-y-3">
+                  {documents.length === 0 ? (
+                    <div className="text-sm" style={{ color: '#8B8B8B' }}>
+                      Документы пока не загружены.
+                    </div>
+                  ) : (
+                    documents.map(document => (
+                      <div key={document.id} className="flex items-center justify-between gap-4 p-3 bg-gray-800 rounded-lg">
+                        <div className="min-w-0">
+                          <div className="text-sm font-medium truncate" style={{ color: '#F2F0F0' }}>
+                            {document.title}
+                          </div>
+                          <div className="text-xs" style={{ color: '#8B8B8B' }}>
+                            {document.file_size ? `${(document.file_size / 1024 / 1024).toFixed(2)} MB` : 'Размер не указан'}
+                          </div>
+                        </div>
+                        <button onClick={() => deleteDocument(document.id)} className="admin-button-danger">
+                          Удалить
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
             </div>
           )}
         </section>

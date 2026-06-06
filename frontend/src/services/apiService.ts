@@ -57,6 +57,10 @@ class ApiService {
     return this.request(API_ENDPOINTS.PRODUCTS);
   }
 
+  async getProductContentBlocks() {
+    return this.request(API_ENDPOINTS.PRODUCT_CONTENT_BLOCKS);
+  }
+
   async getServices() {
     return this.request(API_ENDPOINTS.SERVICES);
   }

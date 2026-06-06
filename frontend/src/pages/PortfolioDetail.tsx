@@ -106,6 +106,24 @@ const PortfolioDetail: React.FC = () => {
               </motion.section>
             ))}
           </div>
+
+          {(project.documents || []).length > 0 && (
+            <div className="mt-20">
+              <a
+                href={`/api/portfolio/${project.id}/documents.zip`}
+                className="inline-flex px-6 py-3 border font-medium transition-all hover:opacity-80"
+                style={{
+                  borderColor: 'var(--button-primary-border)',
+                  borderRadius: 'var(--button-primary-radius)',
+                  color: 'var(--button-primary-text)',
+                  background: 'var(--button-primary-bg)',
+                  fontFamily: 'var(--font-body, Inter)'
+                }}
+              >
+                Скачать проектную документацию
+              </a>
+            </div>
+          )}
         </div>
       </PageContainer>
     </div>

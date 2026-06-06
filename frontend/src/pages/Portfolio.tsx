@@ -59,6 +59,19 @@ const Portfolio: React.FC = () => {
                   <p className="text-base md:text-xl leading-relaxed whitespace-pre-line" style={{ color: 'var(--font-body-color, var(--text))' }}>
                     {project.summary || project.description}
                   </p>
+                  <Link
+                    to={`/portfolio/${project.slug}`}
+                    className="inline-flex mt-8 px-6 py-3 border font-medium transition-all hover:opacity-80"
+                    style={{
+                      borderColor: 'var(--button-primary-border)',
+                      borderRadius: 'var(--button-primary-radius)',
+                      color: 'var(--button-primary-text)',
+                      background: 'var(--button-primary-bg)',
+                      fontFamily: 'var(--font-body, Inter)'
+                    }}
+                  >
+                    Посмотреть проект
+                  </Link>
                 </div>
                 <Link to={`/portfolio/${project.slug}`} className="lg:col-span-5 block">
                   {project.image_url ? (

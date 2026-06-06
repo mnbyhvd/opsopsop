@@ -89,6 +89,19 @@ export interface Product {
   documents?: ProductDocument[];
 }
 
+export interface ProductContentBlock {
+  id: number;
+  title: string;
+  description: string;
+  image_url?: string | null;
+  placement: 'before_products' | 'after_product' | 'after_products' | string;
+  product_id?: number | null;
+  sort_order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Category {
   id: number;
   name: string;
@@ -136,6 +149,21 @@ export interface PortfolioProject {
   meta_title?: string;
   meta_description?: string;
   sections?: PortfolioSection[];
+  documents?: PortfolioDocument[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PortfolioDocument {
+  id: number;
+  project_id: number;
+  title: string;
+  file_url: string;
+  file_type?: string | null;
+  file_size?: number | null;
+  original_filename?: string | null;
+  sort_order: number;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }

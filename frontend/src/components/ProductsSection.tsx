@@ -571,12 +571,17 @@ const ProductsSection: React.FC = () => {
                       {modal.button_text && (
                         <button
                           onClick={() => {
+                            const targetUrl = modal.button_url || '/products';
                             setIsModalOpen(false);
                             setActiveArea(null);
                             setActiveModals([]);
                             setHoveredArea(null);
                             setHoverImage(null);
-                            navigate('/products');
+                            if (targetUrl.startsWith('http')) {
+                              window.location.href = targetUrl;
+                            } else {
+                              navigate(targetUrl);
+                            }
                           }}
                           className="modal-link"
                           style={{

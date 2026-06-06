@@ -62,6 +62,21 @@ CREATE TABLE IF NOT EXISTS product_documents (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 
+-- Create product_content_blocks table
+CREATE TABLE IF NOT EXISTS product_content_blocks (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    image_url VARCHAR(500),
+    placement VARCHAR(50) DEFAULT 'after_products',
+    product_id INT NULL,
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+);
+
 -- Create navigation_menu table
 CREATE TABLE IF NOT EXISTS navigation_menu (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -138,6 +153,22 @@ CREATE TABLE IF NOT EXISTS portfolio_sections (
     title VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     image_url VARCHAR(500),
+    sort_order INT DEFAULT 0,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES portfolio_projects(id) ON DELETE CASCADE
+);
+
+-- Create portfolio_documents table
+CREATE TABLE IF NOT EXISTS portfolio_documents (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    project_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    file_url VARCHAR(500) NOT NULL,
+    file_type VARCHAR(100),
+    file_size BIGINT,
+    original_filename VARCHAR(255),
     sort_order INT DEFAULT 0,
     is_active BOOLEAN DEFAULT true,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -575,6 +606,7 @@ CREATE INDEX idx_portfolio_projects_sort ON portfolio_projects(sort_order);
 CREATE INDEX idx_portfolio_sections_project ON portfolio_sections(project_id);
 CREATE INDEX idx_portfolio_sections_active ON portfolio_sections(is_active);
 CREATE INDEX idx_portfolio_sections_sort ON portfolio_sections(sort_order);
+CREATE INDEX idx_portfolio_documents_project ON portfolio_documents(project_id, sort_order);
 
 CREATE INDEX idx_home_blocks_sort ON home_blocks(sort_order);
 CREATE INDEX idx_page_meta_sort ON page_meta(sort_order);
@@ -584,3 +616,5 @@ CREATE INDEX idx_product_images_active ON product_images(is_active);
 
 CREATE INDEX idx_product_documents_product ON product_documents(product_id);
 CREATE INDEX idx_product_documents_active ON product_documents(is_active);
+CREATE INDEX idx_product_content_blocks_active_sort ON product_content_blocks(is_active, sort_order);
+CREATE INDEX idx_product_content_blocks_product ON product_content_blocks(product_id);

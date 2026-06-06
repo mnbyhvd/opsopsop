@@ -20,6 +20,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import FileUpload from '../../components/FileUpload';
 import DataExporter from '../../components/DataExporter';
+import { apiService } from '../../services/apiService';
 
 interface Product {
   id: number;
@@ -51,6 +52,17 @@ interface ProductDocument {
   file_type: string | null;
   file_size: number | null;
   sort_order: number;
+}
+
+interface ProductContentBlock {
+  id: number;
+  title: string;
+  description: string;
+  image_url?: string | null;
+  placement: 'before_products' | 'after_product' | 'after_products';
+  product_id?: number | null;
+  sort_order: number;
+  is_active: boolean;
 }
 
 interface Category {
@@ -176,9 +188,12 @@ const SortableProduct: React.FC<SortableProductProps> = ({ product, index, onEdi
 
 const ProductsAdmin: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [contentBlocks, setContentBlocks] = useState<ProductContentBlock[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingContentBlock, setEditingContentBlock] = useState<ProductContentBlock | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isCreatingContentBlock, setIsCreatingContentBlock] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingMainImage, setUploadingMainImage] = useState(false);
   const [productImages, setProductImages] = useState<ProductImage[]>([]);
@@ -196,8 +211,16 @@ const ProductsAdmin: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
+    fetchContentBlocks();
     fetchCategories();
   }, []);
+
+  const fetchContentBlocks = async () => {
+    const response = await apiService.getProductContentBlocks(true);
+    if (response.success && Array.isArray(response.data)) {
+      setContentBlocks((response.data as ProductContentBlock[]).sort((a, b) => a.sort_order - b.sort_order));
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -688,6 +711,70 @@ const ProductsAdmin: React.FC = () => {
     setIsCreating(false);
   };
 
+  const handleCreateContentBlock = () => {
+    setEditingContentBlock({
+      id: 0,
+      title: '',
+      description: '',
+      image_url: '',
+      placement: 'after_products',
+      product_id: null,
+      sort_order: contentBlocks.length + 1,
+      is_active: true
+    });
+    setIsCreatingContentBlock(true);
+  };
+
+  const handleContentBlockImageUpload = async (file: File) => {
+    if (!editingContentBlock) return;
+    setUploadingImage(true);
+    try {
+      const imageUrl = await uploadFile(file);
+      setEditingContentBlock({ ...editingContentBlock, image_url: imageUrl });
+    } catch (error) {
+      console.error('Product content block image upload error:', error);
+      alert('Ошибка загрузки изображения');
+    } finally {
+      setUploadingImage(false);
+    }
+  };
+
+  const handleSaveContentBlock = async () => {
+    if (!editingContentBlock) return;
+    const blockToSave = {
+      ...editingContentBlock,
+      product_id: editingContentBlock.placement === 'after_product' ? editingContentBlock.product_id : null
+    };
+    const response = isCreatingContentBlock
+      ? await apiService.createProductContentBlock(blockToSave)
+      : await apiService.updateProductContentBlock(blockToSave.id, blockToSave);
+
+    if (response.success) {
+      await fetchContentBlocks();
+      setEditingContentBlock(null);
+      setIsCreatingContentBlock(false);
+    } else {
+      alert(response.error || 'Ошибка сохранения инфоблока');
+    }
+  };
+
+  const handleDeleteContentBlock = async (id: number) => {
+    if (!window.confirm('Удалить инфоблок страницы продукции?')) return;
+    const response = await apiService.deleteProductContentBlock(id);
+    if (response.success) {
+      setContentBlocks(contentBlocks.filter(block => block.id !== id));
+    } else {
+      alert(response.error || 'Ошибка удаления инфоблока');
+    }
+  };
+
+  const getPlacementLabel = (block: ProductContentBlock) => {
+    if (block.placement === 'before_products') return 'Перед товарами';
+    if (block.placement === 'after_products') return 'После всех товаров';
+    const product = products.find(item => item.id === block.product_id);
+    return `После товара: ${product?.name || block.product_id || 'не выбран'}`;
+  };
+
   const handleExport = async (format: 'json' | 'csv' | 'xlsx') => {
     try {
       const response = await fetch('/api/export', {
@@ -775,6 +862,56 @@ const ProductsAdmin: React.FC = () => {
           </div>
         </SortableContext>
       </DndContext>
+
+      <section className="mt-12">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-bold" style={{ color: '#F2F0F0' }}>
+            Информационные блоки страницы продукции
+          </h2>
+          <button onClick={handleCreateContentBlock} className="admin-button-primary">
+            Добавить инфоблок
+          </button>
+        </div>
+
+        <div className="grid gap-5">
+          {contentBlocks.length === 0 ? (
+            <div className="admin-card" style={{ color: '#B8B8B8' }}>
+              Инфоблоки пока не добавлены.
+            </div>
+          ) : (
+            contentBlocks.map(block => (
+              <div key={block.id} className="admin-card">
+                <div className="flex flex-col lg:flex-row gap-5 justify-between">
+                  <div className="flex gap-4 flex-1">
+                    {block.image_url && (
+                      <img src={block.image_url} alt={block.title} className="w-28 h-20 object-cover rounded-lg flex-shrink-0" />
+                    )}
+                    <div>
+                      <h3 className="text-xl font-semibold mb-2" style={{ color: '#F2F0F0' }}>
+                        {block.title}
+                      </h3>
+                      <p className="mb-3 whitespace-pre-line" style={{ color: '#B8B8B8' }}>
+                        {block.description}
+                      </p>
+                      <div className="text-sm" style={{ color: '#8B8B8B' }}>
+                        {getPlacementLabel(block)} | Порядок: {block.sort_order} | Статус: {block.is_active ? 'Активен' : 'Скрыт'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-start">
+                    <button onClick={() => { setEditingContentBlock({ ...block }); setIsCreatingContentBlock(false); }} className="admin-button-secondary">
+                      Редактировать
+                    </button>
+                    <button onClick={() => handleDeleteContentBlock(block.id)} className="admin-button-danger">
+                      Удалить
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </section>
 
       {/* Форма редактирования */}
       {editingProduct && (
@@ -1066,6 +1203,100 @@ const ProductsAdmin: React.FC = () => {
                 onClick={handleCancel}
                 className="admin-button-secondary"
               >
+                Отмена
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {editingContentBlock && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+          <div className="admin-card max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h2 className="text-2xl font-bold mb-6" style={{ color: '#F2F0F0' }}>
+              {isCreatingContentBlock ? 'Новый инфоблок' : 'Редактирование инфоблока'}
+            </h2>
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Заголовок</label>
+                <input className="admin-input" value={editingContentBlock.title} onChange={e => setEditingContentBlock({ ...editingContentBlock, title: e.target.value })} />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Описание</label>
+                <textarea className="admin-input h-36" value={editingContentBlock.description} onChange={e => setEditingContentBlock({ ...editingContentBlock, description: e.target.value })} />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Позиция</label>
+                  <select
+                    className="admin-input"
+                    value={editingContentBlock.placement}
+                    onChange={e => setEditingContentBlock({
+                      ...editingContentBlock,
+                      placement: e.target.value as ProductContentBlock['placement'],
+                      product_id: e.target.value === 'after_product' ? editingContentBlock.product_id : null
+                    })}
+                  >
+                    <option value="before_products">Перед товарами</option>
+                    <option value="after_product">После конкретного товара</option>
+                    <option value="after_products">После всех товаров</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Порядок</label>
+                  <input type="number" className="admin-input" value={editingContentBlock.sort_order} onChange={e => setEditingContentBlock({ ...editingContentBlock, sort_order: parseInt(e.target.value, 10) || 0 })} />
+                </div>
+              </div>
+
+              {editingContentBlock.placement === 'after_product' && (
+                <div>
+                  <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>После товара</label>
+                  <select
+                    className="admin-input"
+                    value={editingContentBlock.product_id || ''}
+                    onChange={e => setEditingContentBlock({ ...editingContentBlock, product_id: parseInt(e.target.value, 10) || null })}
+                  >
+                    <option value="">Выберите товар</option>
+                    {products.map(product => (
+                      <option key={product.id} value={product.id}>{product.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium mb-2" style={{ color: '#B8B8B8' }}>Изображение</label>
+                <FileUpload onFileSelect={handleContentBlockImageUpload} accept="image/*" maxSize={50} disabled={uploadingImage} showPreview />
+                <input className="admin-input mt-3" value={editingContentBlock.image_url || ''} onChange={e => setEditingContentBlock({ ...editingContentBlock, image_url: e.target.value })} placeholder="URL изображения" />
+                {editingContentBlock.image_url && (
+                  <img src={editingContentBlock.image_url} alt="Preview" className="w-40 h-28 object-cover rounded-lg mt-3" />
+                )}
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="content_block_active"
+                  checked={editingContentBlock.is_active}
+                  onChange={e => setEditingContentBlock({ ...editingContentBlock, is_active: e.target.checked })}
+                  className="mr-2"
+                  style={{ accentColor: '#D71920' }}
+                />
+                <label htmlFor="content_block_active" className="text-sm font-medium" style={{ color: '#B8B8B8' }}>
+                  Активен
+                </label>
+              </div>
+            </div>
+
+            <div className="flex gap-4 mt-8">
+              <button onClick={handleSaveContentBlock} className="admin-button-success">
+                Сохранить
+              </button>
+              <button onClick={() => { setEditingContentBlock(null); setIsCreatingContentBlock(false); }} className="admin-button-secondary">
                 Отмена
               </button>
             </div>

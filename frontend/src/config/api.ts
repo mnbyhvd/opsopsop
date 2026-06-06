@@ -5,6 +5,7 @@ export const API_ENDPOINTS = {
   HERO: `${API_BASE_URL}/api/hero`,
   NAVIGATION: `${API_BASE_URL}/api/navigation`,
   PRODUCTS: `${API_BASE_URL}/api/products`,
+  PRODUCT_CONTENT_BLOCKS: `${API_BASE_URL}/api/product-content-blocks`,
   CATEGORIES: `${API_BASE_URL}/api/categories`,
   SERVICES: `${API_BASE_URL}/api/services`,
   PORTFOLIO: `${API_BASE_URL}/api/portfolio`,
