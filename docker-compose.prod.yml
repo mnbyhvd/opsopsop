@@ -2,6 +2,7 @@ services:
   db:
     image: mysql:8.0
     container_name: opsopsop-db
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: MasterSPS2024!
       MYSQL_DATABASE: master_sps
@@ -23,6 +24,7 @@ services:
   backend:
     build: ./backend
     container_name: opsopsop-backend
+    restart: unless-stopped
     environment:
       NODE_ENV: production
       DB_HOST: opsopsop-db
@@ -48,6 +50,7 @@ services:
       args:
         REACT_APP_API_URL: ""
     container_name: opsopsop-frontend
+    restart: unless-stopped
     expose:
       - "80"
     volumes:
@@ -61,14 +64,19 @@ services:
       args:
         REACT_APP_API_URL: ""
     container_name: opsopsop-admin
+    restart: unless-stopped
     expose:
       - "80"
+    depends_on:
+      backend:
+        condition: service_started
     networks:
       - master_sps_network
 
   nginx:
     image: nginx:alpine
     container_name: opsopsop-nginx
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -78,9 +86,12 @@ services:
       - ./ssl:/etc/nginx/ssl
       - certbot_webroot:/var/www/certbot
     depends_on:
-      - backend
-      - frontend
-      - admin
+      backend:
+        condition: service_started
+      frontend:
+        condition: service_started
+      admin:
+        condition: service_started
     networks:
       - master_sps_network
 
